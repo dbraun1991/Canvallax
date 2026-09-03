@@ -31,201 +31,203 @@
         <p>Loading…</p>
       </div>
       <div class="shell" x-show="!loading">
-        <aside class="sidebar" :class="{ collapsed: !sidebarExpanded }" :style="sidebarExpanded ? `width: ${sidebarWidth}px` : ''">
-          <details class="sidebar-collapse" x-show="sidebarExpanded" open>
-            <summary class="sidebar-summary">Issues</summary>
-            <div class="sidebar-body">
+        <nav class="view-tabs" x-show="activeIssue">
+          <template x-if="activeIssue">
+            <div class="issue-header">
               <input
-                type="search"
-                class="sidebar-search"
-                placeholder="Search issues…"
-                x-model="sidebarQuery"
+                type="text"
+                class="issue-name-field"
+                x-model="activeIssue.name"
+                @input="saveActiveIssue()"
+                placeholder="Issue name"
               />
-              <button type="button" class="new-issue-button" @click="createNewIssue()">+ New Issue</button>
-              <ul class="issue-list">
-                <template x-for="issue in filteredIssues" :key="issue.id">
-                  <li>
-                    <button
-                      type="button"
-                      class="issue-item"
-                      :class="{ active: issue.id === activeIssueId }"
-                      @click="selectIssue(issue.id)"
-                    >
-                      <span class="issue-title" x-text="issue.name"></span>
-                      <span class="issue-meta">
-                        <span class="issue-state" :class="'state-' + issue.status" x-text="issue.status"></span>
-                      </span>
-                    </button>
-                  </li>
-                </template>
-              </ul>
+              <select
+                class="issue-status-field issue-state"
+                :class="'state-' + activeIssue.status"
+                x-model="activeIssue.status"
+                @change="saveActiveIssue()"
+              >
+                <option value="open">open</option>
+                <option value="mapped">mapped</option>
+                <option value="decided">decided</option>
+              </select>
             </div>
-          </details>
-          <div
-            class="resize-handle resize-handle-right"
-            :class="{ resizing: resizingPanel === 'sidebar' }"
-            @mousedown="startResize('sidebar', $event)"
-          ></div>
-        </aside>
-
-        <main class="view-switcher" x-show="activeIssue">
-          <nav class="view-tabs">
-            <template x-if="activeIssue">
-              <div class="issue-header">
-                <input
-                  type="text"
-                  class="issue-name-field"
-                  x-model="activeIssue.name"
-                  @input="saveActiveIssue()"
-                  placeholder="Issue name"
-                />
-                <select
-                  class="issue-status-field issue-state"
-                  :class="'state-' + activeIssue.status"
-                  x-model="activeIssue.status"
-                  @change="saveActiveIssue()"
-                >
-                  <option value="open">open</option>
-                  <option value="mapped">mapped</option>
-                  <option value="decided">decided</option>
-                </select>
-              </div>
-            </template>
-            <template x-for="view in ['all', 'process', 'system', 'object', 'interaction']" :key="view">
-              <button
-                type="button"
-                class="view-tab"
-                :class="{ active: activeView === view }"
-                @click="setView(view)"
-                x-text="view === 'all' ? 'All' : view[0].toUpperCase() + view.slice(1)"
-              ></button>
-            </template>
-            <div class="view-tabs-actions" x-show="activeView !== 'all'">
-              <button type="button" class="copy-toggle" @click="openCopyPicker('view')">Copy</button>
-              <button type="button" class="history-toggle" @click="toggleHistory()">History</button>
-            </div>
-          </nav>
-          <div class="view-content">
-            <template x-if="activeView === 'all'">
-              <div class="all-grid" x-effect="renderAllThumbnails()">
-                <div class="all-cell" @click="setView('process')">
-                  <h3>Process</h3>
-                  <div class="all-cell-thumbnail" x-show="thumbnails.process" x-html="thumbnails.process"></div>
-                  <p class="placeholder" x-show="!thumbnails.process">Rendering…</p>
-                </div>
-                <div class="all-cell" @click="setView('system')">
-                  <h3>System/Integration</h3>
-                  <img class="all-cell-thumbnail" x-show="thumbnails.system" :src="thumbnails.system" alt="" />
-                  <p class="placeholder" x-show="!thumbnails.system">Rendering…</p>
-                </div>
-                <div class="all-cell" @click="setView('object')">
-                  <h3>Object</h3>
-                  <div class="all-cell-thumbnail" x-show="thumbnails.object" x-html="thumbnails.object"></div>
-                  <p class="placeholder" x-show="!thumbnails.object">Rendering…</p>
-                </div>
-                <div class="all-cell" @click="setView('interaction')">
-                  <h3>Interaction</h3>
-                  <img class="all-cell-thumbnail" x-show="thumbnails.interaction" :src="thumbnails.interaction" alt="" />
-                  <p class="placeholder" x-show="!thumbnails.interaction">Rendering…</p>
-                </div>
-              </div>
-            </template>
-            <div class="process-view" x-show="activeView === 'process'" x-effect="syncProcessCanvas($el)">
-              <div class="process-canvas-container"></div>
-              <div class="process-properties-panel"></div>
-            </div>
-            <div class="canvas-container" x-show="activeView === 'system'" x-effect="syncSystemCanvas($el)"></div>
-            <div class="canvas-container" x-show="activeView === 'interaction'" x-effect="syncInteractionCanvas($el)"></div>
-            <div class="canvas-container" x-show="activeView === 'object'" x-effect="syncObjectCanvas($el)"></div>
-
-            <div class="history-panel" x-show="historyOpen">
-              <div class="history-panel-header">
-                <h3>History</h3>
-                <button type="button" class="history-close" @click="toggleHistory()">×</button>
-              </div>
-              <p
-                class="copy-provenance"
-                x-show="activeIssue && activeIssue.views[activeView] && activeIssue.views[activeView].copiedFrom"
-                x-text="activeIssue && activeIssue.views[activeView] && activeIssue.views[activeView].copiedFrom ? 'Copied from an earlier version of another Issue' : ''"
-              ></p>
-              <ul class="history-list">
-                <template x-for="entry in historyEntries" :key="entry.oid">
-                  <li class="history-entry">
-                    <p class="history-message" x-text="entry.message"></p>
-                    <p class="history-date" x-text="new Date(entry.timestamp * 1000).toLocaleString()"></p>
-                    <button type="button" class="history-restore" @click="restoreHistoryEntry(entry.oid)">
-                      Restore
-                    </button>
-                  </li>
-                </template>
-                <li class="history-empty" x-show="historyEntries.length === 0">No history yet.</li>
-              </ul>
-            </div>
-          </div>
-        </main>
-        <div class="no-issue-selected" x-show="!activeIssue">
-          <p>Select an Issue from the sidebar to begin.</p>
-        </div>
-
-        <aside class="backlog-panel" x-show="activeIssue" :class="{ collapsed: !backlogExpanded }" :style="backlogExpanded ? `width: ${backlogWidth}px` : ''">
-          <div
-            class="resize-handle resize-handle-left"
-            :class="{ resizing: resizingPanel === 'backlog' }"
-            @mousedown="startResize('backlog', $event)"
-          ></div>
-          <div class="backlog-controls">
+          </template>
+          <template x-for="view in ['all', 'process', 'system', 'object', 'interaction']" :key="view">
             <button
               type="button"
-              class="theme-toggle"
-              x-show="backlogExpanded"
-              @click="toggleTheme()"
-              x-text="theme === 'dark' ? 'Light mode' : 'Dark mode'"
+              class="view-tab"
+              :class="{ active: activeView === view }"
+              @click="setView(view)"
+              x-text="view === 'all' ? 'All' : view[0].toUpperCase() + view.slice(1)"
             ></button>
+          </template>
+          <div class="view-tabs-actions" x-show="activeView !== 'all'">
+            <button type="button" class="copy-toggle" @click="openCopyPicker('view')">Copy</button>
+            <button type="button" class="history-toggle" @click="toggleHistory()">History</button>
           </div>
-          <div class="backlog-body" x-show="backlogExpanded" x-cloak>
-            <template x-if="activeIssue">
-              <div class="backlog-entries">
-                <div class="backlog-entries-header">
-                  <h3>Backlog</h3>
-                  <button type="button" class="copy-toggle" @click="openCopyPicker('entry')">Copy entry from…</button>
-                </div>
-                <div class="add-entry-form">
-                  <input
-                    type="text"
-                    class="backlog-field"
-                    x-model="newEntryName"
-                    @keydown.enter="addEntry()"
-                    placeholder="New entry name…"
-                  />
-                  <button type="button" class="add-entry-button" @click="addEntry()">Add</button>
-                </div>
-                <ul class="backlog-entry-list">
-                  <template x-for="entry in activeIssue.backlogEntries" :key="entry.id">
-                    <li class="backlog-entry">
-                      <div class="backlog-entry-header">
-                        <input
-                          type="text"
-                          class="backlog-field backlog-entry-name-field"
-                          x-model="entry.name"
-                          @input="saveActiveIssue()"
-                        />
-                        <button type="button" class="backlog-entry-delete" @click="deleteEntry(entry.id)">×</button>
-                      </div>
-                      <textarea
-                        class="backlog-field backlog-entry-description-field"
-                        x-model="entry.description"
-                        @input="saveActiveIssue()"
-                        placeholder="Description…"
-                      ></textarea>
-                      <p class="copy-provenance" x-show="entry.copiedFrom">Copied from another Issue</p>
+        </nav>
+        <div class="shell-columns">
+          <aside class="sidebar" :class="{ collapsed: !sidebarExpanded }" :style="sidebarExpanded ? `width: ${sidebarWidth}px` : ''">
+            <details class="sidebar-collapse" x-show="sidebarExpanded" open>
+              <summary class="sidebar-summary">Issues</summary>
+              <div class="sidebar-body">
+                <input
+                  type="search"
+                  class="sidebar-search"
+                  placeholder="Search issues…"
+                  x-model="sidebarQuery"
+                />
+                <button type="button" class="new-issue-button" @click="createNewIssue()">+ New Issue</button>
+                <ul class="issue-list">
+                  <template x-for="issue in filteredIssues" :key="issue.id">
+                    <li>
+                      <button
+                        type="button"
+                        class="issue-item"
+                        :class="{ active: issue.id === activeIssueId }"
+                        @click="selectIssue(issue.id)"
+                      >
+                        <span class="issue-title" x-text="issue.name"></span>
+                        <span class="issue-meta">
+                          <span class="issue-state" :class="'state-' + issue.status" x-text="issue.status"></span>
+                        </span>
+                      </button>
                     </li>
                   </template>
-                  <li class="backlog-empty" x-show="activeIssue.backlogEntries.length === 0">No entries yet.</li>
                 </ul>
               </div>
-            </template>
+            </details>
+            <div
+              class="resize-handle resize-handle-right"
+              :class="{ resizing: resizingPanel === 'sidebar' }"
+              @mousedown="startResize('sidebar', $event)"
+            ></div>
+          </aside>
+  
+          <main class="view-switcher" x-show="activeIssue">
+            <div class="view-content">
+              <template x-if="activeView === 'all'">
+                <div class="all-grid" x-effect="renderAllThumbnails()">
+                  <div class="all-cell" @click="setView('process')">
+                    <h3>Process</h3>
+                    <div class="all-cell-thumbnail" x-show="thumbnails.process" x-html="thumbnails.process"></div>
+                    <p class="placeholder" x-show="!thumbnails.process">Rendering…</p>
+                  </div>
+                  <div class="all-cell" @click="setView('system')">
+                    <h3>System/Integration</h3>
+                    <img class="all-cell-thumbnail" x-show="thumbnails.system" :src="thumbnails.system" alt="" />
+                    <p class="placeholder" x-show="!thumbnails.system">Rendering…</p>
+                  </div>
+                  <div class="all-cell" @click="setView('object')">
+                    <h3>Object</h3>
+                    <div class="all-cell-thumbnail" x-show="thumbnails.object" x-html="thumbnails.object"></div>
+                    <p class="placeholder" x-show="!thumbnails.object">Rendering…</p>
+                  </div>
+                  <div class="all-cell" @click="setView('interaction')">
+                    <h3>Interaction</h3>
+                    <img class="all-cell-thumbnail" x-show="thumbnails.interaction" :src="thumbnails.interaction" alt="" />
+                    <p class="placeholder" x-show="!thumbnails.interaction">Rendering…</p>
+                  </div>
+                </div>
+              </template>
+              <div class="process-view" x-show="activeView === 'process'" x-effect="syncProcessCanvas($el)">
+                <div class="process-canvas-container"></div>
+                <div class="process-properties-panel"></div>
+              </div>
+              <div class="canvas-container" x-show="activeView === 'system'" x-effect="syncSystemCanvas($el)"></div>
+              <div class="canvas-container" x-show="activeView === 'interaction'" x-effect="syncInteractionCanvas($el)"></div>
+              <div class="canvas-container" x-show="activeView === 'object'" x-effect="syncObjectCanvas($el)"></div>
+  
+              <div class="history-panel" x-show="historyOpen">
+                <div class="history-panel-header">
+                  <h3>History</h3>
+                  <button type="button" class="history-close" @click="toggleHistory()">×</button>
+                </div>
+                <p
+                  class="copy-provenance"
+                  x-show="activeIssue && activeIssue.views[activeView] && activeIssue.views[activeView].copiedFrom"
+                  x-text="activeIssue && activeIssue.views[activeView] && activeIssue.views[activeView].copiedFrom ? 'Copied from an earlier version of another Issue' : ''"
+                ></p>
+                <ul class="history-list">
+                  <template x-for="entry in historyEntries" :key="entry.oid">
+                    <li class="history-entry">
+                      <p class="history-message" x-text="entry.message"></p>
+                      <p class="history-date" x-text="new Date(entry.timestamp * 1000).toLocaleString()"></p>
+                      <button type="button" class="history-restore" @click="restoreHistoryEntry(entry.oid)">
+                        Restore
+                      </button>
+                    </li>
+                  </template>
+                  <li class="history-empty" x-show="historyEntries.length === 0">No history yet.</li>
+                </ul>
+              </div>
+            </div>
+          </main>
+          <div class="no-issue-selected" x-show="!activeIssue">
+            <p>Select an Issue from the sidebar to begin.</p>
           </div>
-        </aside>
+  
+          <aside class="backlog-panel" x-show="activeIssue" :class="{ collapsed: !backlogExpanded }" :style="backlogExpanded ? `width: ${backlogWidth}px` : ''">
+            <div
+              class="resize-handle resize-handle-left"
+              :class="{ resizing: resizingPanel === 'backlog' }"
+              @mousedown="startResize('backlog', $event)"
+            ></div>
+            <div class="backlog-controls">
+              <button
+                type="button"
+                class="theme-toggle"
+                x-show="backlogExpanded"
+                @click="toggleTheme()"
+                x-text="theme === 'dark' ? 'Light mode' : 'Dark mode'"
+              ></button>
+            </div>
+            <div class="backlog-body" x-show="backlogExpanded" x-cloak>
+              <template x-if="activeIssue">
+                <div class="backlog-entries">
+                  <div class="backlog-entries-header">
+                    <h3>Backlog</h3>
+                    <button type="button" class="copy-toggle" @click="openCopyPicker('entry')">Copy entry from…</button>
+                  </div>
+                  <div class="add-entry-form">
+                    <input
+                      type="text"
+                      class="backlog-field"
+                      x-model="newEntryName"
+                      @keydown.enter="addEntry()"
+                      placeholder="New entry name…"
+                    />
+                    <button type="button" class="add-entry-button" @click="addEntry()">Add</button>
+                  </div>
+                  <ul class="backlog-entry-list">
+                    <template x-for="entry in activeIssue.backlogEntries" :key="entry.id">
+                      <li class="backlog-entry">
+                        <div class="backlog-entry-header">
+                          <input
+                            type="text"
+                            class="backlog-field backlog-entry-name-field"
+                            x-model="entry.name"
+                            @input="saveActiveIssue()"
+                          />
+                          <button type="button" class="backlog-entry-delete" @click="deleteEntry(entry.id)">×</button>
+                        </div>
+                        <textarea
+                          class="backlog-field backlog-entry-description-field"
+                          x-model="entry.description"
+                          @input="saveActiveIssue()"
+                          placeholder="Description…"
+                        ></textarea>
+                        <p class="copy-provenance" x-show="entry.copiedFrom">Copied from another Issue</p>
+                      </li>
+                    </template>
+                    <li class="backlog-empty" x-show="activeIssue.backlogEntries.length === 0">No entries yet.</li>
+                  </ul>
+                </div>
+              </template>
+            </div>
+          </aside>
+        </div>
       </div>
 
       <div class="copy-picker-backdrop" x-show="copyPickerOpen" @click="closeCopyPicker()"></div>

@@ -24,20 +24,24 @@ Each canvas is built on the best-fit existing open tool for its notation rather 
 ## Architecture
 
 ```
++---------------------------------------------------------------------+
+| Issue name/status | [All] [Process] [System] [Object] [Interaction] |  <- .view-tabs, full width
 +-----------+---------------------------------------------+-----------+
-| Issue     |  View switcher: [All] [Process] [System]     | Backlog   |
-| sidebar   |  [Object] [Interaction]                       | panel     |
-| (search,  |-----------------------------------------------| (always   |
-| resizable,|  "All": read-only grid of real per-engine      | visible   |
-| <details> |    thumbnails, click-through to a single view   | across    |
-| collapse  |  single view: that canvas's native editor,     | every     |
-| on mobile)|    engine + (Process only) bpmn-io properties  | view,     |
-|           |    panel for the selected element               | minimiz-  |
-|           |                                                | able)     |
+| Issue     |  "All": read-only grid of real per-engine    | Backlog   |
+| sidebar   |    thumbnails, click-through to a single view| panel     |
+| (search,  |  single view: that canvas's native editor,   | (always   |
+| resizable,|    engine + (Process only) bpmn-io properties| visible   |
+| <details> |    panel for the selected element             | across    |
+| collapse  |                                               | every     |
+| on mobile)|                                               | view,     |
+|           |                                               | minimiz-  |
+|           |                                               | able)     |
 +-----------+---------------------------------------------+-----------+
 Activating an Issue always resets view -> All and Backlog -> expanded;
 switching views within an already-open Issue leaves both exactly as left.
-(ADR-0008)
+(ADR-0008; .view-tabs spans the full shell width above both side panels,
+not just the center column — .shell-columns holds the three-panel row
+below it, see shell.css)
 
 Canvas engines
   Process              — bpmn-js, .bpmn XML                       (ADR-0004)
