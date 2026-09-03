@@ -739,7 +739,7 @@ img.all-cell-thumbnail {
   color: var(--text-muted);
 }
 
-/* A labeled toggle-switch, same shape as bpmn-process-creator's own sidebar-
+/* A labeled toggle-switch, same shape as another project's own sidebar-
    footer mode toggle — a checkbox visually hidden behind a sliding pill. */
 .toggle-switch {
   position: relative;

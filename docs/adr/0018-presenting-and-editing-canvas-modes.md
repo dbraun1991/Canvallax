@@ -7,7 +7,7 @@
 
 ## Context
 
-The All view (ADR-0012) already renders every canvas as a same-size thumbnail with click-through into its live editor. That click-through assumes the viewer is about to edit. Direction given: split that assumption into two explicit modes, toggled from the Backlog panel's now-single-panel footer (ADR-0017 freed that space by moving the theme toggle out) — a labeled toggle-switch control, the same shape `bpmn-process-creator`'s own sidebar footer already uses for its "File Manager" mode toggle.
+The All view (ADR-0012) already renders every canvas as a same-size thumbnail with click-through into its live editor. That click-through assumes the viewer is about to edit. Direction given: split that assumption into two explicit modes, toggled from the Backlog panel's now-single-panel footer (ADR-0017 freed that space by moving the theme toggle out) — a labeled toggle-switch control, the same shape another project's own sidebar footer already uses for its "File Manager" mode toggle.
 
 **Editing** is today's behavior, restyled. **Presenting** is new: a walk-through/demo mode where clicking a canvas enlarges it in place rather than opening it for editing, and no per-canvas switch control is shown at all — there's nothing to switch between beyond the grid and one enlarged tile.
 

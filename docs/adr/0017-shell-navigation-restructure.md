@@ -7,11 +7,11 @@
 
 ## Context
 
-ADR-0008's persistent Issue sidebar was borrowed from a UI pattern (`bpmn-process-creator`'s own sidebar) built for switching between lightweight, single-visual items — cheap context switches. An Issue here bundles four canvases plus a Backlog; switching Issues is a much heavier jump than that pattern was designed for, and keeping the switcher permanently visible next to the actual work no longer earns its screen space now that the shell has grown past a single-visual tool.
+ADR-0008's persistent Issue sidebar was borrowed from a UI pattern (another project's own sidebar) built for switching between lightweight, single-visual items — cheap context switches. An Issue here bundles four canvases plus a Backlog; switching Issues is a much heavier jump than that pattern was designed for, and keeping the switcher permanently visible next to the actual work no longer earns its screen space now that the shell has grown past a single-visual tool.
 
 Direction given: demote Issue selection to an overlay (shown by default whenever nothing is selected, reachable afterward through a menu) rather than a permanently docked panel; let the Backlog panel — which already covers the whole Issue, not one canvas — take over the freed left position, matching the reading-order convention (overview top-left, focused work to its right) the workspace already leans on elsewhere; and add a burger-menu-triggered navigation cluster in the shell's top-left corner, the one region that must stay reachable even before an Issue exists.
 
-`bpmn-process-creator` supplied two more directly reusable patterns for this: a header brand cluster (icon + title text, always visible top-left) and a modal skeleton (backdrop, header with a × close, body, footer actions) — the latter already partially present in this codebase as `.copy-picker`/`.copy-picker-backdrop` (ADR-0011), extended here rather than redesigned.
+That same project supplied two more directly reusable patterns for this: a header brand cluster (icon + title text, always visible top-left) and a modal skeleton (backdrop, header with a × close, body, footer actions) — the latter already partially present in this codebase as `.copy-picker`/`.copy-picker-backdrop` (ADR-0011), extended here rather than redesigned.
 
 ## Decision
 

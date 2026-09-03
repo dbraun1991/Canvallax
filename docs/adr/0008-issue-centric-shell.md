@@ -9,7 +9,7 @@
 
 Every Issue bundles its four canvases plus a Backlog list together (README). The shell needs to be **issue-scoped, not canvas-scoped**: pick an Issue, then switch between a read-only overview and each canvas's full-screen editor, with the Backlog always reachable — not a separate mode you have to leave the current canvas to see. Two workable UI patterns already exist in this workspace worth reusing directly rather than designing from scratch:
 
-- **`bpmn-process-creator`** — a resizable `<aside>` sidebar with a drag-handle resize mechanism (`mousedown`/`mousemove`, `ew-resize` cursor, min/max width clamped).
+- **Another project in this workspace** — a resizable `<aside>` sidebar with a drag-handle resize mechanism (`mousedown`/`mousemove`, `ew-resize` cursor, min/max width clamped).
 - **`Climb-Buddy-Belay`** — a mobile-responsive `<aside class="sidebar">` that collapses into a native `<details class="sidebar-collapse" open>`/`<summary>` disclosure below a breakpoint, no JS required.
 
 ## Decision

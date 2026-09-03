@@ -27,5 +27,5 @@ Every Issue already bundles all four canvases plus its Backlog together ([ADR-00
 
 ## Alternatives considered
 
-- **A per-tool link-attachment pattern** generalizing `bpmn-process-creator`'s hyperlink module (context-pad button → moddle extension → overlay badge → Ctrl+click-to-follow), plus a registry anchored on the Backlog. Rejected: the Issue-level bundling above already gives every canvas the same association a link registry would provide, at zero ongoing integration cost.
+- **A per-tool link-attachment pattern** generalizing another project's hyperlink module (context-pad button → moddle extension → overlay badge → Ctrl+click-to-follow), plus a registry anchored on the Backlog. Rejected: the Issue-level bundling above already gives every canvas the same association a link registry would provide, at zero ongoing integration cost.
 - **A live cross-issue reference** instead of a copy ([ADR-0011](0011-cross-issue-copy.md)). Rejected for the same reason — reintroduces the "several incompatible reference targets" problem this ADR specifically avoids by not building any registry.
