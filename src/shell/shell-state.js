@@ -33,17 +33,23 @@ const VIEW_INSTANCE_KEYS = {
   object: '_objectInstance',
 };
 
-// Alpine data factory for the Issue-shell (ADR-0008). Implements the
-// three state-transition rules from ADR-0008's Decision section exactly:
-//   - selectIssue: always resets view -> 'all' and expands the Backlog panel,
-//     regardless of what was left over from a previously active Issue.
+// Alpine data factory for the Issue-shell (ADR-0017/0018). Key
+// state-transition rules:
+//   - selectIssue: always resets view -> 'all', expands the Backlog panel,
+//     and closes the Issue-picker overlay, regardless of what was left over
+//     from a previously active Issue.
 //   - setView: changes only the active view; the Backlog panel's expanded
 //     flag is untouched, so it doesn't flicker when switching canvases.
-//   - startResize: dragging a handle past a threshold collapses/expands its
-//     panel live (see its own comment below) — backlogExpanded still exists
-//     and still resets to true on selectIssue per ADR-0008, only how the
-//     user *sets* it changed (no more explicit toggle button).
-//     sidebarExpanded is the same idea, newly added for the Issue sidebar.
+//   - showIssuePicker: forced open whenever !activeIssue (no dismiss control
+//     in that state), OR'd with the manual issuePickerOpen flag from the
+//     burger menu — two reasons to be open, not one flag doing double duty.
+//   - setCanvasMode: switching into 'presenting' always drops back to the
+//     All-grid and clears any open zoom; switching into 'editing' leaves
+//     activeView wherever it already was. canvasMode itself is NOT reset by
+//     selectIssue — a standing session preference, not per-Issue state.
+//   - startBacklogResize: dragging the handle past a threshold
+//     collapses/expands the panel live (see its own comment below) —
+//     backlogExpanded still exists and still resets to true on selectIssue.
 export function shellState() {
   return {
     issues: [],
@@ -51,11 +57,14 @@ export function shellState() {
     activeIssueId: null,
     activeView: 'all',
     backlogExpanded: true,
-    sidebarExpanded: true,
-    sidebarQuery: '',
-    sidebarWidth: 260,
     backlogWidth: 320,
-    resizingPanel: null, // null | 'sidebar' | 'backlog' — drives the handle's active-drag affordance
+    resizingBacklog: false, // drives the handle's active-drag affordance (ADR-0017: only one resizable panel left)
+    issuePickerQuery: '',
+    issuePickerOpen: false, // manual open via the burger menu; showIssuePicker (below) ORs this with !activeIssue
+    burgerMenuOpen: false,
+    settingsOpen: false, // ADR-0017: mock overlay, no real settings surface yet
+    canvasMode: 'editing', // 'editing' | 'presenting' (ADR-0018) — a standing session preference, not reset per-Issue
+    zoomedCanvas: null, // null | 'process' | 'system' | 'object' | 'interaction' — Presenting mode's enlarged tile
     _processInstance: null,
     _systemInstance: null,
     _interactionInstance: null,
@@ -86,8 +95,16 @@ export function shellState() {
       return this.issues.find((issue) => issue.id === this.activeIssueId) ?? null;
     },
 
+    // ADR-0017: forced open whenever nothing's selected (no dismiss control in
+    // that state, same as the old sidebar-driven placeholder it replaces) OR'd
+    // with the manual flag from the burger menu's "Change Issue" — two
+    // separate reasons to be open, not one flag doing double duty.
+    get showIssuePicker() {
+      return this.issuePickerOpen || !this.activeIssue;
+    },
+
     get filteredIssues() {
-      const query = this.sidebarQuery.trim().toLowerCase();
+      const query = this.issuePickerQuery.trim().toLowerCase();
       if (!query) return this.issues;
       return this.issues.filter((issue) => issue.name.toLowerCase().includes(query));
     },
@@ -119,6 +136,7 @@ export function shellState() {
       this.activeIssueId = id;
       this.activeView = 'all';
       this.backlogExpanded = true;
+      this.issuePickerOpen = false;
     },
 
     async createNewIssue() {
@@ -130,6 +148,59 @@ export function shellState() {
     setView(view) {
       if (!VIEWS.includes(view)) return;
       this.activeView = view;
+    },
+
+    // ADR-0017. openIssuePicker also works while an Issue is already active
+    // (burger menu's "Change Issue"); closeIssuePicker is a no-op in effect
+    // when !activeIssue, since showIssuePicker's other half keeps it open.
+    openIssuePicker() {
+      this.issuePickerOpen = true;
+      this.burgerMenuOpen = false;
+    },
+
+    closeIssuePicker() {
+      this.issuePickerOpen = false;
+    },
+
+    toggleBurgerMenu() {
+      this.burgerMenuOpen = !this.burgerMenuOpen;
+    },
+
+    closeBurgerMenu() {
+      this.burgerMenuOpen = false;
+    },
+
+    openSettings() {
+      this.settingsOpen = true;
+      this.burgerMenuOpen = false;
+    },
+
+    closeSettings() {
+      this.settingsOpen = false;
+    },
+
+    // ADR-0018. Switching into Presenting always drops back to the grid and
+    // clears any open zoom, since Presenting has no "entered a canvas" state
+    // at all; switching into Editing leaves activeView wherever it already
+    // was — no forced navigation in that direction.
+    setCanvasMode(mode) {
+      this.canvasMode = mode;
+      this.zoomedCanvas = null; // the zoom lightbox is a full-screen overlay either way — always start clean
+      if (mode === 'presenting') {
+        this.activeView = 'all';
+      }
+    },
+
+    toggleCanvasMode() {
+      this.setCanvasMode(this.canvasMode === 'editing' ? 'presenting' : 'editing');
+    },
+
+    openZoom(view) {
+      this.zoomedCanvas = view;
+    },
+
+    closeZoom() {
+      this.zoomedCanvas = null;
     },
 
     // Bound to the Issue name/status controls (view-switcher tab bar,
@@ -164,49 +235,45 @@ export function shellState() {
       }
     },
 
-    // Drag-handle resize (ADR-0008), both panels: 'sidebar' grows to the
-    // right, 'backlog' grows to the left, clamped to [MIN_PANEL_WIDTH,
-    // MAX_PANEL_WIDTH] while expanded. Dragging past COLLAPSE_THRESHOLD
-    // collapses the panel to the thin COLLAPSED_WIDTH rail (`.collapsed` in
-    // shell.css) instead of clamping at MIN_PANEL_WIDTH — replaces the old
-    // explicit .backlog-toggle button. The resize handle stays visible on
-    // that rail (index.html no longer hides it when collapsed), so dragging
-    // it back out past the same threshold re-expands the panel live, mid-
-    // drag — there's no separate "reopen" control. resizingPanel tracks
-    // which handle is actively being dragged so its affordance (index.html's
-    // `.resizing` class) stays lit for the whole drag — the pointer leaves
-    // the 6px-wide handle strip almost immediately once dragging starts, so
-    // a plain CSS :hover state alone would flicker off mid-drag.
-    startResize(panel, event) {
+    // Drag-handle resize (ADR-0016), now a single panel since ADR-0017
+    // removed the Issue sidebar. The Backlog panel sits on the left now, so
+    // it grows to the right — dragging past COLLAPSE_THRESHOLD collapses it
+    // to the thin COLLAPSED_WIDTH rail (`.backlog-panel.collapsed` in
+    // shell.css) instead of clamping at MIN_PANEL_WIDTH. The resize handle
+    // stays visible on that rail (index.html doesn't hide it when
+    // collapsed), so dragging it back out past the same threshold
+    // re-expands the panel live, mid-drag — there's no separate "reopen"
+    // control. resizingBacklog drives the handle's `.resizing` affordance
+    // for the whole drag — the pointer leaves the 6px-wide handle strip
+    // almost immediately once dragging starts, so a plain CSS :hover state
+    // alone would flicker off mid-drag.
+    startBacklogResize(event) {
       event.preventDefault();
       const startX = event.clientX;
-      const isSidebar = panel === 'sidebar';
-      const expandedKey = isSidebar ? 'sidebarExpanded' : 'backlogExpanded';
-      const widthKey = isSidebar ? 'sidebarWidth' : 'backlogWidth';
       const MIN_PANEL_WIDTH = 200;
       const MAX_PANEL_WIDTH = 480;
       const COLLAPSE_THRESHOLD = 100;
-      const COLLAPSED_WIDTH = 32; // matches .sidebar.collapsed / .backlog-panel.collapsed in shell.css
+      const COLLAPSED_WIDTH = 32; // matches .backlog-panel.collapsed in shell.css
 
-      const startWidth = this[expandedKey] ? this[widthKey] : COLLAPSED_WIDTH;
+      const startWidth = this.backlogExpanded ? this.backlogWidth : COLLAPSED_WIDTH;
 
-      this.resizingPanel = panel;
+      this.resizingBacklog = true;
       const previousUserSelect = document.body.style.userSelect;
       document.body.style.userSelect = 'none'; // dragging across text would otherwise select it
 
       const onMove = (moveEvent) => {
-        const delta = isSidebar ? moveEvent.clientX - startX : startX - moveEvent.clientX;
+        const delta = moveEvent.clientX - startX;
         const rawWidth = startWidth + delta;
 
         if (rawWidth < COLLAPSE_THRESHOLD) {
-          this[expandedKey] = false;
+          this.backlogExpanded = false;
         } else {
-          this[expandedKey] = true;
-          this[widthKey] = Math.min(MAX_PANEL_WIDTH, Math.max(MIN_PANEL_WIDTH, rawWidth));
+          this.backlogExpanded = true;
+          this.backlogWidth = Math.min(MAX_PANEL_WIDTH, Math.max(MIN_PANEL_WIDTH, rawWidth));
         }
       };
       const onUp = () => {
-        this.resizingPanel = null;
+        this.resizingBacklog = false;
         document.body.style.userSelect = previousUserSelect;
         window.removeEventListener('mousemove', onMove);
         window.removeEventListener('mouseup', onUp);

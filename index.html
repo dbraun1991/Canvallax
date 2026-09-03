@@ -31,6 +31,36 @@
         <p>Loading…</p>
       </div>
       <div class="shell" x-show="!loading">
+        <!-- Top brand bar (ADR-0017) — always visible, not gated on activeIssue:
+             this is the one piece of chrome that has to work before any Issue
+             is picked, since the burger menu is how the Issue-picker overlay
+             (below) gets reopened once an Issue is already active. -->
+        <header class="brand-bar">
+          <button
+            type="button"
+            class="burger-button"
+            @click="toggleBurgerMenu()"
+            title="Menu"
+            aria-label="Menu"
+          >
+            ☰
+          </button>
+          <span class="brand-wordmark">Canvallax</span>
+        </header>
+
+        <!-- Burger menu: a small anchored dropdown, not a dimmed modal (ADR-0017) -->
+        <div class="burger-menu-backdrop" x-show="burgerMenuOpen" @click="closeBurgerMenu()" x-cloak></div>
+        <div class="burger-menu" x-show="burgerMenuOpen" x-cloak>
+          <button type="button" class="burger-menu-item" @click="openIssuePicker()">Change Issue</button>
+          <button
+            type="button"
+            class="burger-menu-item"
+            @click="toggleTheme(); closeBurgerMenu()"
+            x-text="theme === 'dark' ? 'Light mode' : 'Dark mode'"
+          ></button>
+          <button type="button" class="burger-menu-item" @click="openSettings()">Settings</button>
+        </div>
+
         <nav class="shell-header" x-show="activeIssue">
           <template x-if="activeIssue">
             <div class="issue-header">
@@ -54,140 +84,41 @@
               </select>
             </div>
           </template>
-          <template x-for="view in ['all', 'process', 'system', 'object', 'interaction']" :key="view">
-            <button
-              type="button"
-              class="view-tab"
-              :class="{ active: activeView === view }"
-              @click="setView(view)"
-              x-text="view === 'all' ? 'All' : view[0].toUpperCase() + view.slice(1)"
-            ></button>
-          </template>
-          <div class="shell-header-actions">
-            <div class="view-tabs-actions" x-show="activeView !== 'all'">
-              <button type="button" class="copy-toggle" @click="openCopyPicker('view')">Copy</button>
-              <button type="button" class="history-toggle" @click="toggleHistory()">History</button>
-            </div>
-            <button
-              type="button"
-              class="theme-toggle"
-              @click="toggleTheme()"
-              x-text="theme === 'dark' ? 'Light mode' : 'Dark mode'"
-            ></button>
-            <!-- Dummy: no settings surface exists yet, see agents.md's Future Work. -->
-            <button type="button" class="settings-button" title="Settings (not built yet)">⚙</button>
+          <!-- ADR-0018: Editing mode's active-tab structure, replacing the old
+               plain view-switcher buttons. Hidden entirely in Presenting mode —
+               there's nothing to switch between beyond the grid and a zoomed tile. -->
+          <div class="canvas-tabs" x-show="canvasMode === 'editing'">
+            <template x-for="view in ['all', 'process', 'system', 'object', 'interaction']" :key="view">
+              <button
+                type="button"
+                class="canvas-tab"
+                :class="{ active: activeView === view }"
+                @click="setView(view)"
+                x-text="view === 'all' ? 'All' : view[0].toUpperCase() + view.slice(1)"
+              ></button>
+            </template>
+          </div>
+          <div class="view-tabs-actions" x-show="activeView !== 'all'">
+            <button type="button" class="copy-toggle" @click="openCopyPicker('view')">Copy</button>
+            <button type="button" class="history-toggle" @click="toggleHistory()">History</button>
           </div>
         </nav>
+
         <div class="shell-columns">
-          <aside class="sidebar" :class="{ collapsed: !sidebarExpanded }" :style="sidebarExpanded ? `width: ${sidebarWidth}px` : ''">
-            <details class="sidebar-collapse" x-show="sidebarExpanded" open>
-              <summary class="sidebar-summary">Issues</summary>
-              <div class="sidebar-body">
-                <input
-                  type="search"
-                  class="sidebar-search"
-                  placeholder="Search issues…"
-                  x-model="sidebarQuery"
-                />
-                <button type="button" class="new-issue-button" @click="createNewIssue()">+ New Issue</button>
-                <ul class="issue-list">
-                  <template x-for="issue in filteredIssues" :key="issue.id">
-                    <li>
-                      <button
-                        type="button"
-                        class="issue-item"
-                        :class="{ active: issue.id === activeIssueId }"
-                        :title="issue.name"
-                        @click="selectIssue(issue.id)"
-                      >
-                        <span class="issue-title" x-text="issue.name"></span>
-                        <!-- No :title here (ADR-0015): open/mapped/decided are already
-                             fully visible single words, a tooltip would add nothing. -->
-                        <span class="issue-meta">
-                          <span class="issue-state" :class="'state-' + issue.status" x-text="issue.status"></span>
-                        </span>
-                      </button>
-                    </li>
-                  </template>
-                </ul>
-              </div>
-            </details>
+          <!-- Backlog panel (ADR-0017): now the shell's only side panel, moved
+               to the left in the old Issue sidebar's place — it covers the
+               whole Issue, not one canvas, so it belongs where the eye lands
+               first. -->
+          <aside
+            class="backlog-panel"
+            x-show="activeIssue"
+            :class="{ collapsed: !backlogExpanded }"
+            :style="backlogExpanded ? `width: ${backlogWidth}px` : ''"
+          >
             <div
               class="resize-handle resize-handle-right"
-              :class="{ resizing: resizingPanel === 'sidebar' }"
-              @mousedown="startResize('sidebar', $event)"
-            ></div>
-          </aside>
-  
-          <main class="view-switcher" x-show="activeIssue">
-            <div class="view-content">
-              <template x-if="activeView === 'all'">
-                <div class="all-grid" x-effect="renderAllThumbnails()">
-                  <div class="all-cell" @click="setView('process')">
-                    <h3>Process</h3>
-                    <div class="all-cell-thumbnail" x-show="thumbnails.process" x-html="thumbnails.process"></div>
-                    <p class="placeholder" x-show="!thumbnails.process">Rendering…</p>
-                  </div>
-                  <div class="all-cell" @click="setView('system')">
-                    <h3>System/Integration</h3>
-                    <img class="all-cell-thumbnail" x-show="thumbnails.system" :src="thumbnails.system" alt="" />
-                    <p class="placeholder" x-show="!thumbnails.system">Rendering…</p>
-                  </div>
-                  <div class="all-cell" @click="setView('object')">
-                    <h3>Object</h3>
-                    <div class="all-cell-thumbnail" x-show="thumbnails.object" x-html="thumbnails.object"></div>
-                    <p class="placeholder" x-show="!thumbnails.object">Rendering…</p>
-                  </div>
-                  <div class="all-cell" @click="setView('interaction')">
-                    <h3>Interaction</h3>
-                    <img class="all-cell-thumbnail" x-show="thumbnails.interaction" :src="thumbnails.interaction" alt="" />
-                    <p class="placeholder" x-show="!thumbnails.interaction">Rendering…</p>
-                  </div>
-                </div>
-              </template>
-              <div class="process-view" x-show="activeView === 'process'" x-effect="syncProcessCanvas($el)">
-                <div class="process-canvas-container"></div>
-                <div class="process-properties-panel"></div>
-              </div>
-              <div class="canvas-container" x-show="activeView === 'system'" x-effect="syncSystemCanvas($el)"></div>
-              <div class="canvas-container" x-show="activeView === 'interaction'" x-effect="syncInteractionCanvas($el)"></div>
-              <div class="canvas-container" x-show="activeView === 'object'" x-effect="syncObjectCanvas($el)"></div>
-  
-              <div class="history-panel" x-show="historyOpen">
-                <div class="history-panel-header">
-                  <h3>History</h3>
-                  <button type="button" class="history-close" @click="toggleHistory()">×</button>
-                </div>
-                <p
-                  class="copy-provenance"
-                  x-show="activeIssue && activeIssue.views[activeView] && activeIssue.views[activeView].copiedFrom"
-                  x-text="activeIssue && activeIssue.views[activeView] && activeIssue.views[activeView].copiedFrom ? 'Copied from an earlier version of another Issue' : ''"
-                  :title="activeIssue && activeIssue.views[activeView] ? copyProvenanceLabel(activeIssue.views[activeView].copiedFrom) : ''"
-                ></p>
-                <ul class="history-list">
-                  <template x-for="entry in historyEntries" :key="entry.oid">
-                    <li class="history-entry">
-                      <p class="history-message" x-text="entry.message"></p>
-                      <p class="history-date" x-text="new Date(entry.timestamp * 1000).toLocaleString()"></p>
-                      <button type="button" class="history-restore" @click="restoreHistoryEntry(entry.oid)">
-                        Restore
-                      </button>
-                    </li>
-                  </template>
-                  <li class="history-empty" x-show="historyEntries.length === 0">No history yet.</li>
-                </ul>
-              </div>
-            </div>
-          </main>
-          <div class="no-issue-selected" x-show="!activeIssue">
-            <p>Select an Issue from the sidebar to begin.</p>
-          </div>
-  
-          <aside class="backlog-panel" x-show="activeIssue" :class="{ collapsed: !backlogExpanded }" :style="backlogExpanded ? `width: ${backlogWidth}px` : ''">
-            <div
-              class="resize-handle resize-handle-left"
-              :class="{ resizing: resizingPanel === 'backlog' }"
-              @mousedown="startResize('backlog', $event)"
+              :class="{ resizing: resizingBacklog }"
+              @mousedown="startBacklogResize($event)"
             ></div>
             <div class="backlog-body" x-show="backlogExpanded" x-cloak>
               <template x-if="activeIssue">
@@ -234,7 +165,164 @@
                 </div>
               </template>
             </div>
+            <!-- ADR-0018: Presenting/Editing mode toggle, in the Backlog panel's
+                 footer now that it's the shell's only side panel. -->
+            <div class="backlog-footer" x-show="backlogExpanded" x-cloak>
+              <span class="mode-toggle-label" x-text="canvasMode === 'editing' ? 'Editing' : 'Presenting'"></span>
+              <label class="toggle-switch" title="Switch between Editing and Presenting mode">
+                <input type="checkbox" :checked="canvasMode === 'presenting'" @change="toggleCanvasMode()" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
           </aside>
+
+          <main class="view-switcher" x-show="activeIssue">
+            <div class="view-content">
+              <template x-if="activeView === 'all'">
+                <div class="all-grid" x-effect="renderAllThumbnails()">
+                  <div
+                    class="all-cell"
+                    @click="canvasMode === 'editing' ? setView('process') : openZoom('process')"
+                  >
+                    <h3>Process</h3>
+                    <div class="all-cell-thumbnail" x-show="thumbnails.process" x-html="thumbnails.process"></div>
+                    <p class="placeholder" x-show="!thumbnails.process">Rendering…</p>
+                  </div>
+                  <div
+                    class="all-cell"
+                    @click="canvasMode === 'editing' ? setView('system') : openZoom('system')"
+                  >
+                    <h3>System/Integration</h3>
+                    <img class="all-cell-thumbnail" x-show="thumbnails.system" :src="thumbnails.system" alt="" />
+                    <p class="placeholder" x-show="!thumbnails.system">Rendering…</p>
+                  </div>
+                  <div
+                    class="all-cell"
+                    @click="canvasMode === 'editing' ? setView('object') : openZoom('object')"
+                  >
+                    <h3>Object</h3>
+                    <div class="all-cell-thumbnail" x-show="thumbnails.object" x-html="thumbnails.object"></div>
+                    <p class="placeholder" x-show="!thumbnails.object">Rendering…</p>
+                  </div>
+                  <div
+                    class="all-cell"
+                    @click="canvasMode === 'editing' ? setView('interaction') : openZoom('interaction')"
+                  >
+                    <h3>Interaction</h3>
+                    <img class="all-cell-thumbnail" x-show="thumbnails.interaction" :src="thumbnails.interaction" alt="" />
+                    <p class="placeholder" x-show="!thumbnails.interaction">Rendering…</p>
+                  </div>
+                </div>
+              </template>
+              <div class="process-view" x-show="activeView === 'process'" x-effect="syncProcessCanvas($el)">
+                <div class="process-canvas-container"></div>
+                <div class="process-properties-panel"></div>
+              </div>
+              <div class="canvas-container" x-show="activeView === 'system'" x-effect="syncSystemCanvas($el)"></div>
+              <div class="canvas-container" x-show="activeView === 'interaction'" x-effect="syncInteractionCanvas($el)"></div>
+              <div class="canvas-container" x-show="activeView === 'object'" x-effect="syncObjectCanvas($el)"></div>
+
+              <div class="history-panel" x-show="historyOpen">
+                <div class="history-panel-header">
+                  <h3>History</h3>
+                  <button type="button" class="history-close" @click="toggleHistory()">×</button>
+                </div>
+                <p
+                  class="copy-provenance"
+                  x-show="activeIssue && activeIssue.views[activeView] && activeIssue.views[activeView].copiedFrom"
+                  x-text="activeIssue && activeIssue.views[activeView] && activeIssue.views[activeView].copiedFrom ? 'Copied from an earlier version of another Issue' : ''"
+                  :title="activeIssue && activeIssue.views[activeView] ? copyProvenanceLabel(activeIssue.views[activeView].copiedFrom) : ''"
+                ></p>
+                <ul class="history-list">
+                  <template x-for="entry in historyEntries" :key="entry.oid">
+                    <li class="history-entry">
+                      <p class="history-message" x-text="entry.message"></p>
+                      <p class="history-date" x-text="new Date(entry.timestamp * 1000).toLocaleString()"></p>
+                      <button type="button" class="history-restore" @click="restoreHistoryEntry(entry.oid)">
+                        Restore
+                      </button>
+                    </li>
+                  </template>
+                  <li class="history-empty" x-show="historyEntries.length === 0">No history yet.</li>
+                </ul>
+              </div>
+            </div>
+          </main>
+        </div>
+
+        <!-- Issue-picker overlay (ADR-0017), replacing the old persistent sidebar.
+             Shown automatically whenever nothing's selected (no close button in
+             that state — same forced-selection behavior as before), or on demand
+             via the burger menu's "Change Issue" while an Issue is already active. -->
+        <div class="issue-picker-backdrop" x-show="showIssuePicker" x-cloak></div>
+        <div class="issue-picker" x-show="showIssuePicker" x-cloak>
+          <div class="issue-picker-header">
+            <h2>Choose an Issue</h2>
+            <button type="button" class="close" @click="closeIssuePicker()" x-show="activeIssue">×</button>
+          </div>
+          <div class="issue-picker-body">
+            <input
+              type="search"
+              class="sidebar-search"
+              placeholder="Search issues…"
+              x-model="issuePickerQuery"
+            />
+            <button type="button" class="new-issue-button" @click="createNewIssue()">+ New Issue</button>
+            <ul class="issue-list">
+              <template x-for="issue in filteredIssues" :key="issue.id">
+                <li>
+                  <button
+                    type="button"
+                    class="issue-item"
+                    :class="{ active: issue.id === activeIssueId }"
+                    :title="issue.name"
+                    @click="selectIssue(issue.id)"
+                  >
+                    <span class="issue-title" x-text="issue.name"></span>
+                    <span class="issue-meta">
+                      <span class="issue-state" :class="'state-' + issue.status" x-text="issue.status"></span>
+                    </span>
+                  </button>
+                </li>
+              </template>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Settings overlay (ADR-0017) — mock only, no real settings surface yet. -->
+        <div class="settings-backdrop" x-show="settingsOpen" @click="closeSettings()" x-cloak></div>
+        <div class="settings-overlay" x-show="settingsOpen" x-cloak>
+          <div class="issue-picker-header">
+            <h2>Settings</h2>
+            <button type="button" class="close" @click="closeSettings()">×</button>
+          </div>
+          <div class="settings-body">
+            <p class="settings-placeholder">Settings aren't built yet — this is a placeholder.</p>
+            <div class="settings-mock-row">
+              <span>Notifications</span>
+              <span class="settings-mock-tag">Coming soon</span>
+            </div>
+            <div class="settings-mock-row">
+              <span>Workspace</span>
+              <span class="settings-mock-tag">Coming soon</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zoom lightbox (ADR-0018) — Presenting mode's enlarged-tile view.
+             Reuses the same rendered thumbnail content as the All-grid, never
+             mounts a live editor engine. -->
+        <div class="zoom-backdrop" x-show="zoomedCanvas" @click="closeZoom()" x-cloak></div>
+        <div class="zoom-lightbox" x-show="zoomedCanvas" x-cloak>
+          <button type="button" class="close zoom-close" @click="closeZoom()">×</button>
+          <div class="zoom-content">
+            <template x-if="zoomedCanvas === 'process' || zoomedCanvas === 'object'">
+              <div class="zoom-svg" x-html="thumbnails[zoomedCanvas]"></div>
+            </template>
+            <template x-if="zoomedCanvas === 'system' || zoomedCanvas === 'interaction'">
+              <img class="zoom-svg" :src="thumbnails[zoomedCanvas]" alt="" />
+            </template>
+          </div>
         </div>
       </div>
 
