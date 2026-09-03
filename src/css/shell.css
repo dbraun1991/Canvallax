@@ -50,6 +50,14 @@
   overflow-x: hidden;
 }
 
+/* Drag-to-collapse (shell-state.js's startResize) — mirrors
+   .backlog-panel.collapsed below. Just the resize handle stays reachable on
+   this thin rail; drag it back out past the threshold to re-expand. */
+.sidebar.collapsed {
+  width: 32px !important;
+  flex: 0 0 32px;
+}
+
 /* Desktop: the collapse toggle is hidden and the <details> stays open (via
    the `open` attribute in markup) — only the mobile media query below turns
    it into a real, user-operable disclosure widget. */
@@ -534,17 +542,10 @@ img.all-cell-thumbnail {
   gap: 6px;
 }
 
-.backlog-toggle {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-size: 18px;
-  cursor: pointer;
-  line-height: 1;
-}
-
 .backlog-body {
-  padding: 68px 16px 16px;
+  /* Clears .backlog-controls, absolutely positioned at top:8px — just the
+     theme toggle now that .backlog-toggle is gone, so this shrank from 68px. */
+  padding: 44px 16px 16px;
 }
 
 .backlog-field {
@@ -671,19 +672,13 @@ img.all-cell-thumbnail {
 .resize-handle::before {
   content: '';
   width: 3px;
-  height: 61.8%; /* golden ratio (1/phi) of the panel's own height, vertically
-                    centered via .resize-handle's flex centering above */
+  height: 38.2%; /* 1/phi^2 of the panel's own height, vertically centered
+                    via .resize-handle's flex centering above — the Backlog
+                    panel's original golden-ratio try, now shared by the
+                    Issue sidebar's handle too */
   border-radius: 2px;
   background: var(--border);
   transition: background-color 0.15s, width 0.15s;
-}
-
-/* Backlog panel's handle, tried in the complementary golden-ratio segment
-   instead (1/phi^2, i.e. 100% - the sidebar's 61.8%) — a deliberate visual
-   asymmetry between the two side panels, not a mistake if it looks
-   noticeably shorter than the sidebar's. */
-.resize-handle-left::before {
-  height: 38.2%;
 }
 
 /* Coloring the grip itself, not a translucent fill on the whole 6px strip

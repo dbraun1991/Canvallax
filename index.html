@@ -31,8 +31,8 @@
         <p>Loading…</p>
       </div>
       <div class="shell" x-show="!loading">
-        <aside class="sidebar" :style="`width: ${sidebarWidth}px`">
-          <details class="sidebar-collapse" open>
+        <aside class="sidebar" :class="{ collapsed: !sidebarExpanded }" :style="sidebarExpanded ? `width: ${sidebarWidth}px` : ''">
+          <details class="sidebar-collapse" x-show="sidebarExpanded" open>
             <summary class="sidebar-summary">Issues</summary>
             <div class="sidebar-body">
               <input
@@ -171,7 +171,6 @@
           <div
             class="resize-handle resize-handle-left"
             :class="{ resizing: resizingPanel === 'backlog' }"
-            x-show="backlogExpanded"
             @mousedown="startResize('backlog', $event)"
           ></div>
           <div class="backlog-controls">
@@ -182,7 +181,6 @@
               @click="toggleTheme()"
               x-text="theme === 'dark' ? 'Light mode' : 'Dark mode'"
             ></button>
-            <button type="button" class="backlog-toggle" @click="toggleBacklog()" x-text="backlogExpanded ? '›' : '‹'"></button>
           </div>
           <div class="backlog-body" x-show="backlogExpanded" x-cloak>
             <template x-if="activeIssue">

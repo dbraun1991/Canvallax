@@ -39,8 +39,11 @@ const VIEW_INSTANCE_KEYS = {
 //     regardless of what was left over from a previously active Issue.
 //   - setView: changes only the active view; the Backlog panel's expanded
 //     flag is untouched, so it doesn't flicker when switching canvases.
-//   - toggleBacklog: flips the expanded flag; persists across further
-//     setView calls until the next selectIssue call resets it again.
+//   - startResize: dragging a handle past a threshold collapses/expands its
+//     panel live (see its own comment below) — backlogExpanded still exists
+//     and still resets to true on selectIssue per ADR-0008, only how the
+//     user *sets* it changed (no more explicit toggle button).
+//     sidebarExpanded is the same idea, newly added for the Issue sidebar.
 export function shellState() {
   return {
     issues: [],
@@ -48,6 +51,7 @@ export function shellState() {
     activeIssueId: null,
     activeView: 'all',
     backlogExpanded: true,
+    sidebarExpanded: true,
     sidebarQuery: '',
     sidebarWidth: 260,
     backlogWidth: 320,
@@ -116,14 +120,6 @@ export function shellState() {
       this.activeView = view;
     },
 
-    // Slated for replacement: direction given is that an explicit toggle
-    // button is no longer the intended mechanism (likely drag-the-handle-
-    // to-zero-width instead, per agents.md's Future Work) — kept as the
-    // only working minimize path until that replacement actually lands.
-    toggleBacklog() {
-      this.backlogExpanded = !this.backlogExpanded;
-    },
-
     // Bound to the Issue name/status controls (view-switcher tab bar,
     // ADR-0007) and to each Backlog entry's name/description fields.
     // activeIssue is a live reference into the reactive `issues` array, so
@@ -156,29 +152,46 @@ export function shellState() {
       }
     },
 
-    // Drag-handle resize (ADR-0008): 'sidebar' grows to the right,
-    // 'backlog' grows to the left, both clamped to [MIN_PANEL_WIDTH,
-    // MAX_PANEL_WIDTH]. resizingPanel tracks which handle is actively being
-    // dragged so its affordance (index.html's `.resizing` class) stays lit
-    // for the whole drag — the pointer leaves the 6px-wide handle strip
-    // almost immediately once dragging starts, so a plain CSS :hover state
-    // alone would flicker off mid-drag.
+    // Drag-handle resize (ADR-0008), both panels: 'sidebar' grows to the
+    // right, 'backlog' grows to the left, clamped to [MIN_PANEL_WIDTH,
+    // MAX_PANEL_WIDTH] while expanded. Dragging past COLLAPSE_THRESHOLD
+    // collapses the panel to the thin COLLAPSED_WIDTH rail (`.collapsed` in
+    // shell.css) instead of clamping at MIN_PANEL_WIDTH — replaces the old
+    // explicit .backlog-toggle button. The resize handle stays visible on
+    // that rail (index.html no longer hides it when collapsed), so dragging
+    // it back out past the same threshold re-expands the panel live, mid-
+    // drag — there's no separate "reopen" control. resizingPanel tracks
+    // which handle is actively being dragged so its affordance (index.html's
+    // `.resizing` class) stays lit for the whole drag — the pointer leaves
+    // the 6px-wide handle strip almost immediately once dragging starts, so
+    // a plain CSS :hover state alone would flicker off mid-drag.
     startResize(panel, event) {
       event.preventDefault();
       const startX = event.clientX;
-      const startWidth = panel === 'sidebar' ? this.sidebarWidth : this.backlogWidth;
+      const isSidebar = panel === 'sidebar';
+      const expandedKey = isSidebar ? 'sidebarExpanded' : 'backlogExpanded';
+      const widthKey = isSidebar ? 'sidebarWidth' : 'backlogWidth';
       const MIN_PANEL_WIDTH = 200;
       const MAX_PANEL_WIDTH = 480;
+      const COLLAPSE_THRESHOLD = 100;
+      const COLLAPSED_WIDTH = 32; // matches .sidebar.collapsed / .backlog-panel.collapsed in shell.css
+
+      const startWidth = this[expandedKey] ? this[widthKey] : COLLAPSED_WIDTH;
 
       this.resizingPanel = panel;
       const previousUserSelect = document.body.style.userSelect;
       document.body.style.userSelect = 'none'; // dragging across text would otherwise select it
 
       const onMove = (moveEvent) => {
-        const delta = panel === 'sidebar' ? moveEvent.clientX - startX : startX - moveEvent.clientX;
-        const next = Math.min(MAX_PANEL_WIDTH, Math.max(MIN_PANEL_WIDTH, startWidth + delta));
-        if (panel === 'sidebar') this.sidebarWidth = next;
-        else this.backlogWidth = next;
+        const delta = isSidebar ? moveEvent.clientX - startX : startX - moveEvent.clientX;
+        const rawWidth = startWidth + delta;
+
+        if (rawWidth < COLLAPSE_THRESHOLD) {
+          this[expandedKey] = false;
+        } else {
+          this[expandedKey] = true;
+          this[widthKey] = Math.min(MAX_PANEL_WIDTH, Math.max(MIN_PANEL_WIDTH, rawWidth));
+        }
       };
       const onUp = () => {
         this.resizingPanel = null;

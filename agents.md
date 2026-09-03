@@ -73,7 +73,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 |------|------|
 | `README.md` | Product framing — naming, the canvases, what each is/isn't for |
 | `docs/adr/README.md` | ADR index — numbered, append-only decision log |
-| `docs/adr/0001-*.md` – `0015-*.md` | Individual decisions — see the index for titles |
+| `docs/adr/0001-*.md` – `0016-*.md` | Individual decisions — see the index for titles |
 
 ## Architecture Decisions
 
@@ -94,6 +94,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0013](docs/adr/0013-theming-light-and-dark-mode.md) | Shell light/dark toggle; System/Interaction/Object follow it, Process stays light |
 | [0014](docs/adr/0014-server-backed-persistence-deferred.md) | Server-backed persistence, once built, is Express (Node) — deferred |
 | [0015](docs/adr/0015-computed-tooltips-deferred.md) | Tooltips computed live from state, never stored — deferred |
+| [0016](docs/adr/0016-panel-collapse-via-drag-threshold.md) | Both side panels collapse by dragging their resize handle past a threshold; no explicit toggle button |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is **not yet finalized** (`docs/adr/README.md`) — code and docs currently use the README naming. This is exactly why views and Backlog entries carry their own UUIDs (ADR-0007/0010): identity must survive a naming decision that hasn't happened yet.
 
@@ -134,7 +135,7 @@ Items with an ADR are designed but not built (ADR-0014, ADR-0015). Everything el
 - **Computed tooltips** (ADR-0015) — `:title` bindings on truncated/abbreviated UI text, not built yet.
 - **Canvas naming finalization.** README/`docs/adr/README.md` flag Process/System/Object/Interaction/Backlog naming as provisional. Per-view UUIDs mean this can be resolved later without a data migration — but the rename itself (UI copy, `views.<name>` key vs. `id`, any docs referencing current names) is still unbuilt work when it happens.
 - **Process Canvas's BPMN subset.** ADR-0004 calls for a constrained BPMN profile rather than bpmn-js's full default palette — not yet built; the canvas currently exposes bpmn-js's whole vocabulary.
-- **Drag-to-zero-width should minimize the Backlog panel, replacing `.backlog-toggle`.** Direction given: the explicit minimize button (`.backlog-toggle`, `toggleBacklog()`) is no longer the intended mechanism — dragging its resize handle to zero-width should minimize it instead. Not yet built; the toggle button stays as the only working minimize path until the replacement actually lands, then gets deleted. The Issue sidebar's resize handle got its own visible grip affordance already (`.resize-handle::before` in `shell.css`) — resolving whether the sidebar's mobile `<details>` collapse also unifies onto the same drag-to-zero behavior, or stays separate, is still open.
+- **Unify the sidebar's mobile `<details>` collapse with the new drag-to-zero-width collapse**, or leave them as two separate mechanisms (desktop: drag the handle; mobile: tap the `<details>` summary). Now that both the Issue sidebar and Backlog panel collapse via their resize handle crossing a threshold (`startResize` in `shell-state.js`, `sidebarExpanded`/`backlogExpanded`) — the explicit `.backlog-toggle` button is gone, replaced by this — it's worth deciding whether the sidebar's separate mobile collapse should fold into the same mechanism, or whether keeping two purpose-built ones (drag for desktop pointer input, `<details>` for mobile touch) is fine as-is. Not yet decided either way.
 - **File-manager-style Issue sidebar.** The current sidebar is a flat, unfiltered list — worth revisiting (search field, tabs, folder tree, per `bpmn-process-creator`'s own sidebar) once there are enough Issues that a flat list stops scaling.
 - **Enrich `seed-issues.js`'s example content.** The three seeded Issues carry empty canvas content — fine for exercising the mechanics, thin for judging look-and-feel now that thumbnails and every editor render real content.
 - **Concurrent-edit / merge story** for one Issue's single JSON document — relevant once more than one person can edit the same Issue; out of scope while client-side/single-user.
