@@ -671,7 +671,8 @@ img.all-cell-thumbnail {
 .resize-handle::before {
   content: '';
   width: 3px;
-  height: 40px;
+  height: 61.8%; /* golden ratio (1/phi) of the panel's own height, vertically
+                    centered via .resize-handle's flex centering above */
   border-radius: 2px;
   background: var(--border);
   transition: background-color 0.15s, width 0.15s;
