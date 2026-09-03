@@ -162,6 +162,14 @@ Items with an ADR are designed but not built (ADR-0014). Everything else below n
 - **Concurrent-edit / merge story** for one Issue's single JSON document — relevant once more than one person can edit the same Issue; out of scope while client-side/single-user.
 - **Cross-canvas element-level linking**, reconsidered. ADR-0009 explicitly decided against building this now. If element-to-element navigation (e.g. one BPMN task ↔ one Object-canvas entity) turns out to matter in practice, it's new scope requiring its own ADR — not a partially-built feature waiting to be finished.
 - **Real-time multiplayer editing** across all three tool-backed canvases — explicitly lower priority than format compatibility for the initial feasibility prototype; per-canvas feasibility notes live in ADR-0004/0005/0006.
+- **Default theme should be light, not OS-preference-based.** Today's default (ADR-0013, when nothing's stored yet) resolves via `prefers-color-scheme`, falling back to dark. Direction: default to light regardless of OS preference.
+- **Light/dark icons instead of a text label.** The burger menu's theme item is still plain text ("Light mode"/"Dark mode") — swap in real icons, silently drawing on `OrgVisualizr`'s icon set/pattern rather than the current text-only toggle.
+- **Reconsider the Interaction canvas's underlying tool.** It currently shares draw.io with System/Integration (ADR-0005) — worth a real brainstorm on whether draw.io, Mermaid, bpmn.io, or even a per-Issue user-selectable switch (exactly one tool active at a time) is the better fit. Not decided, no direction given yet.
+- **Is the Backlog footer the right place for the Presenting/Editing toggle?** Open question, not re-examined since ADR-0018 put it there.
+- **Stray vertical divider next to "All."** `.issue-header`'s trailing border-right divider (meant to separate it from the tab switcher) still renders in Presenting mode even though the tab switcher itself is hidden there — worth checking whether it should be conditional on Editing mode too.
+- **Move the theme toggle back to a visible top-left button?** Already moved once (ADR-0017 put it in the burger menu) — if revisited, decide it once rather than flip-flopping between the two locations again.
+- **Process canvas should auto-fit and center on entry from the All grid**, not open at its default zoom/position — bpmn-js has a fit-to-viewport capability for this; inspiration from elsewhere in the workspace is fine to draw on.
+- **Object canvas (Mermaid) should also fill/fit its available space on entry**, not just stay centered at its own intrinsic size the way it does today — same "auto-fit" idea as Process, for the other engine.
 
 ## What It Does NOT Do (yet)
 
