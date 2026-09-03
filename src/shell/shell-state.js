@@ -51,6 +51,7 @@ export function shellState() {
     sidebarQuery: '',
     sidebarWidth: 260,
     backlogWidth: 320,
+    resizingPanel: null, // null | 'sidebar' | 'backlog' — drives the handle's active-drag affordance
     _processInstance: null,
     _systemInstance: null,
     _interactionInstance: null,
@@ -153,13 +154,21 @@ export function shellState() {
 
     // Drag-handle resize (ADR-0008): 'sidebar' grows to the right,
     // 'backlog' grows to the left, both clamped to [MIN_PANEL_WIDTH,
-    // MAX_PANEL_WIDTH].
+    // MAX_PANEL_WIDTH]. resizingPanel tracks which handle is actively being
+    // dragged so its affordance (index.html's `.resizing` class) stays lit
+    // for the whole drag — the pointer leaves the 6px-wide handle strip
+    // almost immediately once dragging starts, so a plain CSS :hover state
+    // alone would flicker off mid-drag.
     startResize(panel, event) {
       event.preventDefault();
       const startX = event.clientX;
       const startWidth = panel === 'sidebar' ? this.sidebarWidth : this.backlogWidth;
       const MIN_PANEL_WIDTH = 200;
       const MAX_PANEL_WIDTH = 480;
+
+      this.resizingPanel = panel;
+      const previousUserSelect = document.body.style.userSelect;
+      document.body.style.userSelect = 'none'; // dragging across text would otherwise select it
 
       const onMove = (moveEvent) => {
         const delta = panel === 'sidebar' ? moveEvent.clientX - startX : startX - moveEvent.clientX;
@@ -168,6 +177,8 @@ export function shellState() {
         else this.backlogWidth = next;
       };
       const onUp = () => {
+        this.resizingPanel = null;
+        document.body.style.userSelect = previousUserSelect;
         window.removeEventListener('mousemove', onMove);
         window.removeEventListener('mouseup', onUp);
       };

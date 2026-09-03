@@ -61,7 +61,11 @@
               </ul>
             </div>
           </details>
-          <div class="resize-handle resize-handle-right" @mousedown="startResize('sidebar', $event)"></div>
+          <div
+            class="resize-handle resize-handle-right"
+            :class="{ resizing: resizingPanel === 'sidebar' }"
+            @mousedown="startResize('sidebar', $event)"
+          ></div>
         </aside>
 
         <main class="view-switcher" x-show="activeIssue">
@@ -164,7 +168,12 @@
         </div>
 
         <aside class="backlog-panel" x-show="activeIssue" :class="{ collapsed: !backlogExpanded }" :style="backlogExpanded ? `width: ${backlogWidth}px` : ''">
-          <div class="resize-handle resize-handle-left" x-show="backlogExpanded" @mousedown="startResize('backlog', $event)"></div>
+          <div
+            class="resize-handle resize-handle-left"
+            :class="{ resizing: resizingPanel === 'backlog' }"
+            x-show="backlogExpanded"
+            @mousedown="startResize('backlog', $event)"
+          ></div>
           <div class="backlog-controls">
             <button
               type="button"

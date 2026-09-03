@@ -651,17 +651,40 @@ img.all-cell-thumbnail {
 
 /* ─── Resize handles ─────────────────────────────── */
 
+/* A resting-state grip mark, not just a hover reaction — without it there's
+   no visual cue the handle exists at all until you happen to hover the
+   exact 6px-wide strip. `.resizing` (bound in index.html to shell-state.js's
+   resizingPanel) keeps the same highlight lit for the whole drag, since the
+   pointer leaves this narrow strip almost immediately once dragging starts
+   and a plain :hover would otherwise flicker off mid-drag. */
 .resize-handle {
   position: absolute;
   top: 0;
   bottom: 0;
   width: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: ew-resize;
 }
 
-.resize-handle:hover {
+.resize-handle::before {
+  content: '';
+  width: 3px;
+  height: 40px;
+  border-radius: 2px;
+  background: var(--border);
+  transition: background-color 0.15s, width 0.15s;
+}
+
+/* Coloring the grip itself, not a translucent fill on the whole 6px strip
+   (opacity on .resize-handle would dim ::before too, since a pseudo-element
+   renders inside its host's opacity — tried that first, the grip just went
+   fainter instead of standing out). */
+.resize-handle:hover::before,
+.resize-handle.resizing::before {
+  width: 4px;
   background: var(--accent);
-  opacity: 0.3;
 }
 
 .resize-handle-right {
