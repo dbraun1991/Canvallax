@@ -1,6 +1,6 @@
 # ADR-0008: Issue-centric shell — sidebar, All + 4-view switcher, persistent Backlog panel
 
-- Status: Accepted
+- Status: Accepted — superseded in full by [ADR-0017](0017-shell-navigation-restructure.md): the persistent Issue sidebar is replaced by a burger-menu-triggered overlay, and the Backlog panel moves to the left in its place. Read this ADR as historical record of the shell's first structure, not its current one.
 - Backlog minimize mechanism superseded by: [ADR-0016](0016-panel-collapse-via-drag-threshold.md) — drag-past-threshold on the resize handle replaces the explicit toggle button described in point 3 below; the resizable-panel mechanism and the expand/reset state rules are otherwise unchanged.
 - Date: 2026-09-03
 - Relates to: [ADR-0003](0003-canvas-architecture.md), [ADR-0004](0004-process-canvas-bpmn-js.md), [ADR-0007](0007-issue-and-backlog-data-model.md), [ADR-0009](0009-no-cross-canvas-linking.md), [ADR-0012](0012-all-view-thumbnails.md)

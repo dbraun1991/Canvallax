@@ -13,7 +13,7 @@ This tree was rebuilt from scratch on 2026-09-03, consolidating what had been tw
 | [0005](0005-system-and-interaction-canvases-drawio.md) | System/Integration and Interaction Canvases: draw.io | Accepted |
 | [0006](0006-object-canvas-mermaid.md) | Object Canvas: Mermaid | Accepted |
 | [0007](0007-issue-and-backlog-data-model.md) | Issue and Backlog data model | Accepted |
-| [0008](0008-issue-centric-shell.md) | Issue-centric shell: sidebar, All + 4-view switcher, persistent Backlog panel | Accepted — Backlog minimize mechanism superseded by 0016 |
+| [0008](0008-issue-centric-shell.md) | Issue-centric shell: sidebar, All + 4-view switcher, persistent Backlog panel | Superseded in full by 0017 |
 | [0009](0009-no-cross-canvas-linking.md) | No cross-canvas element-link registry | Accepted |
 | [0010](0010-persistence-and-versioning.md) | Persistence: one JSON document per Issue, client-side git-backed versioning | Accepted |
 | [0011](0011-cross-issue-copy.md) | Cross-issue copy: views overwrite, Backlog entries append, never a whole Issue | Accepted |
@@ -22,5 +22,7 @@ This tree was rebuilt from scratch on 2026-09-03, consolidating what had been tw
 | [0014](0014-server-backed-persistence-deferred.md) | Server-backed persistence: Express (deferred, not yet implemented) | Accepted — deferred |
 | [0015](0015-computed-tooltips-deferred.md) | Computed tooltips | Accepted |
 | [0016](0016-panel-collapse-via-drag-threshold.md) | Panel collapse via drag-past-threshold on the resize handle, not an explicit toggle button | Accepted |
+| [0017](0017-shell-navigation-restructure.md) | Shell navigation restructure: burger-menu Issue picker, single left Backlog panel, top brand bar | Accepted |
+| [0018](0018-presenting-and-editing-canvas-modes.md) | Presenting vs. Editing canvas modes | Accepted |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is not yet finalized — these ADRs use the current README naming and should be updated if it changes. This is why every view and Backlog entry carries its own UUID independent of that naming (ADR-0007) — identity has to survive a naming decision that hasn't happened yet.
