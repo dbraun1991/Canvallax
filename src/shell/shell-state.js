@@ -103,6 +103,18 @@ export function shellState() {
       return source ? source.backlogEntries : [];
     },
 
+    // ADR-0015: computed live from copiedFrom + the current `issues` array,
+    // never stored — a renamed source Issue is reflected immediately rather
+    // than showing a name frozen at copy time. Bound as a :title tooltip on
+    // both a view's and a Backlog entry's copy-provenance text, which stays
+    // a short fixed label; this is what answers "from which Issue, when".
+    copyProvenanceLabel(copiedFrom) {
+      if (!copiedFrom) return '';
+      const source = this.issues.find((issue) => issue.id === copiedFrom.issueId);
+      const sourceName = source ? source.name : 'a deleted Issue';
+      return `Copied from "${sourceName}" on ${new Date(copiedFrom.at).toLocaleString()}`;
+    },
+
     selectIssue(id) {
       this.activeIssueId = id;
       this.activeView = 'all';

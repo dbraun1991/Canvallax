@@ -20,7 +20,7 @@ This tree was rebuilt from scratch on 2026-09-03, consolidating what had been tw
 | [0012](0012-all-view-thumbnails.md) | All-view renders real per-canvas thumbnails | Accepted |
 | [0013](0013-theming-light-and-dark-mode.md) | Theming: shell light/dark toggle; canvases follow it except Process | Accepted |
 | [0014](0014-server-backed-persistence-deferred.md) | Server-backed persistence: Express (deferred, not yet implemented) | Accepted — deferred |
-| [0015](0015-computed-tooltips-deferred.md) | Computed tooltips (deferred, not yet implemented) | Accepted — deferred |
+| [0015](0015-computed-tooltips-deferred.md) | Computed tooltips | Accepted |
 | [0016](0016-panel-collapse-via-drag-threshold.md) | Panel collapse via drag-past-threshold on the resize handle, not an explicit toggle button | Accepted |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is not yet finalized — these ADRs use the current README naming and should be updated if it changes. This is why every view and Backlog entry carries its own UUID independent of that naming (ADR-0007) — identity has to survive a naming decision that hasn't happened yet.

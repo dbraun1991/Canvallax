@@ -1,7 +1,8 @@
-# ADR-0015: Computed tooltips (deferred)
+# ADR-0015: Computed tooltips
 
-- Status: Accepted — deferred, not yet implemented
+- Status: Accepted
 - Date: 2026-09-03
+- Implemented: 2026-09-03 (`copyProvenanceLabel()` in `shell-state.js`, `:title` bindings in `index.html`) — filename keeps its original "-deferred" suffix for link stability; the decision itself is unchanged, only its build status.
 - Relates to: [ADR-0007](0007-issue-and-backlog-data-model.md), [ADR-0011](0011-cross-issue-copy.md)
 
 ## Context

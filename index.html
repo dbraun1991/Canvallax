@@ -40,6 +40,7 @@
                 x-model="activeIssue.name"
                 @input="saveActiveIssue()"
                 placeholder="Issue name"
+                :title="activeIssue.name"
               />
               <select
                 class="issue-status-field issue-state"
@@ -96,9 +97,12 @@
                         type="button"
                         class="issue-item"
                         :class="{ active: issue.id === activeIssueId }"
+                        :title="issue.name"
                         @click="selectIssue(issue.id)"
                       >
                         <span class="issue-title" x-text="issue.name"></span>
+                        <!-- No :title here (ADR-0015): open/mapped/decided are already
+                             fully visible single words, a tooltip would add nothing. -->
                         <span class="issue-meta">
                           <span class="issue-state" :class="'state-' + issue.status" x-text="issue.status"></span>
                         </span>
@@ -158,6 +162,7 @@
                   class="copy-provenance"
                   x-show="activeIssue && activeIssue.views[activeView] && activeIssue.views[activeView].copiedFrom"
                   x-text="activeIssue && activeIssue.views[activeView] && activeIssue.views[activeView].copiedFrom ? 'Copied from an earlier version of another Issue' : ''"
+                  :title="activeIssue && activeIssue.views[activeView] ? copyProvenanceLabel(activeIssue.views[activeView].copiedFrom) : ''"
                 ></p>
                 <ul class="history-list">
                   <template x-for="entry in historyEntries" :key="entry.oid">
@@ -210,6 +215,7 @@
                             class="backlog-field backlog-entry-name-field"
                             x-model="entry.name"
                             @input="saveActiveIssue()"
+                            :title="entry.name"
                           />
                           <button type="button" class="backlog-entry-delete" @click="deleteEntry(entry.id)">×</button>
                         </div>
@@ -218,8 +224,9 @@
                           x-model="entry.description"
                           @input="saveActiveIssue()"
                           placeholder="Description…"
+                          :title="entry.description"
                         ></textarea>
-                        <p class="copy-provenance" x-show="entry.copiedFrom">Copied from another Issue</p>
+                        <p class="copy-provenance" x-show="entry.copiedFrom" :title="copyProvenanceLabel(entry.copiedFrom)">Copied from another Issue</p>
                       </li>
                     </template>
                     <li class="backlog-empty" x-show="activeIssue.backlogEntries.length === 0">No entries yet.</li>

@@ -4,7 +4,7 @@
 
 Canvallax is a webapp for remote teams that need business and technical stakeholders to understand the same system the same way. An Issue holds a small set of shared, deliberately incomplete visual **canvases** — Process, System/Integration, Object, Interaction — plus a Backlog list, bundled together as one unit. See `README.md` for the full product framing.
 
-**Current status: working end to end.** The Vite pipeline, the Issue-centric shell (sidebar, All + 4-view switcher, persistent Backlog panel), all four canvas engines, real git-backed persistence (client-side, `isomorphic-git`/IndexedDB), per-view history browsing and restore, cross-issue copy (views by overwrite, Backlog entries by append), All-view thumbnails, and the light/dark theme toggle are all built and wired up. Three example Issues seed automatically on a true first run (`src/persistence/seed-issues.js`) alongside anything created since.
+**Current status: working end to end.** The Vite pipeline, the Issue-centric shell (sidebar, All + 4-view switcher, persistent Backlog panel), all four canvas engines, real git-backed persistence (client-side, `isomorphic-git`/IndexedDB), per-view history browsing and restore, cross-issue copy (views by overwrite, Backlog entries by append), All-view thumbnails, the light/dark theme toggle, and computed tooltips are all built and wired up. Three example Issues seed automatically on a true first run (`src/persistence/seed-issues.js`) alongside anything created since.
 
 ## Development
 
@@ -100,7 +100,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0012](docs/adr/0012-all-view-thumbnails.md) | All-view tiles render real SVG thumbnails per engine, content-hash cached |
 | [0013](docs/adr/0013-theming-light-and-dark-mode.md) | Shell light/dark toggle; System/Interaction/Object follow it, Process stays light |
 | [0014](docs/adr/0014-server-backed-persistence-deferred.md) | Server-backed persistence, once built, is Express (Node) — deferred |
-| [0015](docs/adr/0015-computed-tooltips-deferred.md) | Tooltips computed live from state, never stored — deferred |
+| [0015](docs/adr/0015-computed-tooltips-deferred.md) | Tooltips computed live from state, never stored |
 | [0016](docs/adr/0016-panel-collapse-via-drag-threshold.md) | Both side panels collapse by dragging their resize handle past a threshold; no explicit toggle button |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is **not yet finalized** (`docs/adr/README.md`) — code and docs currently use the README naming. This is exactly why views and Backlog entries carry their own UUIDs (ADR-0007/0010): identity must survive a naming decision that hasn't happened yet.
@@ -136,10 +136,9 @@ Conventions carried forward, consistent with every sibling project in this works
 
 ## Features & Future Work
 
-Items with an ADR are designed but not built (ADR-0014, ADR-0015). Everything else below needs direction clarified before implementing rather than guessing at exact behavior.
+Items with an ADR are designed but not built (ADR-0014). Everything else below needs direction clarified before implementing rather than guessing at exact behavior.
 
 - **Server-backed git layer** (ADR-0010/0014) — client-side git was the deliberate starting point; a real Express/Node server is the expected next step once multi-device access or real-time collaboration are actually needed.
-- **Computed tooltips** (ADR-0015) — `:title` bindings on truncated/abbreviated UI text, not built yet.
 - **Settings button is a dummy.** `.settings-button` (⚙, far right of `.shell-header`) has no click handler and no settings surface behind it yet — placeholder only, per direction that it belongs in the same app-wide control cluster as the theme toggle. Scope of an actual settings overlay (what goes in it) is still undefined.
 - **Canvas naming finalization.** README/`docs/adr/README.md` flag Process/System/Object/Interaction/Backlog naming as provisional. Per-view UUIDs mean this can be resolved later without a data migration — but the rename itself (UI copy, `views.<name>` key vs. `id`, any docs referencing current names) is still unbuilt work when it happens.
 - **Process Canvas's BPMN subset.** ADR-0004 calls for a constrained BPMN profile rather than bpmn-js's full default palette — not yet built; the canvas currently exposes bpmn-js's whole vocabulary.
