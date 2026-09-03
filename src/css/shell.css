@@ -36,10 +36,10 @@
 }
 
 /* Row of the three panels (sidebar, main, Backlog) below the full-width
-   .view-tabs bar — .shell used to lay these out directly; now it stacks
-   .view-tabs above this row instead. min-height: 0 lets .view-content's own
-   overflow: auto (below) actually kick in, rather than this row growing to
-   fit its tallest child the way a plain flex child would by default. */
+   .shell-header bar — .shell used to lay these out directly; now it stacks
+   .shell-header above this row instead. min-height: 0 lets .view-content's
+   own overflow: auto (below) actually kick in, rather than this row growing
+   to fit its tallest child the way a plain flex child would by default. */
 .shell-columns {
   display: flex;
   flex: 1 1 auto;
@@ -186,7 +186,7 @@
   color: var(--text-muted);
 }
 
-.view-tabs {
+.shell-header {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -251,8 +251,19 @@
   padding: 16px;
 }
 
-.view-tabs-actions {
+/* Holds .view-tabs-actions (conditionally shown) plus the theme toggle and
+   settings button (always shown) — margin-left: auto lives here, not on
+   .view-tabs-actions, so the whole right-hand cluster stays pinned to the
+   far edge even when .view-tabs-actions itself is hidden (x-show, on the
+   All view) and would otherwise contribute no layout at all. */
+.shell-header-actions {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.view-tabs-actions {
   display: flex;
   gap: 8px;
 }
@@ -266,6 +277,22 @@
   padding: 6px 12px;
   font-size: 13px;
   cursor: pointer;
+}
+
+.settings-button {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.settings-button:hover {
+  color: var(--text);
+  border-color: var(--accent);
 }
 
 .history-toggle:hover,
@@ -544,21 +571,8 @@ img.all-cell-thumbnail {
   flex: 0 0 32px;
 }
 
-.backlog-controls {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-}
-
 .backlog-body {
-  /* Clears .backlog-controls, absolutely positioned at top:8px — just the
-     theme toggle now that .backlog-toggle is gone, so this shrank from 68px. */
-  padding: 44px 16px 16px;
+  padding: 16px;
 }
 
 .backlog-field {

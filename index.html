@@ -31,7 +31,7 @@
         <p>Loading…</p>
       </div>
       <div class="shell" x-show="!loading">
-        <nav class="view-tabs" x-show="activeIssue">
+        <nav class="shell-header" x-show="activeIssue">
           <template x-if="activeIssue">
             <div class="issue-header">
               <input
@@ -62,9 +62,19 @@
               x-text="view === 'all' ? 'All' : view[0].toUpperCase() + view.slice(1)"
             ></button>
           </template>
-          <div class="view-tabs-actions" x-show="activeView !== 'all'">
-            <button type="button" class="copy-toggle" @click="openCopyPicker('view')">Copy</button>
-            <button type="button" class="history-toggle" @click="toggleHistory()">History</button>
+          <div class="shell-header-actions">
+            <div class="view-tabs-actions" x-show="activeView !== 'all'">
+              <button type="button" class="copy-toggle" @click="openCopyPicker('view')">Copy</button>
+              <button type="button" class="history-toggle" @click="toggleHistory()">History</button>
+            </div>
+            <button
+              type="button"
+              class="theme-toggle"
+              @click="toggleTheme()"
+              x-text="theme === 'dark' ? 'Light mode' : 'Dark mode'"
+            ></button>
+            <!-- Dummy: no settings surface exists yet, see agents.md's Future Work. -->
+            <button type="button" class="settings-button" title="Settings (not built yet)">⚙</button>
           </div>
         </nav>
         <div class="shell-columns">
@@ -174,15 +184,6 @@
               :class="{ resizing: resizingPanel === 'backlog' }"
               @mousedown="startResize('backlog', $event)"
             ></div>
-            <div class="backlog-controls">
-              <button
-                type="button"
-                class="theme-toggle"
-                x-show="backlogExpanded"
-                @click="toggleTheme()"
-                x-text="theme === 'dark' ? 'Light mode' : 'Dark mode'"
-              ></button>
-            </div>
             <div class="backlog-body" x-show="backlogExpanded" x-cloak>
               <template x-if="activeIssue">
                 <div class="backlog-entries">

@@ -24,9 +24,9 @@ Each canvas is built on the best-fit existing open tool for its notation rather 
 ## Architecture
 
 ```
-+---------------------------------------------------------------------+
-| Issue name/status | [All] [Process] [System] [Object] [Interaction] |  <- .view-tabs, full width
-+-----------+---------------------------------------------+-----------+
++-----------------------------------------------------------------------------------+
+| Issue name/status | [All][Process][System][Object][Interaction]   [Theme] [Gear]  |  <- .shell-header, full width
++-----------+---------------------------------------------------------+-----------+
 | Issue     |  "All": read-only grid of real per-engine    | Backlog   |
 | sidebar   |    thumbnails, click-through to a single view| panel     |
 | (search,  |  single view: that canvas's native editor,   | (always   |
@@ -39,9 +39,12 @@ Each canvas is built on the best-fit existing open tool for its notation rather 
 +-----------+---------------------------------------------+-----------+
 Activating an Issue always resets view -> All and Backlog -> expanded;
 switching views within an already-open Issue leaves both exactly as left.
-(ADR-0008; .view-tabs spans the full shell width above both side panels,
-not just the center column — .shell-columns holds the three-panel row
-below it, see shell.css)
+(ADR-0008; .shell-header spans the full shell width above both side
+panels, not just the center column — .shell-columns holds the
+three-panel row below it, see shell.css). The theme toggle and a
+dummy settings button live at the header's far right (.shell-header-
+actions), always visible whenever an Issue is active — independent of
+the Backlog panel's own expand/collapse state, unlike before.
 
 Canvas engines
   Process              — bpmn-js, .bpmn XML                       (ADR-0004)
@@ -137,6 +140,7 @@ Items with an ADR are designed but not built (ADR-0014, ADR-0015). Everything el
 
 - **Server-backed git layer** (ADR-0010/0014) — client-side git was the deliberate starting point; a real Express/Node server is the expected next step once multi-device access or real-time collaboration are actually needed.
 - **Computed tooltips** (ADR-0015) — `:title` bindings on truncated/abbreviated UI text, not built yet.
+- **Settings button is a dummy.** `.settings-button` (⚙, far right of `.shell-header`) has no click handler and no settings surface behind it yet — placeholder only, per direction that it belongs in the same app-wide control cluster as the theme toggle. Scope of an actual settings overlay (what goes in it) is still undefined.
 - **Canvas naming finalization.** README/`docs/adr/README.md` flag Process/System/Object/Interaction/Backlog naming as provisional. Per-view UUIDs mean this can be resolved later without a data migration — but the rename itself (UI copy, `views.<name>` key vs. `id`, any docs referencing current names) is still unbuilt work when it happens.
 - **Process Canvas's BPMN subset.** ADR-0004 calls for a constrained BPMN profile rather than bpmn-js's full default palette — not yet built; the canvas currently exposes bpmn-js's whole vocabulary.
 - **Unify the sidebar's mobile `<details>` collapse with the new drag-to-zero-width collapse**, or leave them as two separate mechanisms (desktop: drag the handle; mobile: tap the `<details>` summary). Now that both the Issue sidebar and Backlog panel collapse via their resize handle crossing a threshold (`startResize` in `shell-state.js`, `sidebarExpanded`/`backlogExpanded`) — the explicit `.backlog-toggle` button is gone, replaced by this — it's worth deciding whether the sidebar's separate mobile collapse should fold into the same mechanism, or whether keeping two purpose-built ones (drag for desktop pointer input, `<details>` for mobile touch) is fine as-is. Not yet decided either way.
