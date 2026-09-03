@@ -188,10 +188,17 @@
           <main class="view-switcher" x-show="activeIssue">
             <div class="view-content">
               <template x-if="activeView === 'all'">
-                <div class="all-grid" x-effect="renderAllThumbnails()">
+                <!-- ADR-0019: :style drives the container's grid-template-* between
+                     a plain 2x2 and a "1 featured + 3 stacked" layout — each cell's
+                     own grid-area is static (CSS, keyed by data-view below), only
+                     the container's template changes. An in-place reflow, not an
+                     overlay, so the Backlog panel stays interactive throughout. -->
+                <div class="all-grid" :style="allGridStyle" x-effect="renderAllThumbnails()">
                   <div
                     class="all-cell"
-                    @click="canvasMode === 'editing' ? setView('process') : openZoom('process')"
+                    data-view="process"
+                    :class="{ featured: featuredCanvas === 'process' }"
+                    @click="canvasMode === 'editing' ? setView('process') : toggleZoom('process')"
                   >
                     <h3>Process</h3>
                     <div class="all-cell-thumbnail" x-show="thumbnails.process" x-html="thumbnails.process"></div>
@@ -199,7 +206,9 @@
                   </div>
                   <div
                     class="all-cell"
-                    @click="canvasMode === 'editing' ? setView('system') : openZoom('system')"
+                    data-view="system"
+                    :class="{ featured: featuredCanvas === 'system' }"
+                    @click="canvasMode === 'editing' ? setView('system') : toggleZoom('system')"
                   >
                     <h3>System/Integration</h3>
                     <img class="all-cell-thumbnail" x-show="thumbnails.system" :src="thumbnails.system" alt="" />
@@ -207,7 +216,9 @@
                   </div>
                   <div
                     class="all-cell"
-                    @click="canvasMode === 'editing' ? setView('object') : openZoom('object')"
+                    data-view="object"
+                    :class="{ featured: featuredCanvas === 'object' }"
+                    @click="canvasMode === 'editing' ? setView('object') : toggleZoom('object')"
                   >
                     <h3>Object</h3>
                     <div class="all-cell-thumbnail" x-show="thumbnails.object" x-html="thumbnails.object"></div>
@@ -215,7 +226,9 @@
                   </div>
                   <div
                     class="all-cell"
-                    @click="canvasMode === 'editing' ? setView('interaction') : openZoom('interaction')"
+                    data-view="interaction"
+                    :class="{ featured: featuredCanvas === 'interaction' }"
+                    @click="canvasMode === 'editing' ? setView('interaction') : toggleZoom('interaction')"
                   >
                     <h3>Interaction</h3>
                     <img class="all-cell-thumbnail" x-show="thumbnails.interaction" :src="thumbnails.interaction" alt="" />
@@ -318,21 +331,6 @@
           </div>
         </div>
 
-        <!-- Zoom lightbox (ADR-0018) — Presenting mode's enlarged-tile view.
-             Reuses the same rendered thumbnail content as the All-grid, never
-             mounts a live editor engine. -->
-        <div class="zoom-backdrop" x-show="zoomedCanvas" @click="closeZoom()" x-cloak></div>
-        <div class="zoom-lightbox" x-show="zoomedCanvas" x-cloak>
-          <button type="button" class="close zoom-close" @click="closeZoom()">×</button>
-          <div class="zoom-content">
-            <template x-if="zoomedCanvas === 'process' || zoomedCanvas === 'object'">
-              <div class="zoom-svg" x-html="thumbnails[zoomedCanvas]"></div>
-            </template>
-            <template x-if="zoomedCanvas === 'system' || zoomedCanvas === 'interaction'">
-              <img class="zoom-svg" :src="thumbnails[zoomedCanvas]" alt="" />
-            </template>
-          </div>
-        </div>
       </div>
 
       <div class="copy-picker-backdrop" x-show="copyPickerOpen" @click="closeCopyPicker()"></div>

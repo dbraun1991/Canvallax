@@ -64,7 +64,7 @@ export function shellState() {
     burgerMenuOpen: false,
     settingsOpen: false, // ADR-0017: mock overlay, no real settings surface yet
     canvasMode: 'editing', // 'editing' | 'presenting' (ADR-0018) — a standing session preference, not reset per-Issue
-    zoomedCanvas: null, // null | 'process' | 'system' | 'object' | 'interaction' — Presenting mode's enlarged tile
+    featuredCanvas: null, // null | 'process' | 'system' | 'object' | 'interaction' — Presenting mode's enlarged tile (ADR-0019)
     _processInstance: null,
     _systemInstance: null,
     _interactionInstance: null,
@@ -180,12 +180,12 @@ export function shellState() {
     },
 
     // ADR-0018. Switching into Presenting always drops back to the grid and
-    // clears any open zoom, since Presenting has no "entered a canvas" state
-    // at all; switching into Editing leaves activeView wherever it already
-    // was — no forced navigation in that direction.
+    // clears any featured tile, since Presenting has no "entered a canvas"
+    // state at all; switching into Editing leaves activeView wherever it
+    // already was — no forced navigation in that direction.
     setCanvasMode(mode) {
       this.canvasMode = mode;
-      this.zoomedCanvas = null; // the zoom lightbox is a full-screen overlay either way — always start clean
+      this.featuredCanvas = null; // start clean either way
       if (mode === 'presenting') {
         this.activeView = 'all';
       }
@@ -195,12 +195,42 @@ export function shellState() {
       this.setCanvasMode(this.canvasMode === 'editing' ? 'presenting' : 'editing');
     },
 
-    openZoom(view) {
-      this.zoomedCanvas = view;
+    // ADR-0019: Presenting mode's enlarge is an in-place reflow of the All
+    // grid itself (allGridStyle, below), not a full-screen lightbox — the
+    // Backlog panel and everything else in the shell stay interactive.
+    // Clicking the already-featured tile un-features it (back to plain
+    // 2x2); clicking a different tile switches the feature to it directly.
+    toggleZoom(view) {
+      this.featuredCanvas = this.featuredCanvas === view ? null : view;
     },
 
-    closeZoom() {
-      this.zoomedCanvas = null;
+    // Drives .all-grid's grid-template-* via :style (index.html) — each
+    // .all-cell's own grid-area is static (CSS, keyed by its data-view
+    // attribute), only the container's template changes. Default: a plain
+    // 2x2. Featured: a wide column for featuredCanvas spanning all three
+    // rows, a narrow column stacking the other three, one per row, in their
+    // fixed relative order.
+    get allGridStyle() {
+      const ALL_VIEWS = ['process', 'system', 'object', 'interaction'];
+      // minmax(0, Nfr), not plain Nfr: an `fr` track's implicit minimum is
+      // `auto` (its content's min-content size), so a diagram's own
+      // intrinsic SVG dimensions can force a track wider than the
+      // container regardless of the fr ratio — capping the minimum to 0
+      // lets .all-cell's own overflow: hidden do the clipping instead.
+      if (!this.featuredCanvas) {
+        return {
+          gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
+          gridTemplateRows: 'minmax(0, 1fr) minmax(0, 1fr)',
+          gridTemplateAreas: '"process system" "object interaction"',
+        };
+      }
+      const rest = ALL_VIEWS.filter((view) => view !== this.featuredCanvas);
+      const areas = rest.map((view) => `"${this.featuredCanvas} ${view}"`).join(' ');
+      return {
+        gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)',
+        gridTemplateRows: 'minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)',
+        gridTemplateAreas: areas,
+      };
     },
 
     // Bound to the Issue name/status controls (view-switcher tab bar,

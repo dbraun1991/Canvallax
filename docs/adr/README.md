@@ -23,6 +23,7 @@ This tree was rebuilt from scratch on 2026-09-03, consolidating what had been tw
 | [0015](0015-computed-tooltips-deferred.md) | Computed tooltips | Accepted |
 | [0016](0016-panel-collapse-via-drag-threshold.md) | Panel collapse via drag-past-threshold on the resize handle, not an explicit toggle button | Accepted |
 | [0017](0017-shell-navigation-restructure.md) | Shell navigation restructure: burger-menu Issue picker, single left Backlog panel, top brand bar | Accepted |
-| [0018](0018-presenting-and-editing-canvas-modes.md) | Presenting vs. Editing canvas modes | Accepted |
+| [0018](0018-presenting-and-editing-canvas-modes.md) | Presenting vs. Editing canvas modes | Accepted — enlarge mechanism superseded by 0019 |
+| [0019](0019-presenting-mode-inline-grid-reflow.md) | Presenting mode's enlarge is an in-place grid reflow, not a lightbox overlay | Accepted |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is not yet finalized — these ADRs use the current README naming and should be updated if it changes. This is why every view and Backlog entry carries its own UUID independent of that naming (ADR-0007) — identity has to survive a naming decision that hasn't happened yet.

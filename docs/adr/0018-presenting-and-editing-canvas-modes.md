@@ -1,6 +1,6 @@
 # ADR-0018: Presenting vs. Editing canvas modes
 
-- Status: Accepted
+- Status: Accepted — enlarge mechanism superseded by [ADR-0019](0019-presenting-mode-inline-grid-reflow.md): an in-place grid reflow replaces the zoom-lightbox overlay described below; the mode concept, the footer toggle, and Editing mode's tab switcher are otherwise unchanged.
 - Date: 2026-09-03
 - Extends: [ADR-0012](0012-all-view-thumbnails.md)
 - Relates to: [ADR-0017](0017-shell-navigation-restructure.md)

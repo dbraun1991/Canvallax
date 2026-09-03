@@ -552,70 +552,35 @@
   color: var(--text-muted);
 }
 
-/* ─── Zoom lightbox (ADR-0018, Presenting mode) ───── */
+/* ─── All grid (ADR-0012), incl. Presenting-mode featured layout (ADR-0019) ─── */
 
-.zoom-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 39;
-}
-
-.zoom-lightbox {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90vw;
-  height: 85vh;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  z-index: 40;
-  padding: 16px;
-  display: flex;
-}
-
-.zoom-close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-}
-
-.zoom-content {
-  flex: 1 1 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.zoom-content svg,
-.zoom-content img {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-}
-
-/* Wraps a raw injected <svg> (process/object thumbnails, x-html) or IS the
-   <img> itself (system/interaction thumbnails, a data: URI) — either way it
-   should fill and center its content. */
-.zoom-svg {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
+/* grid-template-columns/rows/areas come from shell-state.js's allGridStyle
+   (:style in index.html) — the values here are just a pre-Alpine-hydration
+   fallback, a plain 2x2. Each .all-cell's own grid-area is static (below,
+   keyed by its data-view attribute) regardless of which layout is active;
+   only the container's template changes. */
 .all-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
   gap: 12px;
   height: 100%;
+}
+
+.all-cell[data-view='process'] {
+  grid-area: process;
+}
+
+.all-cell[data-view='system'] {
+  grid-area: system;
+}
+
+.all-cell[data-view='object'] {
+  grid-area: object;
+}
+
+.all-cell[data-view='interaction'] {
+  grid-area: interaction;
 }
 
 .all-cell {
@@ -630,6 +595,12 @@
 }
 
 .all-cell:hover {
+  border-color: var(--accent);
+}
+
+/* Presenting mode's enlarged tile (ADR-0019) — an in-place reflow, not an
+   overlay, so this is the only visual cue beyond its own larger grid area. */
+.all-cell.featured {
   border-color: var(--accent);
 }
 
