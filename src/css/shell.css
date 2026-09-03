@@ -678,6 +678,14 @@ img.all-cell-thumbnail {
   transition: background-color 0.15s, width 0.15s;
 }
 
+/* Backlog panel's handle, tried in the complementary golden-ratio segment
+   instead (1/phi^2, i.e. 100% - the sidebar's 61.8%) — a deliberate visual
+   asymmetry between the two side panels, not a mistake if it looks
+   noticeably shorter than the sidebar's. */
+.resize-handle-left::before {
+  height: 38.2%;
+}
+
 /* Coloring the grip itself, not a translucent fill on the whole 6px strip
    (opacity on .resize-handle would dim ::before too, since a pseudo-element
    renders inside its host's opacity — tried that first, the grip just went

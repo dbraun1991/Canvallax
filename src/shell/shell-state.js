@@ -116,6 +116,10 @@ export function shellState() {
       this.activeView = view;
     },
 
+    // Slated for replacement: direction given is that an explicit toggle
+    // button is no longer the intended mechanism (likely drag-the-handle-
+    // to-zero-width instead, per agents.md's Future Work) — kept as the
+    // only working minimize path until that replacement actually lands.
     toggleBacklog() {
       this.backlogExpanded = !this.backlogExpanded;
     },
