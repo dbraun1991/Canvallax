@@ -170,6 +170,7 @@ Items with an ADR are designed but not built (ADR-0014). Everything else below n
 - **Move the theme toggle back to a visible top-left button?** Already moved once (ADR-0017 put it in the burger menu) — if revisited, decide it once rather than flip-flopping between the two locations again.
 - **Process canvas should auto-fit and center on entry from the All grid**, not open at its default zoom/position — bpmn-js has a fit-to-viewport capability for this; inspiration from elsewhere in the workspace is fine to draw on.
 - **Object canvas (Mermaid) should also fill/fit its available space on entry**, not just stay centered at its own intrinsic size the way it does today — same "auto-fit" idea as Process, for the other engine.
+- **Sample screenshots in `README.md`.** The product framing doc has no visuals yet — worth adding a few once the shell's current look (burger menu, centered top bar, Presenting/Editing modes) feels settled enough to be worth capturing.
 
 ## What It Does NOT Do (yet)
 
