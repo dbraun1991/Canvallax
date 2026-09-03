@@ -25,9 +25,7 @@ Each canvas is built on the best-fit existing open tool for its notation rather 
 
 ```
 +-----------------------------------------------------------------------------------+
-| [☰] Canvallax                                                                     |  <- .brand-bar, always visible
-+-----------------------------------------------------------------------------------+
-| Issue name/status | [All][Process][System][Object][Interaction] (tabs)   [Copy][History] |  <- .shell-header
+| [☰] Canvallax  |  Issue name/status  [All][Process][System][Object]...  | [Copy][History] |  <- .top-bar
 +-----------+-------------------------------------------------------------+
 | Backlog   |  "All": read-only grid of real per-engine thumbnails.       |
 | panel     |    Editing mode: click enters that canvas's native editor,  |
@@ -43,16 +41,19 @@ Each canvas is built on the best-fit existing open tool for its notation rather 
 | toggle)   |                                                              |
 +-----------+-------------------------------------------------------------+
 ```
-The burger menu (☰, top-left) opens a small dropdown: **Change Issue**
-(the Issue-picker overlay — also shown automatically, undismissably,
-whenever no Issue is active yet), the **theme toggle**, and **Settings**
-(a mock overlay, no real content yet). Activating an Issue always resets
-view -> All, Backlog -> expanded, and closes the Issue-picker; switching
-views within an already-open Issue leaves both exactly as left; `canvasMode`
-(Presenting/Editing) is a standing session preference, not reset per-Issue
-(ADR-0017/0018). `.brand-bar` sits above `.shell-header`, unconditionally
-visible — `.shell-columns` (Backlog + main area) is gated on `activeIssue`,
-same as `.shell-header`, see shell.css.
+`.top-bar` is one row, not two: a 1fr/auto/1fr CSS grid, not flexbox, so the
+center track (Issue name/status + view-switcher) sits truly centered against
+the *whole* bar width regardless of how much content the left (burger +
+wordmark, always visible) or right (Copy/History) tracks hold. The burger
+menu opens a small dropdown: **Change Issue** (the Issue-picker overlay —
+also shown automatically, undismissably, whenever no Issue is active yet),
+the **theme toggle**, and **Settings** (a mock overlay, no real content
+yet). Activating an Issue always resets view -> All, Backlog -> expanded,
+and closes the Issue-picker; switching views within an already-open Issue
+leaves both exactly as left; `canvasMode` (Presenting/Editing) is a standing
+session preference, not reset per-Issue (ADR-0017/0018). The center/right
+grid tracks are empty (not rendered) whenever `!activeIssue` — `.top-bar-
+left` is the only part of `.top-bar` that isn't.
 
 ```
 Canvas engines

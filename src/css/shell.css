@@ -21,18 +21,44 @@
   overflow: hidden;
 }
 
-/* ─── Brand bar + burger menu (ADR-0017) ──────────── */
+/* ─── Top bar: brand + Issue header + burger menu (ADR-0017) ──────── */
 
-/* Always visible, not gated on activeIssue — the burger menu has to work
-   before any Issue is picked, since it's how the Issue-picker overlay gets
-   reopened once one already is. */
-.brand-bar {
-  display: flex;
+/* One row, not two: burger+wordmark (.top-bar-left, always visible — the
+   burger menu has to work before any Issue is picked) sits alongside the
+   Issue name/status + view-switcher (.top-bar-center) and Copy/History
+   (.top-bar-right), both only present once an Issue is active. A 1fr/auto/
+   1fr grid — not flexbox — is what makes .top-bar-center sit truly centered
+   in the *whole* bar's width: the two 1fr side tracks are always equal to
+   each other regardless of how much content either holds, so the center
+   track lands in the middle instead of being pulled off-center by whichever
+   side happens to hold more (or less) content. */
+.top-bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 10px 16px;
   border-bottom: 1px solid var(--border);
   flex: 0 0 auto;
+}
+
+.top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-self: start;
+}
+
+.top-bar-center {
+  display: flex;
+  align-items: center;
+  justify-self: center;
+}
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  justify-self: end;
 }
 
 .burger-button {
@@ -97,10 +123,10 @@
   background: var(--surface-hover);
 }
 
-/* Row of the two remaining panels (Backlog, main) below .brand-bar and
-   .shell-header. min-height: 0 lets .view-content's own overflow: auto
-   (below) actually kick in, rather than this row growing to fit its tallest
-   child the way a plain flex child would by default. */
+/* Row of the two remaining panels (Backlog, main) below .top-bar.
+   min-height: 0 lets .view-content's own overflow: auto (below) actually
+   kick in, rather than this row growing to fit its tallest child the way a
+   plain flex child would by default. */
 .shell-columns {
   display: flex;
   flex: 1 1 auto;
@@ -203,16 +229,8 @@
   min-width: 0;
 }
 
-.shell-header {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
-}
-
-/* Issue name/status (ADR-0007) — moved here from the Backlog panel, since
-   an Issue is now just these two fields. */
+/* Issue name/status (ADR-0007) — lives in .top-bar-center now, next to the
+   view-switcher, since an Issue is just these two fields. */
 .issue-header {
   display: flex;
   gap: 6px;
@@ -276,12 +294,7 @@
   padding: 16px;
 }
 
-/* margin-left: auto pins Copy/History to .shell-header's far right edge —
-   the theme toggle and settings button that used to share this cluster
-   moved into the burger menu (ADR-0017), so this is the only thing left in
-   it and no longer needs its own wrapping element. */
 .view-tabs-actions {
-  margin-left: auto;
   display: flex;
   gap: 8px;
 }

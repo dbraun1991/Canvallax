@@ -35,17 +35,69 @@
              this is the one piece of chrome that has to work before any Issue
              is picked, since the burger menu is how the Issue-picker overlay
              (below) gets reopened once an Issue is already active. -->
-        <header class="brand-bar">
-          <button
-            type="button"
-            class="burger-button"
-            @click="toggleBurgerMenu()"
-            title="Menu"
-            aria-label="Menu"
-          >
-            ☰
-          </button>
-          <span class="brand-wordmark">Canvallax</span>
+        <header class="top-bar">
+          <div class="top-bar-left">
+            <button
+              type="button"
+              class="burger-button"
+              @click="toggleBurgerMenu()"
+              title="Menu"
+              aria-label="Menu"
+            >
+              ☰
+            </button>
+            <span class="brand-wordmark">Canvallax</span>
+          </div>
+
+          <!-- Issue name/status + the view-switcher, centered in the full bar
+               width (not just the space left of the burger) via .top-bar's
+               1fr/auto/1fr grid tracks — a plain flex row would center this
+               relative to the leftover space next to .top-bar-left instead. -->
+          <div class="top-bar-center" x-show="activeIssue">
+            <template x-if="activeIssue">
+              <div class="issue-header">
+                <input
+                  type="text"
+                  class="issue-name-field"
+                  x-model="activeIssue.name"
+                  @input="saveActiveIssue()"
+                  placeholder="Issue name"
+                  :title="activeIssue.name"
+                />
+                <select
+                  class="issue-status-field issue-state"
+                  :class="'state-' + activeIssue.status"
+                  x-model="activeIssue.status"
+                  @change="saveActiveIssue()"
+                >
+                  <option value="open">open</option>
+                  <option value="mapped">mapped</option>
+                  <option value="decided">decided</option>
+                </select>
+              </div>
+            </template>
+            <!-- ADR-0018: Editing mode's active-tab structure, replacing the old
+                 plain view-switcher buttons. Hidden entirely in Presenting mode —
+                 there's nothing to switch between beyond the grid and a zoomed tile. -->
+            <div class="canvas-tabs" x-show="canvasMode === 'editing'">
+              <template x-for="view in ['all', 'process', 'system', 'object', 'interaction']" :key="view">
+                <button
+                  type="button"
+                  class="canvas-tab"
+                  :class="{ active: activeView === view }"
+                  @click="setView(view)"
+                  x-text="view === 'all' ? 'All' : view[0].toUpperCase() + view.slice(1)"
+                ></button>
+              </template>
+            </div>
+          </div>
+
+          <div class="top-bar-right" x-show="activeIssue">
+            <div class="view-tabs-actions" x-show="activeView !== 'all'">
+              <button type="button" class="copy-toggle" @click="openCopyPicker('view')">Copy</button>
+              <button type="button" class="history-toggle" @click="toggleHistory()">History</button>
+            </div>
+          </div>
         </header>
 
         <!-- Burger menu: a small anchored dropdown, not a dimmed modal (ADR-0017) -->
@@ -60,49 +112,6 @@
           ></button>
           <button type="button" class="burger-menu-item" @click="openSettings()">Settings</button>
         </div>
-
-        <nav class="shell-header" x-show="activeIssue">
-          <template x-if="activeIssue">
-            <div class="issue-header">
-              <input
-                type="text"
-                class="issue-name-field"
-                x-model="activeIssue.name"
-                @input="saveActiveIssue()"
-                placeholder="Issue name"
-                :title="activeIssue.name"
-              />
-              <select
-                class="issue-status-field issue-state"
-                :class="'state-' + activeIssue.status"
-                x-model="activeIssue.status"
-                @change="saveActiveIssue()"
-              >
-                <option value="open">open</option>
-                <option value="mapped">mapped</option>
-                <option value="decided">decided</option>
-              </select>
-            </div>
-          </template>
-          <!-- ADR-0018: Editing mode's active-tab structure, replacing the old
-               plain view-switcher buttons. Hidden entirely in Presenting mode —
-               there's nothing to switch between beyond the grid and a zoomed tile. -->
-          <div class="canvas-tabs" x-show="canvasMode === 'editing'">
-            <template x-for="view in ['all', 'process', 'system', 'object', 'interaction']" :key="view">
-              <button
-                type="button"
-                class="canvas-tab"
-                :class="{ active: activeView === view }"
-                @click="setView(view)"
-                x-text="view === 'all' ? 'All' : view[0].toUpperCase() + view.slice(1)"
-              ></button>
-            </template>
-          </div>
-          <div class="view-tabs-actions" x-show="activeView !== 'all'">
-            <button type="button" class="copy-toggle" @click="openCopyPicker('view')">Copy</button>
-            <button type="button" class="history-toggle" @click="toggleHistory()">History</button>
-          </div>
-        </nav>
 
         <div class="shell-columns">
           <!-- Backlog panel (ADR-0017): now the shell's only side panel, moved
