@@ -1,6 +1,6 @@
 # ADR-0005: System/Integration and Interaction Canvases — draw.io (diagrams.net)
 
-- Status: Accepted
+- Status: Accepted — Interaction Canvas superseded by [ADR-0021](0021-interaction-canvas-excalidraw.md): Excalidraw, not draw.io. System/Integration's draw.io integration described below is entirely unchanged.
 - Date: 2026-09-03
 - Relates to: [ADR-0003](0003-canvas-architecture.md)
 

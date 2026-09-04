@@ -12,6 +12,7 @@ import { getViewHistory } from '../persistence/git-store.js';
 import { mountProcessCanvas } from '../canvases/process/process-canvas.js';
 import { mountDrawioCanvas } from '../canvases/system/drawio-canvas.js';
 import { mountObjectCanvas } from '../canvases/object/object-canvas.js';
+import { mountExcalidrawCanvas } from '../canvases/interaction/excalidraw-canvas.js';
 import { renderAllThumbnails as renderThumbnails } from '../canvases/thumbnails.js';
 
 // Process needs two child containers (canvas + properties panel); the
@@ -353,7 +354,7 @@ export function shellState() {
     },
 
     syncInteractionCanvas(el) {
-      this._syncCanvas('interaction', el, mountDrawioCanvas, '_interactionInstance');
+      this._syncCanvas('interaction', el, mountExcalidrawCanvas, '_interactionInstance');
     },
 
     syncObjectCanvas(el) {

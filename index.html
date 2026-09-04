@@ -235,8 +235,12 @@
                     @click="canvasMode === 'editing' ? setView('interaction') : toggleZoom('interaction')"
                   >
                     <h3>Interaction</h3>
-                    <img class="all-cell-thumbnail" x-show="thumbnails.interaction" :src="thumbnails.interaction" alt="" />
-                    <p class="placeholder" x-show="!thumbnails.interaction">Rendering…</p>
+                    <div class="all-cell-thumbnail" x-show="thumbnails.interaction" x-html="thumbnails.interaction"></div>
+                    <!-- Excalidraw's legitimate empty state (nothing drawn yet) renders as
+                         '' — a real, final result, not a mid-render placeholder — so it
+                         needs its own message distinct from "still rendering" (null). -->
+                    <p class="placeholder" x-show="thumbnails.interaction === null">Rendering…</p>
+                    <p class="placeholder" x-show="thumbnails.interaction === ''">Nothing drawn yet</p>
                   </div>
                 </div>
               </template>

@@ -1,6 +1,6 @@
 # ADR-0013: Theming — shell light/dark toggle; canvases follow it except Process
 
-- Status: Accepted — first-visit default superseded by [ADR-0020](0020-default-theme-is-light.md): light regardless of OS preference, not `prefers-color-scheme`-based as described below; everything else in this ADR is unchanged.
+- Status: Accepted — first-visit default superseded by [ADR-0020](0020-default-theme-is-light.md): light regardless of OS preference, not `prefers-color-scheme`-based as described below. Interaction Canvas's theming mechanism superseded by [ADR-0021](0021-interaction-canvas-excalidraw.md): Excalidraw's own `theme` prop, not draw.io's `dark: true` postMessage payload — System/Integration's draw.io mechanism below is unchanged. Everything else in this ADR is unchanged.
 - Date: 2026-09-03
 - Relates to: [ADR-0002](0002-shell-ui-reactivity-alpinejs.md), [ADR-0003](0003-canvas-architecture.md), [ADR-0004](0004-process-canvas-bpmn-js.md)
 

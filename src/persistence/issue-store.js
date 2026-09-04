@@ -44,7 +44,7 @@ export async function createIssue() {
     views: {
       process: { id: crypto.randomUUID(), format: 'bpmn-xml', content: '' },
       system: { id: crypto.randomUUID(), format: 'drawio-xml', content: '' },
-      interaction: { id: crypto.randomUUID(), format: 'drawio-xml', content: '' },
+      interaction: { id: crypto.randomUUID(), format: 'excalidraw-json', content: '' },
       object: { id: crypto.randomUUID(), format: 'mermaid', content: '' },
     },
     backlogEntries: [],

@@ -59,7 +59,7 @@ left` is the only part of `.top-bar` that isn't.
 Canvas engines
   Process              — bpmn-js, .bpmn XML                       (ADR-0004)
   System/Integration   — draw.io embed, .drawio XML                (ADR-0005)
-  Interaction          — draw.io embed, .drawio XML                (ADR-0005)
+  Interaction          — Excalidraw, freeform sketching, JSON      (ADR-0021)
   Object                — Mermaid, plain-text diagram source        (ADR-0006)
 
 No cross-canvas element-link registry (ADR-0009) — an Issue's canvases are
@@ -90,7 +90,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 |------|------|
 | `README.md` | Product framing — naming, the canvases, what each is/isn't for |
 | `docs/adr/README.md` | ADR index — numbered, append-only decision log |
-| `docs/adr/0001-*.md` – `0020-*.md` | Individual decisions — see the index for titles |
+| `docs/adr/0001-*.md` – `0021-*.md` | Individual decisions — see the index for titles |
 
 ## Architecture Decisions
 
@@ -100,7 +100,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0002](docs/adr/0002-shell-ui-reactivity-alpinejs.md) | Shell UI reactivity: Alpine.js |
 | [0003](docs/adr/0003-canvas-architecture.md) | Specialized engine per canvas, not one unified SDK |
 | [0004](docs/adr/0004-process-canvas-bpmn-js.md) | Process Canvas: bpmn-js, `.bpmn` XML, bpmn.io License (watermark) |
-| [0005](docs/adr/0005-system-and-interaction-canvases-drawio.md) | System/Integration + Interaction Canvases: draw.io embed, `.drawio` XML, Apache-2.0 |
+| [0005](docs/adr/0005-system-and-interaction-canvases-drawio.md) | System/Integration + Interaction Canvases: draw.io embed, `.drawio` XML, Apache-2.0 — **Interaction superseded by 0021** |
 | [0006](docs/adr/0006-object-canvas-mermaid.md) | Object Canvas: Mermaid text source, MIT, text+preview editing (not drag-and-drop) |
 | [0007](docs/adr/0007-issue-and-backlog-data-model.md) | Issue is `{id, name, status}`; Backlog is a `backlogEntries` list, no per-entry status |
 | [0008](docs/adr/0008-issue-centric-shell.md) | Issue-scoped shell: sidebar Issue browser, All + 4-view switcher, persistent minimizable Backlog panel — **superseded in full by 0017** |
@@ -108,7 +108,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0010](docs/adr/0010-persistence-and-versioning.md) | One JSON document per Issue; every view + Backlog entry carries a UUID; git commit history is the version log (client-side for now) |
 | [0011](docs/adr/0011-cross-issue-copy.md) | Copy a view (overwrite) or Backlog entry (append) from another Issue: always HEAD, `copiedFrom` provenance, never a whole Issue |
 | [0012](docs/adr/0012-all-view-thumbnails.md) | All-view tiles render real SVG thumbnails per engine, content-hash cached |
-| [0013](docs/adr/0013-theming-light-and-dark-mode.md) | Shell light/dark toggle; System/Interaction/Object follow it, Process stays light |
+| [0013](docs/adr/0013-theming-light-and-dark-mode.md) | Shell light/dark toggle; System/Interaction/Object follow it, Process stays light — **Interaction's mechanism superseded by 0021** |
 | [0014](docs/adr/0014-server-backed-persistence-deferred.md) | Server-backed persistence, once built, is Express (Node) — deferred |
 | [0015](docs/adr/0015-computed-tooltips-deferred.md) | Tooltips computed live from state, never stored |
 | [0016](docs/adr/0016-panel-collapse-via-drag-threshold.md) | Both side panels collapse by dragging their resize handle past a threshold; no explicit toggle button |
@@ -116,6 +116,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0018](docs/adr/0018-presenting-and-editing-canvas-modes.md) | Presenting vs. Editing modes; Editing mode: click a tile enters it, tab-styled switcher — **enlarge mechanism superseded by 0019** |
 | [0019](docs/adr/0019-presenting-mode-inline-grid-reflow.md) | Presenting mode's enlarge is an in-place grid reflow (1 featured + 3 stacked), not a lightbox overlay |
 | [0020](docs/adr/0020-default-theme-is-light.md) | First-visit default theme is light, not OS-preference-based |
+| [0021](docs/adr/0021-interaction-canvas-excalidraw.md) | Interaction Canvas: Excalidraw (MIT, freeform sketching), not draw.io — React mounted as an isolated island |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is **not yet finalized** (`docs/adr/README.md`) — code and docs currently use the README naming. This is exactly why views and Backlog entries carry their own UUIDs (ADR-0007/0010): identity must survive a naming decision that hasn't happened yet.
 
@@ -136,7 +137,8 @@ Conventions carried forward, consistent with every sibling project in this works
 |------|------|-----|
 | `src/shell/shell-state.js` | Alpine data factory: Issue selection/picker, view switching, canvas mode, Backlog panel state, resize, theme, history, copy | 0002, 0017, 0018, 0019 |
 | `src/canvases/process/` | Process Canvas: bpmn-js + `@bpmn-io/properties-panel` | 0004 |
-| `src/canvases/system/drawio-canvas.js` | System/Integration **and** Interaction Canvas: shared draw.io embed integration | 0005 |
+| `src/canvases/system/drawio-canvas.js` | System/Integration Canvas: draw.io embed integration | 0005 |
+| `src/canvases/interaction/excalidraw-canvas.js` | Interaction Canvas: Excalidraw, mounted as an isolated React island | 0021 |
 | `src/canvases/object/` | Object Canvas: Mermaid text+preview | 0006 |
 | `src/canvases/thumbnails.js` | All-view thumbnail orchestration across all four engines | 0012 |
 | `src/persistence/git-store.js` | Client-side git layer (`isomorphic-git`/`lightning-fs`/IndexedDB): commits, history, blob reads | 0010 |
@@ -163,7 +165,7 @@ Items with an ADR are designed but not built (ADR-0014). Everything else below n
 - **Concurrent-edit / merge story** for one Issue's single JSON document — relevant once more than one person can edit the same Issue; out of scope while client-side/single-user.
 - **Cross-canvas element-level linking**, reconsidered. ADR-0009 explicitly decided against building this now. If element-to-element navigation (e.g. one BPMN task ↔ one Object-canvas entity) turns out to matter in practice, it's new scope requiring its own ADR — not a partially-built feature waiting to be finished.
 - **Real-time multiplayer editing** across all three tool-backed canvases — explicitly lower priority than format compatibility for the initial feasibility prototype; per-canvas feasibility notes live in ADR-0004/0005/0006.
-- **Reconsider the Interaction canvas's underlying tool.** It currently shares draw.io with System/Integration (ADR-0005) — worth a real brainstorm on whether draw.io, Mermaid, bpmn.io, or even a per-Issue user-selectable switch (exactly one tool active at a time) is the better fit. Not decided, no direction given yet.
+- **Excalidraw's element vocabulary isn't curated.** Same category of open work as Process's BPMN subset above — Excalidraw's full toolset (shapes, freehand, text, images, frames, laser pointer) is all available as-is; narrowing it toward "storyboard sketch" specifically, if that turns out to matter, is unbuilt work (ADR-0021).
 - **Is the Backlog footer the right place for the Presenting/Editing toggle?** Considered and left as-is for now (2026-09-04) — no move planned unless a specific alternative comes up.
 - **Theme toggle: burger menu, or a visible top-left button?** Considered and left in the burger menu for now (2026-09-04), specifically to avoid flip-flopping between the two locations without a real reason to revisit.
 

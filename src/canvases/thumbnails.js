@@ -1,6 +1,7 @@
 import { renderProcessThumbnail } from './process/process-canvas.js';
 import { renderDrawioThumbnail } from './system/drawio-canvas.js';
 import { renderObjectThumbnail } from './object/object-canvas.js';
+import { renderExcalidrawThumbnail } from './interaction/excalidraw-canvas.js';
 
 // ADR-0012: content-hash cache, not live updates — a repeat visit to the
 // All view with unchanged content reuses the cached result instead of
@@ -28,7 +29,7 @@ export async function renderAllThumbnails(issue, theme) {
       renderDrawioThumbnail(issue.views.system.content, theme)
     ),
     renderCached(issue.id, 'interaction', issue.views.interaction.content, () =>
-      renderDrawioThumbnail(issue.views.interaction.content, theme)
+      renderExcalidrawThumbnail(issue.views.interaction.content, theme)
     ),
     renderCached(issue.id, 'object', issue.views.object.content, () =>
       renderObjectThumbnail(issue.views.object.content, theme)
