@@ -133,16 +133,16 @@ export function shellState() {
       return `Copied from "${sourceName}" on ${new Date(copiedFrom.at).toLocaleString()}`;
     },
 
-    // ADR-0023: a reminder that the canvas already open can hold more than
-    // one related item — bpmn-js/Mermaid/draw.io/Excalidraw all support
-    // this — rather than needing a whole additional canvas. Editing-mode
-    // only (index.html); shown above each of the four single-canvas views.
+    // ADR-0023: a reminder of *why this view exists for this Issue at all* —
+    // the specific question it answers that the other three don't (README's
+    // "The Core: Canvases"), not a usage tip. Editing-mode only (index.html);
+    // shown above each of the four single-canvas views.
     canvasHint(view) {
       const hints = {
-        process: 'One canvas, multiple processes — no need for a separate canvas per process.',
-        system: 'One canvas, multiple integrations — no need for a separate canvas per integration.',
-        object: 'One canvas, multiple entity clusters — no need for a separate canvas per data model.',
-        interaction: 'One canvas, multiple flows or screens — no need for a separate canvas per flow.',
+        process: 'Why this view exists: to show what has to happen, in what order, to resolve this issue.',
+        system: 'Why this view exists: to show what this depends on outside itself, and what it could affect elsewhere.',
+        object: 'Why this view exists: to show what data/entities are involved, and how they relate.',
+        interaction: 'Why this view exists: to show what a person actually sees and does.',
       };
       return hints[view] || '';
     },

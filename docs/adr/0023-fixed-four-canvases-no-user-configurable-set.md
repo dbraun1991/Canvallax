@@ -16,14 +16,15 @@ The deciding realization, though, wasn't about cost — it was that **the underl
 
 **Stay at exactly four canvases, fixed count, fixed tool per canvas** — no user-configurable amount, no per-canvas tool switch. ADR-0007's `views` shape, ADR-0019's four-slot grid logic, and each canvas's dedicated engine (ADR-0004/0005/0006/0021) are all reaffirmed, not reopened.
 
-**In-app reminder, Editing mode only**: a short hint line above each of the four single-canvas views (`canvasHint(view)` in `shell-state.js`, one line of muted text per canvas, `index.html`), pointing at the same realization — that the canvas already open can hold more than one related item, rather than implying a new canvas is needed. Hidden in Presenting mode (it's an editing nudge, not something to show mid-walkthrough) and on the All grid (nothing to nudge about there).
+**In-app reminder, Editing mode only**: a short hint line above each of the four single-canvas views (`canvasHint(view)` in `shell-state.js`, one line of muted text per canvas, `index.html`) — not a usage tip, but the specific question that view exists to answer for this Issue, the one the other three don't (README's "The Core: Canvases" already names each: Process → what has to happen and in what order; System/Integration → what this depends on outside itself; Object → what data is involved and how it relates; Interaction → what a person actually sees and does). The point isn't "you can fit more in here," it's reorienting to why this particular lens is being used at all. Hidden in Presenting mode (it's an editing nudge, not something to show mid-walkthrough) and on the All grid (nothing to nudge about there).
 
 ## Consequences
 
 **Positive**
 
 - No architecture churn — every ADR this would have touched stays exactly as designed.
-- Addresses the actual underlying need (more room to show related items) directly, instead of building a much larger feature to work around not using the existing room.
+- Addresses the actual underlying need (each canvas already has room for related items) directly, instead of building a much larger feature to work around not using the room that already exists.
+- The reminder that replaced the feature request turned out to serve a second, related purpose beyond the original "you have more room than you're using" — orienting to *why this lens, not another* is open right now, which is useful on its own regardless of the room question.
 
 **Negative / risks**
 
