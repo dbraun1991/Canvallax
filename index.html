@@ -3,21 +3,14 @@
   <head>
     <script>
       // Applied synchronously, before first paint, so there's no flash of
-      // the wrong theme while Alpine is still loading (ADR-0013).
+      // the wrong theme while Alpine is still loading (ADR-0013/0020).
       (function () {
         try {
           var saved = localStorage.getItem('canvallax_theme');
-          var theme;
-          if (saved === 'light' || saved === 'dark') {
-            theme = saved;
-          } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            theme = 'dark';
-          } else {
-            theme = 'light';
-          }
+          var theme = saved === 'light' || saved === 'dark' ? saved : 'light';
           document.documentElement.setAttribute('data-theme', theme);
         } catch (e) {
-          document.documentElement.setAttribute('data-theme', 'dark');
+          document.documentElement.setAttribute('data-theme', 'light');
         }
       })();
     </script>

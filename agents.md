@@ -90,7 +90,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 |------|------|
 | `README.md` | Product framing — naming, the canvases, what each is/isn't for |
 | `docs/adr/README.md` | ADR index — numbered, append-only decision log |
-| `docs/adr/0001-*.md` – `0019-*.md` | Individual decisions — see the index for titles |
+| `docs/adr/0001-*.md` – `0020-*.md` | Individual decisions — see the index for titles |
 
 ## Architecture Decisions
 
@@ -115,6 +115,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0017](docs/adr/0017-shell-navigation-restructure.md) | Burger-menu Issue picker (overlay, not a persistent sidebar); Backlog panel moves left; top brand bar |
 | [0018](docs/adr/0018-presenting-and-editing-canvas-modes.md) | Presenting vs. Editing modes; Editing mode: click a tile enters it, tab-styled switcher — **enlarge mechanism superseded by 0019** |
 | [0019](docs/adr/0019-presenting-mode-inline-grid-reflow.md) | Presenting mode's enlarge is an in-place grid reflow (1 featured + 3 stacked), not a lightbox overlay |
+| [0020](docs/adr/0020-default-theme-is-light.md) | First-visit default theme is light, not OS-preference-based |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is **not yet finalized** (`docs/adr/README.md`) — code and docs currently use the README naming. This is exactly why views and Backlog entries carry their own UUIDs (ADR-0007/0010): identity must survive a naming decision that hasn't happened yet.
 
@@ -143,7 +144,7 @@ Conventions carried forward, consistent with every sibling project in this works
 | `src/persistence/seed-issues.js` | Example Issues seeded on a true first run | 0007 |
 | `src/css/theme.css` | CSS custom properties, light/dark palette | 0013 |
 | `src/css/shell.css` | All shell chrome and canvas-wrapper styling | — |
-| `index.html` | Markup + Alpine directives for the whole shell | 0002, 0017, 0018, 0019 |
+| `index.html` | Markup + Alpine directives for the whole shell | 0002, 0017, 0018, 0019, 0020 |
 
 `index.html`'s markup, not a component framework, is the shell's template layer (ADR-0002) — there's no further per-panel module split (e.g. a dedicated "sidebar" or "backlog panel" file) beyond `shell-state.js`'s single data factory; that's a deliberate size call, not an oversight, and worth revisiting only if the shell's own complexity grows past what one file comfortably holds.
 
@@ -162,7 +163,6 @@ Items with an ADR are designed but not built (ADR-0014). Everything else below n
 - **Concurrent-edit / merge story** for one Issue's single JSON document — relevant once more than one person can edit the same Issue; out of scope while client-side/single-user.
 - **Cross-canvas element-level linking**, reconsidered. ADR-0009 explicitly decided against building this now. If element-to-element navigation (e.g. one BPMN task ↔ one Object-canvas entity) turns out to matter in practice, it's new scope requiring its own ADR — not a partially-built feature waiting to be finished.
 - **Real-time multiplayer editing** across all three tool-backed canvases — explicitly lower priority than format compatibility for the initial feasibility prototype; per-canvas feasibility notes live in ADR-0004/0005/0006.
-- **Default theme should be light, not OS-preference-based.** Today's default (ADR-0013, when nothing's stored yet) resolves via `prefers-color-scheme`, falling back to dark. Direction: default to light regardless of OS preference.
 - **Light/dark icons instead of a text label.** The burger menu's theme item is still plain text ("Light mode"/"Dark mode") — swap in real icons, silently drawing on `OrgVisualizr`'s icon set/pattern rather than the current text-only toggle.
 - **Reconsider the Interaction canvas's underlying tool.** It currently shares draw.io with System/Integration (ADR-0005) — worth a real brainstorm on whether draw.io, Mermaid, bpmn.io, or even a per-Issue user-selectable switch (exactly one tool active at a time) is the better fit. Not decided, no direction given yet.
 - **Is the Backlog footer the right place for the Presenting/Editing toggle?** Open question, not re-examined since ADR-0018 put it there.
