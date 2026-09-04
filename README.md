@@ -5,6 +5,8 @@
 Canvallax is a webapp for remote teams that need business and technical stakeholders to understand the same system the same way.
 It gives a team a small set of shared, deliberately incomplete visual canvases, so that planning and prioritization decisions are made from a common ground.
 
+**Live preview:** [dbraun1991.github.io/Canvallax](https://dbraun1991.github.io/Canvallax/)
+
 
 ## Screenshots
 
