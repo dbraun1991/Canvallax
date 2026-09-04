@@ -10,12 +10,14 @@ Canvallax is a webapp for remote teams that need business and technical stakehol
 
 ```
 npm install
-npm run dev      # starts the Vite dev server, http://localhost:5173/
+npm run dev      # starts the Vite dev server, http://localhost:5173/Canvallax/
 npm run build    # production build to dist/
 npm run preview  # serve that build locally
 ```
 
 Requires Node.js (any current LTS).
+
+**Live preview**: every push to `main` auto-deploys to GitHub Pages via `.github/workflows/deploy-pages.yml` (ADR-0022) — no manual publish step. `vite.config.js`'s `base: '/Canvallax/'` matches Pages' project-site subpath; local dev/build/preview all already reflect it (`http://localhost:5173/Canvallax/`).
 
 ## Core Idea
 
@@ -90,7 +92,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 |------|------|
 | `README.md` | Product framing — naming, the canvases, what each is/isn't for |
 | `docs/adr/README.md` | ADR index — numbered, append-only decision log |
-| `docs/adr/0001-*.md` – `0021-*.md` | Individual decisions — see the index for titles |
+| `docs/adr/0001-*.md` – `0022-*.md` | Individual decisions — see the index for titles |
 
 ## Architecture Decisions
 
@@ -117,6 +119,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0019](docs/adr/0019-presenting-mode-inline-grid-reflow.md) | Presenting mode's enlarge is an in-place grid reflow (1 featured + 3 stacked), not a lightbox overlay |
 | [0020](docs/adr/0020-default-theme-is-light.md) | First-visit default theme is light, not OS-preference-based |
 | [0021](docs/adr/0021-interaction-canvas-excalidraw.md) | Interaction Canvas: Excalidraw (MIT, freeform sketching), not draw.io — React mounted as an isolated island |
+| [0022](docs/adr/0022-static-hosting-github-pages.md) | Static hosting: GitHub Pages, deployed via GitHub Actions on every push to `main` |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is **not yet finalized** (`docs/adr/README.md`) — code and docs currently use the README naming. This is exactly why views and Backlog entries carry their own UUIDs (ADR-0007/0010): identity must survive a naming decision that hasn't happened yet.
 

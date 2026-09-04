@@ -18,7 +18,7 @@ It gives a team a small set of shared, deliberately incomplete visual canvases, 
 
 ```
 npm install
-npm run dev      # starts the Vite dev server, http://localhost:5173/
+npm run dev      # starts the Vite dev server, http://localhost:5173/Canvallax/
 npm run build    # production build to dist/
 npm run preview  # serve that build locally
 ```
