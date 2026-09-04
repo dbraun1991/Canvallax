@@ -28,5 +28,6 @@ This tree was rebuilt from scratch on 2026-09-03, consolidating what had been tw
 | [0020](0020-default-theme-is-light.md) | First-visit default theme is light, not OS-preference-based | Accepted |
 | [0021](0021-interaction-canvas-excalidraw.md) | Interaction Canvas: Excalidraw, not draw.io | Accepted |
 | [0022](0022-static-hosting-github-pages.md) | Static hosting: GitHub Pages, deployed via GitHub Actions | Accepted |
+| [0023](0023-fixed-four-canvases-no-user-configurable-set.md) | Exactly four canvases, not a user-configurable count/style — with an in-app reminder why | Accepted |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is not yet finalized — these ADRs use the current README naming and should be updated if it changes. This is why every view and Backlog entry carries its own UUID independent of that naming (ADR-0007) — identity has to survive a naming decision that hasn't happened yet.

@@ -245,12 +245,24 @@
                 </div>
               </template>
               <div class="process-view" x-show="activeView === 'process'" x-effect="syncProcessCanvas($el)">
-                <div class="process-canvas-container"></div>
+                <div class="process-canvas-wrap">
+                  <p class="canvas-hint" x-show="canvasMode === 'editing'" x-text="canvasHint('process')"></p>
+                  <div class="process-canvas-container"></div>
+                </div>
                 <div class="process-properties-panel"></div>
               </div>
-              <div class="canvas-container" x-show="activeView === 'system'" x-effect="syncSystemCanvas($el)"></div>
-              <div class="canvas-container" x-show="activeView === 'interaction'" x-effect="syncInteractionCanvas($el)"></div>
-              <div class="canvas-container" x-show="activeView === 'object'" x-effect="syncObjectCanvas($el)"></div>
+              <div class="canvas-view-wrap" x-show="activeView === 'system'">
+                <p class="canvas-hint" x-show="canvasMode === 'editing'" x-text="canvasHint('system')"></p>
+                <div class="canvas-container" x-effect="syncSystemCanvas($el)"></div>
+              </div>
+              <div class="canvas-view-wrap" x-show="activeView === 'interaction'">
+                <p class="canvas-hint" x-show="canvasMode === 'editing'" x-text="canvasHint('interaction')"></p>
+                <div class="canvas-container" x-effect="syncInteractionCanvas($el)"></div>
+              </div>
+              <div class="canvas-view-wrap" x-show="activeView === 'object'">
+                <p class="canvas-hint" x-show="canvasMode === 'editing'" x-text="canvasHint('object')"></p>
+                <div class="canvas-container" x-effect="syncObjectCanvas($el)"></div>
+              </div>
 
               <div class="history-panel" x-show="historyOpen">
                 <div class="history-panel-header">

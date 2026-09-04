@@ -133,6 +133,20 @@ export function shellState() {
       return `Copied from "${sourceName}" on ${new Date(copiedFrom.at).toLocaleString()}`;
     },
 
+    // ADR-0023: a reminder that the canvas already open can hold more than
+    // one related item — bpmn-js/Mermaid/draw.io/Excalidraw all support
+    // this — rather than needing a whole additional canvas. Editing-mode
+    // only (index.html); shown above each of the four single-canvas views.
+    canvasHint(view) {
+      const hints = {
+        process: 'One canvas, multiple processes — no need for a separate canvas per process.',
+        system: 'One canvas, multiple integrations — no need for a separate canvas per integration.',
+        object: 'One canvas, multiple entity clusters — no need for a separate canvas per data model.',
+        interaction: 'One canvas, multiple flows or screens — no need for a separate canvas per flow.',
+      };
+      return hints[view] || '';
+    },
+
     selectIssue(id) {
       this.activeIssueId = id;
       this.activeView = 'all';

@@ -92,7 +92,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 |------|------|
 | `README.md` | Product framing — naming, the canvases, what each is/isn't for |
 | `docs/adr/README.md` | ADR index — numbered, append-only decision log |
-| `docs/adr/0001-*.md` – `0022-*.md` | Individual decisions — see the index for titles |
+| `docs/adr/0001-*.md` – `0023-*.md` | Individual decisions — see the index for titles |
 
 ## Architecture Decisions
 
@@ -120,6 +120,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0020](docs/adr/0020-default-theme-is-light.md) | First-visit default theme is light, not OS-preference-based |
 | [0021](docs/adr/0021-interaction-canvas-excalidraw.md) | Interaction Canvas: Excalidraw (MIT, freeform sketching), not draw.io — React mounted as an isolated island |
 | [0022](docs/adr/0022-static-hosting-github-pages.md) | Static hosting: GitHub Pages, deployed via GitHub Actions on every push to `main` |
+| [0023](docs/adr/0023-fixed-four-canvases-no-user-configurable-set.md) | Exactly four canvases, not user-configurable — each already supports holding multiple related items; an in-app reminder says so |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is **not yet finalized** (`docs/adr/README.md`) — code and docs currently use the README naming. This is exactly why views and Backlog entries carry their own UUIDs (ADR-0007/0010): identity must survive a naming decision that hasn't happened yet.
 
