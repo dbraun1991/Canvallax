@@ -134,15 +134,15 @@ export function shellState() {
     },
 
     // ADR-0023: a reminder of *why this view exists for this Issue at all* —
-    // the specific question it answers that the other three don't (README's
-    // "The Core: Canvases"), not a usage tip. Editing-mode only (index.html);
-    // shown above each of the four single-canvas views.
+    // its specific purpose, and that what it shows is the current proposal,
+    // open to change, not a usage tip. Editing-mode only (index.html); shown
+    // above each of the four single-canvas views.
     canvasHint(view) {
       const hints = {
-        process: 'Why this view exists: to show what has to happen, in what order, to resolve this issue.',
-        system: 'Why this view exists: to show what this depends on outside itself, and what it could affect elsewhere.',
-        object: 'Why this view exists: to show what data/entities are involved, and how they relate.',
-        interaction: 'Why this view exists: to show what a person actually sees and does.',
+        process: 'This process-canvas shall visualize the process - which may be altered',
+        system: 'This integration-canvas shall show attached systems and their connections - which may be affected by an upcoming change',
+        object: 'This Object-canvas shall describe data & entities with their relations - which may differ',
+        interaction: 'This Interaction-canvas shall be used to define touchpoints - and how they change',
       };
       return hints[view] || '';
     },
