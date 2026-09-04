@@ -16,9 +16,40 @@ export function mountProcessCanvas(canvasEl, propertiesEl, viewObj, onChange) {
 
   let destroyed = false;
 
-  modeler.importXML(viewObj.content || starterDiagram).catch((error) => {
-    console.error('Failed to import BPMN diagram', error);
-  });
+  modeler
+    .importXML(viewObj.content || starterDiagram)
+    .then(() => {
+      if (destroyed) return;
+      // fit-viewport both sizes and centers the diagram in the canvas —
+      // otherwise it opens at 100% zoom, anchored top-left, which for
+      // anything bigger than a couple of elements means scrolling to even
+      // see the whole thing on entry. Two things are both required here,
+      // not one:
+      //  1. canvas.resized() — diagram-js's Canvas.viewbox() caches its
+      //     result (this._cachedViewbox) after the first call, which can
+      //     happen internally during import while the container (still
+      //     mid-transition out of shell-state.js's x-show display:none) was
+      //     0x0. Without resized() clearing that cache, fit-viewport keeps
+      //     reusing the stale {0,0} box forever, no matter how long we wait.
+      //  2. A double requestAnimationFrame before calling it — a single
+      //     frame wasn't reliably enough in testing for the container's own
+      //     multi-level percentage-sized wrapper chain (bpmn-js's own
+      //     .bjs-container/.djs-container) to have settled its real layout.
+      // Skipping either one reproduces the same failure: fit-viewport's
+      // math divides by that stale/zero size, throwing (SVGMatrix.scale
+      // with a non-finite value) rather than no-op-ing.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (destroyed) return;
+          const canvas = modeler.get('canvas');
+          canvas.resized();
+          canvas.zoom('fit-viewport');
+        });
+      });
+    })
+    .catch((error) => {
+      console.error('Failed to import BPMN diagram', error);
+    });
 
   modeler.on('commandStack.changed', async () => {
     if (destroyed) return; // may fire while saveXML was pending after destroy

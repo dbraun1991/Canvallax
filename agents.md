@@ -121,7 +121,7 @@ Naming for the canvases (Process/System/Object/Interaction/Backlog) is **not yet
 
 ## Sibling-Project Conventions Used Here
 
-Canvallax shares this workspace with other solo-built webapps (`Climb-Buddy-Belay`, `Metroviz`, `OrgVisualizr`, and another project), each with its own `agents.md`/`AGENTS.md` and `docs/adr(s)/`. Where an ADR cites a sibling project's implementation as precedent (ADR-0008 cites `Climb-Buddy-Belay`'s mobile `<details>` collapse and that other project's resizable-sidebar drag handle; ADR-0013 cites `OrgVisualizr`'s theme toggle; ADR-0017/0018 cite the same other project's header brand cluster, modal skeleton, and sidebar-footer mode toggle), that project's source is the concrete reference to read before extending the Canvallax equivalent. (ADR-0019 has no sibling-project precedent — the in-place grid reflow was built from scratch.)
+Canvallax shares this workspace with other solo-built webapps (`Climb-Buddy-Belay`, `Metroviz`, `OrgVisualizr`, and another project), each with its own `agents.md`/`AGENTS.md` and `docs/adr(s)/`. Where an ADR cites a sibling project's implementation as precedent (ADR-0008 cites `Climb-Buddy-Belay`'s mobile `<details>` collapse and that other project's resizable-sidebar drag handle; ADR-0013 cites `OrgVisualizr`'s theme toggle (its sun/moon SVG icon pair too, reused directly in the burger menu's theme item); ADR-0017/0018 cite the same other project's header brand cluster, modal skeleton, and sidebar-footer mode toggle), that project's source is the concrete reference to read before extending the Canvallax equivalent. (ADR-0019 has no sibling-project precedent — the in-place grid reflow was built from scratch.)
 
 Conventions carried forward, consistent with every sibling project in this workspace:
 
@@ -163,14 +163,9 @@ Items with an ADR are designed but not built (ADR-0014). Everything else below n
 - **Concurrent-edit / merge story** for one Issue's single JSON document — relevant once more than one person can edit the same Issue; out of scope while client-side/single-user.
 - **Cross-canvas element-level linking**, reconsidered. ADR-0009 explicitly decided against building this now. If element-to-element navigation (e.g. one BPMN task ↔ one Object-canvas entity) turns out to matter in practice, it's new scope requiring its own ADR — not a partially-built feature waiting to be finished.
 - **Real-time multiplayer editing** across all three tool-backed canvases — explicitly lower priority than format compatibility for the initial feasibility prototype; per-canvas feasibility notes live in ADR-0004/0005/0006.
-- **Light/dark icons instead of a text label.** The burger menu's theme item is still plain text ("Light mode"/"Dark mode") — swap in real icons, silently drawing on `OrgVisualizr`'s icon set/pattern rather than the current text-only toggle.
 - **Reconsider the Interaction canvas's underlying tool.** It currently shares draw.io with System/Integration (ADR-0005) — worth a real brainstorm on whether draw.io, Mermaid, bpmn.io, or even a per-Issue user-selectable switch (exactly one tool active at a time) is the better fit. Not decided, no direction given yet.
-- **Is the Backlog footer the right place for the Presenting/Editing toggle?** Open question, not re-examined since ADR-0018 put it there.
-- **Stray vertical divider next to "All."** `.issue-header`'s trailing border-right divider (meant to separate it from the tab switcher) still renders in Presenting mode even though the tab switcher itself is hidden there — worth checking whether it should be conditional on Editing mode too.
-- **Move the theme toggle back to a visible top-left button?** Already moved once (ADR-0017 put it in the burger menu) — if revisited, decide it once rather than flip-flopping between the two locations again.
-- **Process canvas should auto-fit and center on entry from the All grid**, not open at its default zoom/position — bpmn-js has a fit-to-viewport capability for this; inspiration from elsewhere in the workspace is fine to draw on.
-- **Object canvas (Mermaid) should also fill/fit its available space on entry**, not just stay centered at its own intrinsic size the way it does today — same "auto-fit" idea as Process, for the other engine.
-- **Sample screenshots in `README.md`.** The product framing doc has no visuals yet — worth adding a few once the shell's current look (burger menu, centered top bar, Presenting/Editing modes) feels settled enough to be worth capturing.
+- **Is the Backlog footer the right place for the Presenting/Editing toggle?** Considered and left as-is for now (2026-09-04) — no move planned unless a specific alternative comes up.
+- **Theme toggle: burger menu, or a visible top-left button?** Considered and left in the burger menu for now (2026-09-04), specifically to avoid flip-flopping between the two locations without a real reason to revisit.
 
 ## What It Does NOT Do (yet)
 

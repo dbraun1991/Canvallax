@@ -6,6 +6,14 @@ Canvallax is a webapp for remote teams that need business and technical stakehol
 It gives a team a small set of shared, deliberately incomplete visual canvases, so that planning and prioritization decisions are made from a common ground.
 
 
+## Screenshots
+
+| | |
+|---|---|
+| ![Choosing an Issue](docs/screenshots/issue-picker.jpg) *Choosing an Issue* | ![All four canvases at a glance](docs/screenshots/all-grid.jpg) *All four canvases at a glance* |
+| ![The Process canvas, editing](docs/screenshots/process-canvas.jpg) *The Process canvas, editing* | ![Presenting mode: one canvas enlarged, the rest stacked beside it](docs/screenshots/presenting-mode.jpg) *Presenting mode: one canvas enlarged, the rest stacked beside it* |
+
+
 ## Running Locally
 
 ```
