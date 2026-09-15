@@ -57,7 +57,16 @@ export async function renderExcalidrawThumbnail(content, theme) {
 
   const svg = await exportToSvg({
     elements: scene.elements,
-    appState: { ...scene.appState, theme: theme === 'dark' ? 'dark' : 'light', exportBackground: false },
+    // exportToSvg reads appState.exportWithDarkMode (not appState.theme) to
+    // decide whether to apply its dark-mode invert filter to the exported
+    // SVG — matching the filter the live canvas already gets via Excalidraw's
+    // own `.theme--dark canvas` CSS rule.
+    appState: {
+      ...scene.appState,
+      theme: theme === 'dark' ? 'dark' : 'light',
+      exportWithDarkMode: theme === 'dark',
+      exportBackground: false,
+    },
     files: scene.files || null,
   });
   return svg.outerHTML;

@@ -8,10 +8,10 @@ import { renderExcalidrawThumbnail } from './interaction/excalidraw-canvas.js';
 // re-rendering (meaningfully avoids redundant draw.io iframe round-trips).
 // Does not react to edits happening in another view while All isn't open;
 // that's a separate, deferred feature.
-const cache = new Map(); // `${issueId}:${view}` -> { content, result }
+const cache = new Map(); // `${issueId}:${view}:${theme}` -> { content, result }
 
-async function renderCached(issueId, view, content, renderFn) {
-  const key = `${issueId}:${view}`;
+async function renderCached(issueId, view, theme, content, renderFn) {
+  const key = `${issueId}:${view}:${theme}`;
   const cached = cache.get(key);
   if (cached && cached.content === content) return cached.result;
 
@@ -22,16 +22,16 @@ async function renderCached(issueId, view, content, renderFn) {
 
 export async function renderAllThumbnails(issue, theme) {
   const [process, system, interaction, object] = await Promise.all([
-    renderCached(issue.id, 'process', issue.views.process.content, () =>
+    renderCached(issue.id, 'process', theme, issue.views.process.content, () =>
       renderProcessThumbnail(issue.views.process.content)
     ),
-    renderCached(issue.id, 'system', issue.views.system.content, () =>
+    renderCached(issue.id, 'system', theme, issue.views.system.content, () =>
       renderDrawioThumbnail(issue.views.system.content, theme)
     ),
-    renderCached(issue.id, 'interaction', issue.views.interaction.content, () =>
+    renderCached(issue.id, 'interaction', theme, issue.views.interaction.content, () =>
       renderExcalidrawThumbnail(issue.views.interaction.content, theme)
     ),
-    renderCached(issue.id, 'object', issue.views.object.content, () =>
+    renderCached(issue.id, 'object', theme, issue.views.object.content, () =>
       renderObjectThumbnail(issue.views.object.content, theme)
     ),
   ]);

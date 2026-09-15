@@ -110,7 +110,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0010](docs/adr/0010-persistence-and-versioning.md) | One JSON document per Issue; every view + Backlog entry carries a UUID; git commit history is the version log (client-side for now) |
 | [0011](docs/adr/0011-cross-issue-copy.md) | Copy a view (overwrite) or Backlog entry (append) from another Issue: always HEAD, `copiedFrom` provenance, never a whole Issue |
 | [0012](docs/adr/0012-all-view-thumbnails.md) | All-view tiles render real SVG thumbnails per engine, content-hash cached |
-| [0013](docs/adr/0013-theming-light-and-dark-mode.md) | Shell light/dark toggle; System/Interaction/Object follow it, Process stays light — **Interaction's mechanism superseded by 0021** |
+| [0013](docs/adr/0013-theming-light-and-dark-mode.md) | Shell light/dark toggle; Interaction/Object follow it, Process and System stay light — **Interaction's mechanism superseded by 0021, System's theming superseded by 0024** |
 | [0014](docs/adr/0014-server-backed-persistence-deferred.md) | Server-backed persistence, once built, is Express (Node) — deferred |
 | [0015](docs/adr/0015-computed-tooltips-deferred.md) | Tooltips computed live from state, never stored |
 | [0016](docs/adr/0016-panel-collapse-via-drag-threshold.md) | Both side panels collapse by dragging their resize handle past a threshold; no explicit toggle button |
@@ -121,6 +121,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0021](docs/adr/0021-interaction-canvas-excalidraw.md) | Interaction Canvas: Excalidraw (MIT, freeform sketching), not draw.io — React mounted as an isolated island |
 | [0022](docs/adr/0022-static-hosting-github-pages.md) | Static hosting: GitHub Pages, deployed via GitHub Actions on every push to `main` |
 | [0023](docs/adr/0023-fixed-four-canvases-no-user-configurable-set.md) | Exactly four canvases, not user-configurable — each already supports holding multiple related items; an in-app reminder says so |
+| [0024](docs/adr/0024-system-canvas-drawing-surface-stays-light.md) | System/Integration's draw.io drawing surface stays permanently light, like Process — default black connector strokes were unreadable against a dark canvas |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is **not yet finalized** (`docs/adr/README.md`) — code and docs currently use the README naming. This is exactly why views and Backlog entries carry their own UUIDs (ADR-0007/0010): identity must survive a naming decision that hasn't happened yet.
 

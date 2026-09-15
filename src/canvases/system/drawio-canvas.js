@@ -7,6 +7,14 @@
 
 const DRAWIO_ORIGIN = 'https://embed.diagrams.net';
 
+// A genuinely empty XML string ('') makes draw.io's embed show its own
+// "choose a template" gallery instead of landing on an editable blank
+// canvas. A minimal, valid, empty mxGraphModel document opens directly
+// into the normal editor, matching the starter-content fallback pattern
+// already used by Process/Object for a brand-new (never-drawn-on) view.
+const EMPTY_DRAWIO_XML =
+  '<mxGraphModel dx="800" dy="600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0"><root><mxCell id="0" /><mxCell id="1" parent="0" /></root></mxGraphModel>';
+
 export function mountDrawioCanvas(container, viewObj, onChange, theme) {
   const iframe = document.createElement('iframe');
   iframe.src = `${DRAWIO_ORIGIN}/?embed=1&proto=json&spin=1`;
@@ -29,9 +37,13 @@ export function mountDrawioCanvas(container, viewObj, onChange, theme) {
       iframe.contentWindow.postMessage(
         JSON.stringify({
           action: 'load',
-          xml: viewObj.content || '',
+          xml: viewObj.content || EMPTY_DRAWIO_XML,
           autosave: 1,
-          dark: theme === 'dark',
+          // The drawing surface stays permanently light regardless of shell
+          // theme (ADR-0024) — connector strokes are baked into saved XML
+          // as black by default and don't repaint when draw.io's chrome
+          // goes dark, so a dark canvas would make them nearly invisible.
+          dark: false,
         }),
         DRAWIO_ORIGIN
       );
@@ -84,7 +96,8 @@ export function renderDrawioThumbnail(xml, theme) {
 
       if (message.event === 'init') {
         iframe.contentWindow.postMessage(
-          JSON.stringify({ action: 'load', xml: xml || '', dark: theme === 'dark' }),
+          // dark: false — see the matching comment in mountDrawioCanvas (ADR-0024).
+          JSON.stringify({ action: 'load', xml: xml || EMPTY_DRAWIO_XML, dark: false }),
           DRAWIO_ORIGIN
         );
       } else if (message.event === 'load') {
