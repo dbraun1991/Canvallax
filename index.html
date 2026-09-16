@@ -92,6 +92,7 @@
             <div class="view-tabs-actions" x-show="activeView !== 'all'">
               <button type="button" class="copy-toggle" @click="openCopyPicker('view')">Copy</button>
               <button type="button" class="history-toggle" @click="toggleHistory()">History</button>
+              <button type="button" class="export-toggle" @click="openExportPicker()">Export</button>
             </div>
           </div>
         </header>
@@ -395,6 +396,23 @@
           >
             Copy
           </button>
+        </div>
+      </div>
+
+      <div class="copy-picker-backdrop" x-show="exportPickerOpen" @click="closeExportPicker()"></div>
+      <div class="copy-picker" x-show="exportPickerOpen">
+        <div class="history-panel-header">
+          <h3 x-text="'Export ' + activeView"></h3>
+          <button type="button" class="history-close" @click="closeExportPicker()">×</button>
+        </div>
+        <div class="copy-picker-body">
+          <label class="copy-picker-label">Format</label>
+          <select class="backlog-field" x-model="exportFormat">
+            <option value="native" x-text="activeView !== 'all' ? exportNativeFormats[activeView].label : ''"></option>
+            <option value="svg">SVG</option>
+          </select>
+
+          <button type="button" class="history-restore" @click="performExport()">Download</button>
         </div>
       </div>
     </div>

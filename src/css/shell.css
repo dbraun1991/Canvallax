@@ -316,7 +316,8 @@
 }
 
 .history-toggle,
-.copy-toggle {
+.copy-toggle,
+.export-toggle {
   background: none;
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -327,7 +328,8 @@
 }
 
 .history-toggle:hover,
-.copy-toggle:hover {
+.copy-toggle:hover,
+.export-toggle:hover {
   color: var(--text);
 }
 

@@ -14,6 +14,7 @@ import { mountDrawioCanvas } from '../canvases/system/drawio-canvas.js';
 import { mountObjectCanvas } from '../canvases/object/object-canvas.js';
 import { mountExcalidrawCanvas } from '../canvases/interaction/excalidraw-canvas.js';
 import { renderAllThumbnails as renderThumbnails } from '../canvases/thumbnails.js';
+import { exportView, NATIVE_FORMATS } from '../canvases/export.js';
 
 // Process needs two child containers (canvas + properties panel); the
 // other engines mount straight into the single wrapper element. Adapting
@@ -78,6 +79,9 @@ export function shellState() {
     copySourceId: '',
     copySourceEntryId: '',
     newEntryName: '',
+    exportPickerOpen: false,
+    exportFormat: 'native', // 'native' | 'svg'
+    exportNativeFormats: NATIVE_FORMATS, // exposed for the picker's native-format label
     // Mirrors the data-theme attribute the inline head script already set
     // (ADR-0013) — never re-derived independently, so this can't disagree
     // with what's actually rendered.
@@ -444,6 +448,24 @@ export function shellState() {
       }
 
       this.copyPickerOpen = false;
+    },
+
+    // Canvas/diagram export, Phase 1 (agents.md Future Work): one view at a
+    // time, native source or SVG. Only meaningful for a single-canvas view,
+    // like Copy/History — index.html hides the Export button on All too.
+    openExportPicker() {
+      this.exportFormat = 'native';
+      this.exportPickerOpen = true;
+    },
+
+    closeExportPicker() {
+      this.exportPickerOpen = false;
+    },
+
+    async performExport() {
+      if (!this.activeIssue || this.activeView === 'all') return;
+      await exportView(this.activeIssue, this.activeView, this.exportFormat, this.theme);
+      this.exportPickerOpen = false;
     },
   };
 }

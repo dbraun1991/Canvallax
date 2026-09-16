@@ -146,6 +146,7 @@ Conventions carried forward, consistent with every sibling project in this works
 | `src/canvases/interaction/excalidraw-canvas.js` | Interaction Canvas: Excalidraw, mounted as an isolated React island | 0021 |
 | `src/canvases/object/` | Object Canvas: Mermaid text+preview | 0006 |
 | `src/canvases/thumbnails.js` | All-view thumbnail orchestration across all four engines | 0012 |
+| `src/canvases/export.js` | Per-view export (native source or SVG), Phase 1 of Canvas/diagram export | — |
 | `src/persistence/git-store.js` | Client-side git layer (`isomorphic-git`/`lightning-fs`/IndexedDB): commits, history, blob reads | 0010 |
 | `src/persistence/issue-store.js` | Issue CRUD, Backlog entries, copy, debounced autosave | 0007, 0010, 0011 |
 | `src/persistence/seed-issues.js` | Example Issues seeded on a true first run | 0007 |
@@ -173,6 +174,7 @@ Items with an ADR are designed but not built (ADR-0014). Everything else below n
 - **Excalidraw's element vocabulary isn't curated.** Same category of open work as Process's BPMN subset above — Excalidraw's full toolset (shapes, freehand, text, images, frames, laser pointer) is all available as-is; narrowing it toward "storyboard sketch" specifically, if that turns out to matter, is unbuilt work (ADR-0021).
 - **Is the Backlog footer the right place for the Presenting/Editing toggle?** Considered and left as-is for now (2026-09-04) — no move planned unless a specific alternative comes up.
 - **Theme toggle: burger menu, or a visible top-left button?** Considered and left in the burger menu for now (2026-09-04), specifically to avoid flip-flopping between the two locations without a real reason to revisit.
+- **Canvas/diagram export — beyond Phase 1.** `src/canvases/export.js` covers Phase 1: one view at a time, native source (`.bpmn`/`.drawio`/`.excalidraw`/`.mmd`) or SVG, via an Export button next to Copy/History (`index.html`'s `view-tabs-actions`, `src/shell/shell-state.js`'s `openExportPicker`/`performExport`). Still unbuilt: PNG (a shared SVG→`<canvas>` rasterization helper, no new dependency needed), Issue-level bulk export as a ZIP (needs a new dependency, e.g. `jszip`), PDF (needs a new dependency, e.g. `jspdf`), and a per-tile export affordance in the All grid.
 
 ## What It Does NOT Do (yet)
 
