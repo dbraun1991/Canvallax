@@ -713,25 +713,26 @@
   border-color: var(--accent);
 }
 
-/* .all-cell.all-featured-display, not .all-featured-display alone: needs
-   to out-specificity .all-cell's own `border` shorthand above (same
-   selector weight would otherwise lose to source order) to actually show.
-   Reuses the "Decided" status pill's green (theme.css) rather than a new
-   one-off color — a slight accent marking this as the currently active
-   view, not a state/validity signal like the pill itself. */
-.all-cell.all-featured-display,
-.all-cell.all-featured-display:hover {
-  border-color: var(--state-decided);
-}
-
 /* ADR-0033: the small tile matching whichever view is currently featured
    dims in place — it stays in its fixed position (never removed or
    reordered), this is just the visual cue that its content is shown large
    in .all-featured-display instead. Still fully interactive (clicking it
-   un-features, same as clicking .all-featured-display does). */
+   un-features, same as clicking .all-featured-display does). The green
+   border (not .all-featured-display alone: needs .all-cell.dimmed's two
+   classes to out-specificity .all-cell's own `border` shorthand above,
+   which otherwise wins on source order) marks it, specifically in this
+   4-tile list, as the currently active view — reusing the "Decided"
+   status pill's color (theme.css) rather than a new one-off value. The
+   maximized display itself isn't highlighted; it's already the obviously
+   large one. */
 .all-cell.dimmed {
   opacity: 0.35;
   filter: grayscale(60%);
+  border-color: var(--state-decided);
+}
+
+.all-cell.dimmed:hover {
+  border-color: var(--state-decided);
 }
 
 .all-cell h3 {
