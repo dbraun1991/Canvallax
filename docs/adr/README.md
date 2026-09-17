@@ -39,5 +39,6 @@ This tree was rebuilt from scratch on 2026-09-03, consolidating what had been tw
 | [0031](0031-canvas-naming-stays-provisional.md) | Canvas naming stays provisional — not finalized now, revisit only on demand | Accepted — deferred |
 | [0032](0032-process-and-interaction-canvases-keep-full-tool-vocabulary.md) | Process and Interaction Canvases keep their tools' full default vocabulary (no curated BPMN/Excalidraw subset) | Accepted |
 | [0033](0033-presenting-mode-featured-layout-fixed-order-dimmed.md) | Presenting mode's featured layout: all four tiles always in fixed order, the featured one dimmed in place, not excluded from the stack | Accepted |
+| [0034](0034-mobile-out-of-scope-desktop-widescreen-only.md) | Mobile is out of scope — desktop/widescreen (16:9+) only; the canvas engines' own touch-editing usability, not Canvallax's shell, is the real blocker | Accepted |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is not yet finalized — these ADRs use the current README naming and should be updated if it changes. This is why every view and Backlog entry carries its own UUID independent of that naming (ADR-0007) — identity has to survive a naming decision that hasn't happened yet.

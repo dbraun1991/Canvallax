@@ -92,7 +92,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 |------|------|
 | `README.md` | Product framing — naming, the canvases, what each is/isn't for |
 | `docs/adr/README.md` | ADR index — numbered, append-only decision log |
-| `docs/adr/0001-*.md` – `0033-*.md` | Individual decisions — see the index for titles |
+| `docs/adr/0001-*.md` – `0034-*.md` | Individual decisions — see the index for titles |
 
 ## Architecture Decisions
 
@@ -131,6 +131,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0031](docs/adr/0031-canvas-naming-stays-provisional.md) | Canvas naming stays provisional — not finalized now, revisit only on demand |
 | [0032](docs/adr/0032-process-and-interaction-canvases-keep-full-tool-vocabulary.md) | Process and Interaction Canvases keep their tools' full default vocabulary — no curated BPMN/Excalidraw subset, revisit only on an observed need |
 | [0033](docs/adr/0033-presenting-mode-featured-layout-fixed-order-dimmed.md) | Presenting mode's featured layout: all four tiles always render in fixed Process/System/Object/Interaction order; the featured one dims in place (a separate `.all-featured-display` element shows it large) instead of being excluded from the stack |
+| [0034](docs/adr/0034-mobile-out-of-scope-desktop-widescreen-only.md) | Mobile is out of scope, permanently — desktop/widescreen (16:9+) only; the canvas engines' own touch-editing usability, not Canvallax's shell, is the real blocker |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is **not yet finalized** (`docs/adr/README.md`) — code and docs currently use the README naming. This is exactly why views and Backlog entries carry their own UUIDs (ADR-0007/0010): identity must survive a naming decision that hasn't happened yet.
 
@@ -176,7 +177,7 @@ Items with an ADR are designed but not built (ADR-0014). Everything else below n
 - **Canvas naming finalization — settled, not revisited (ADR-0031, 2026-09-17).** README/`docs/adr/README.md` flag Process/System/Object/Interaction/Backlog naming as provisional; confirmed to stay that way indefinitely, revisited only if a concrete reason to rename actually comes up. Per-view UUIDs mean this can still be resolved later without a data migration whenever that happens — but the rename itself (UI copy, `views.<name>` key vs. `id`, any docs referencing current names) would still be unbuilt work at that point.
 - **Process Canvas's BPMN subset — settled, not revisited (ADR-0032, 2026-09-17).** ADR-0004 called for a constrained BPMN profile rather than bpmn-js's full default palette; confirmed to stay full for now — narrowing it from theory alone risks guessing wrong, revisit only once a real diagram actually shows the predicted problem (stakeholder confusion, or drifting into technical-level modeling).
 - **File-manager-style Issue picker.** The Issue-picker overlay's list (ADR-0017) is still a flat, unfiltered list beyond its search field — worth revisiting (tabs, folder tree, per another project's own sidebar) once there are enough Issues that a flat list stops scaling.
-- **Mobile Backlog collapse.** The single remaining side panel (Backlog) has no touch-friendly collapse mechanism below the 768px breakpoint — drag-collapse is disabled there (`.resize-handle{display:none}`) and nothing replaces it, unlike the old sidebar's `<details>` fallback. Not yet decided whether it needs one.
+- **Mobile Backlog collapse — settled, out of scope (ADR-0034, 2026-09-17).** The single remaining side panel (Backlog) has no touch-friendly collapse mechanism below the 768px breakpoint — drag-collapse is disabled there (`.resize-handle{display:none}`) and nothing replaces it, unlike the old sidebar's `<details>` fallback. Confirmed permanent, not a gap to fill: Canvallax targets desktop/widescreen only, since the canvas engines' own editing UIs aren't usable well on touch regardless of any responsive work on the shell's side.
 - **Featured tile is a static enlarge, not a live viewer.** Presenting mode's featured display (ADR-0019/0033) reuses the same rendered thumbnail, not a pannable/zoomable live render — fine for "look closer," a real diagram viewer is a bigger feature if that turns out to matter.
 - **No transition on the grid reflow — settled, not revisited.** Switching a tile in/out of Presenting mode's featured layout (ADR-0019) is an instant snap. Confirmed permanent (ADR-0030, 2026-09-17): beyond `grid-template-areas` changes not being meaningfully animatable across browsers, an animated transition would introduce a window where a presenter/viewer's screen-share connection hiccupping could make the animation itself look broken — a real risk for a feature specifically used in live, often-remote walkthroughs.
 - **Concurrent-edit / merge story** for one Issue's single JSON document — relevant once more than one person can edit the same Issue; out of scope while client-side/single-user.
