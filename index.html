@@ -21,7 +21,7 @@
   <body>
     <div id="app" x-data="shell()" x-cloak>
       <div class="loading-state" x-show="loading">
-        <p>Loading…</p>
+        <p x-text="t('shell.loading')"></p>
       </div>
       <div class="shell" x-show="!loading">
         <!-- Top brand bar (ADR-0017) — always visible, not gated on activeIssue:
@@ -34,8 +34,8 @@
               type="button"
               class="burger-button"
               @click="toggleBurgerMenu()"
-              title="Menu"
-              aria-label="Menu"
+              :title="t('topBar.menu')"
+              :aria-label="t('topBar.menu')"
             >
               ☰
             </button>
@@ -57,7 +57,7 @@
                   class="issue-name-field"
                   x-model="activeIssue.name"
                   @input="saveActiveIssue()"
-                  placeholder="Issue name"
+                  :placeholder="t('topBar.issueNamePlaceholder')"
                   :title="activeIssue.name"
                 />
                 <select
@@ -66,9 +66,9 @@
                   x-model="activeIssue.status"
                   @change="saveActiveIssue()"
                 >
-                  <option value="open">open</option>
-                  <option value="mapped">mapped</option>
-                  <option value="decided">decided</option>
+                  <option value="open" x-text="t('status.open')"></option>
+                  <option value="mapped" x-text="t('status.mapped')"></option>
+                  <option value="decided" x-text="t('status.decided')"></option>
                 </select>
               </div>
             </template>
@@ -82,7 +82,7 @@
                   class="canvas-tab"
                   :class="{ active: activeView === view }"
                   @click="setView(view)"
-                  x-text="view === 'all' ? 'All' : view[0].toUpperCase() + view.slice(1)"
+                  x-text="t('canvas.' + view)"
                 ></button>
               </template>
             </div>
@@ -90,9 +90,9 @@
 
           <div class="top-bar-right" x-show="activeIssue">
             <div class="view-tabs-actions" x-show="activeView !== 'all'">
-              <button type="button" class="copy-toggle" @click="openCopyPicker('view')">Copy</button>
-              <button type="button" class="history-toggle" @click="toggleHistory()">History</button>
-              <button type="button" class="export-toggle" @click="openExportPicker()">Export</button>
+              <button type="button" class="copy-toggle" @click="openCopyPicker('view')" x-text="t('topBar.copy')"></button>
+              <button type="button" class="history-toggle" @click="toggleHistory()" x-text="t('topBar.history')"></button>
+              <button type="button" class="export-toggle" @click="openExportPicker()" x-text="t('topBar.export')"></button>
             </div>
           </div>
         </header>
@@ -100,7 +100,7 @@
         <!-- Burger menu: a small anchored dropdown, not a dimmed modal (ADR-0017) -->
         <div class="burger-menu-backdrop" x-show="burgerMenuOpen" @click="closeBurgerMenu()" x-cloak></div>
         <div class="burger-menu" x-show="burgerMenuOpen" x-cloak>
-          <button type="button" class="burger-menu-item" @click="openIssuePicker()">Change Issue</button>
+          <button type="button" class="burger-menu-item" @click="openIssuePicker()" x-text="t('burgerMenu.changeIssue')"></button>
           <button type="button" class="burger-menu-item" @click="toggleTheme(); closeBurgerMenu()">
             <!-- Icon pair borrowed from another project in this workspace's own
                  theme toggle: shows the icon matching the CURRENT theme (moon
@@ -113,9 +113,21 @@
                 d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"
               />
             </svg>
-            <span x-text="theme === 'dark' ? 'Light mode' : 'Dark mode'"></span>
+            <span x-text="theme === 'dark' ? t('burgerMenu.lightMode') : t('burgerMenu.darkMode')"></span>
           </button>
-          <button type="button" class="burger-menu-item" @click="openSettings()">Settings</button>
+          <button type="button" class="burger-menu-item" @click="openSettings()" x-text="t('burgerMenu.settings')"></button>
+          <!-- ADR-0026: language switcher, a <select> from day one (not per-
+               language buttons) — a sibling project in this workspace had to
+               migrate off buttons once it grew past two languages. Language
+               names (English/Deutsch) are each language's own endonym, never
+               translated, same convention every language switcher uses. -->
+          <div class="burger-menu-item burger-menu-language">
+            <span x-text="t('burgerMenu.language')"></span>
+            <select :value="$store.i18n.language" @change="$store.i18n.changeLanguage($event.target.value); closeBurgerMenu()">
+              <option value="en">English</option>
+              <option value="de">Deutsch</option>
+            </select>
+          </div>
         </div>
 
         <div class="shell-columns">
@@ -138,8 +150,8 @@
               <template x-if="activeIssue">
                 <div class="backlog-entries">
                   <div class="backlog-entries-header">
-                    <h3>Backlog</h3>
-                    <button type="button" class="copy-toggle" @click="openCopyPicker('entry')">Copy entry from…</button>
+                    <h3 x-text="t('backlog.title')"></h3>
+                    <button type="button" class="copy-toggle" @click="openCopyPicker('entry')" x-text="t('backlog.copyEntryFrom')"></button>
                   </div>
                   <div class="add-entry-form">
                     <input
@@ -147,9 +159,9 @@
                       class="backlog-field"
                       x-model="newEntryName"
                       @keydown.enter="addEntry()"
-                      placeholder="New entry name…"
+                      :placeholder="t('backlog.newEntryPlaceholder')"
                     />
-                    <button type="button" class="add-entry-button" @click="addEntry()">Add</button>
+                    <button type="button" class="add-entry-button" @click="addEntry()" x-text="t('backlog.add')"></button>
                   </div>
                   <ul class="backlog-entry-list">
                     <template x-for="entry in activeIssue.backlogEntries" :key="entry.id">
@@ -168,13 +180,13 @@
                           class="backlog-field backlog-entry-description-field"
                           x-model="entry.description"
                           @input="saveActiveIssue()"
-                          placeholder="Description…"
+                          :placeholder="t('backlog.descriptionPlaceholder')"
                           :title="entry.description"
                         ></textarea>
-                        <p class="copy-provenance" x-show="entry.copiedFrom" :title="copyProvenanceLabel(entry.copiedFrom)">Copied from another Issue</p>
+                        <p class="copy-provenance" x-show="entry.copiedFrom" :title="copyProvenanceLabel(entry.copiedFrom)" x-text="t('backlog.copiedFromAnotherIssue')"></p>
                       </li>
                     </template>
-                    <li class="backlog-empty" x-show="activeIssue.backlogEntries.length === 0">No entries yet.</li>
+                    <li class="backlog-empty" x-show="activeIssue.backlogEntries.length === 0" x-text="t('backlog.noEntriesYet')"></li>
                   </ul>
                 </div>
               </template>
@@ -182,8 +194,8 @@
             <!-- ADR-0018: Presenting/Editing mode toggle, in the Backlog panel's
                  footer now that it's the shell's only side panel. -->
             <div class="backlog-footer" x-show="backlogExpanded" x-cloak>
-              <span class="mode-toggle-label" x-text="canvasMode === 'editing' ? 'Editing' : 'Presenting'"></span>
-              <label class="toggle-switch" title="Switch between Editing and Presenting mode">
+              <span class="mode-toggle-label" x-text="canvasMode === 'editing' ? t('backlog.editing') : t('backlog.presenting')"></span>
+              <label class="toggle-switch" :title="t('backlog.modeToggleTitle')">
                 <input type="checkbox" :checked="canvasMode === 'presenting'" @change="toggleCanvasMode()" />
                 <span class="toggle-slider"></span>
               </label>
@@ -205,9 +217,9 @@
                     :class="{ featured: featuredCanvas === 'process' }"
                     @click="canvasMode === 'editing' ? setView('process') : toggleZoom('process')"
                   >
-                    <h3>Process</h3>
+                    <h3 x-text="t('canvas.process')"></h3>
                     <div class="all-cell-thumbnail" x-show="thumbnails.process" x-html="thumbnails.process"></div>
-                    <p class="placeholder" x-show="!thumbnails.process">Rendering…</p>
+                    <p class="placeholder" x-show="!thumbnails.process" x-text="t('allGrid.rendering')"></p>
                   </div>
                   <div
                     class="all-cell"
@@ -215,9 +227,9 @@
                     :class="{ featured: featuredCanvas === 'system' }"
                     @click="canvasMode === 'editing' ? setView('system') : toggleZoom('system')"
                   >
-                    <h3>System/Integration</h3>
+                    <h3 x-text="t('canvas.systemFull')"></h3>
                     <div class="all-cell-thumbnail" x-show="thumbnails.system" x-html="thumbnails.system"></div>
-                    <p class="placeholder" x-show="!thumbnails.system">Rendering…</p>
+                    <p class="placeholder" x-show="!thumbnails.system" x-text="t('allGrid.rendering')"></p>
                   </div>
                   <div
                     class="all-cell"
@@ -225,9 +237,9 @@
                     :class="{ featured: featuredCanvas === 'object' }"
                     @click="canvasMode === 'editing' ? setView('object') : toggleZoom('object')"
                   >
-                    <h3>Object</h3>
+                    <h3 x-text="t('canvas.object')"></h3>
                     <div class="all-cell-thumbnail" x-show="thumbnails.object" x-html="thumbnails.object"></div>
-                    <p class="placeholder" x-show="!thumbnails.object">Rendering…</p>
+                    <p class="placeholder" x-show="!thumbnails.object" x-text="t('allGrid.rendering')"></p>
                   </div>
                   <div
                     class="all-cell"
@@ -235,13 +247,13 @@
                     :class="{ featured: featuredCanvas === 'interaction' }"
                     @click="canvasMode === 'editing' ? setView('interaction') : toggleZoom('interaction')"
                   >
-                    <h3>Interaction</h3>
+                    <h3 x-text="t('canvas.interaction')"></h3>
                     <div class="all-cell-thumbnail" x-show="thumbnails.interaction" x-html="thumbnails.interaction"></div>
                     <!-- Excalidraw's legitimate empty state (nothing drawn yet) renders as
                          '' — a real, final result, not a mid-render placeholder — so it
                          needs its own message distinct from "still rendering" (null). -->
-                    <p class="placeholder" x-show="thumbnails.interaction === null">Rendering…</p>
-                    <p class="placeholder" x-show="thumbnails.interaction === ''">Nothing drawn yet</p>
+                    <p class="placeholder" x-show="thumbnails.interaction === null" x-text="t('allGrid.rendering')"></p>
+                    <p class="placeholder" x-show="thumbnails.interaction === ''" x-text="t('allGrid.nothingDrawnYet')"></p>
                   </div>
                 </div>
               </template>
@@ -267,13 +279,13 @@
 
               <div class="history-panel" x-show="historyOpen">
                 <div class="history-panel-header">
-                  <h3>History</h3>
+                  <h3 x-text="t('history.title')"></h3>
                   <button type="button" class="history-close" @click="toggleHistory()">×</button>
                 </div>
                 <p
                   class="copy-provenance"
                   x-show="activeIssue && activeIssue.views[activeView] && activeIssue.views[activeView].copiedFrom"
-                  x-text="activeIssue && activeIssue.views[activeView] && activeIssue.views[activeView].copiedFrom ? 'Copied from an earlier version of another Issue' : ''"
+                  x-text="activeIssue && activeIssue.views[activeView] && activeIssue.views[activeView].copiedFrom ? t('history.copiedFromEarlierVersion') : ''"
                   :title="activeIssue && activeIssue.views[activeView] ? copyProvenanceLabel(activeIssue.views[activeView].copiedFrom) : ''"
                 ></p>
                 <ul class="history-list">
@@ -281,12 +293,11 @@
                     <li class="history-entry">
                       <p class="history-message" x-text="entry.message"></p>
                       <p class="history-date" x-text="new Date(entry.timestamp * 1000).toLocaleString()"></p>
-                      <button type="button" class="history-restore" @click="restoreHistoryEntry(entry.oid)">
-                        Restore
+                      <button type="button" class="history-restore" @click="restoreHistoryEntry(entry.oid)" x-text="t('history.restore')">
                       </button>
                     </li>
                   </template>
-                  <li class="history-empty" x-show="historyEntries.length === 0">No history yet.</li>
+                  <li class="history-empty" x-show="historyEntries.length === 0" x-text="t('history.noHistoryYet')"></li>
                 </ul>
               </div>
             </div>
@@ -300,17 +311,17 @@
         <div class="issue-picker-backdrop" x-show="showIssuePicker" x-cloak></div>
         <div class="issue-picker" x-show="showIssuePicker" x-cloak>
           <div class="issue-picker-header">
-            <h2>Choose an Issue</h2>
+            <h2 x-text="t('issuePicker.title')"></h2>
             <button type="button" class="close" @click="closeIssuePicker()" x-show="activeIssue">×</button>
           </div>
           <div class="issue-picker-body">
             <input
               type="search"
               class="sidebar-search"
-              placeholder="Search issues…"
+              :placeholder="t('issuePicker.searchPlaceholder')"
               x-model="issuePickerQuery"
             />
-            <button type="button" class="new-issue-button" @click="createNewIssue()">+ New Issue</button>
+            <button type="button" class="new-issue-button" @click="createNewIssue()" x-text="t('issuePicker.newIssue')"></button>
             <ul class="issue-list">
               <template x-for="issue in filteredIssues" :key="issue.id">
                 <li>
@@ -323,7 +334,7 @@
                   >
                     <span class="issue-title" x-text="issue.name"></span>
                     <span class="issue-meta">
-                      <span class="issue-state" :class="'state-' + issue.status" x-text="issue.status"></span>
+                      <span class="issue-state" :class="'state-' + issue.status" x-text="t('status.' + issue.status)"></span>
                     </span>
                   </button>
                 </li>
@@ -336,18 +347,18 @@
         <div class="settings-backdrop" x-show="settingsOpen" @click="closeSettings()" x-cloak></div>
         <div class="settings-overlay" x-show="settingsOpen" x-cloak>
           <div class="issue-picker-header">
-            <h2>Settings</h2>
+            <h2 x-text="t('settings.title')"></h2>
             <button type="button" class="close" @click="closeSettings()">×</button>
           </div>
           <div class="settings-body">
-            <p class="settings-placeholder">Settings aren't built yet — this is a placeholder.</p>
+            <p class="settings-placeholder" x-text="t('settings.placeholder')"></p>
             <div class="settings-mock-row">
-              <span>Notifications</span>
-              <span class="settings-mock-tag">Coming soon</span>
+              <span x-text="t('settings.notifications')"></span>
+              <span class="settings-mock-tag" x-text="t('settings.comingSoon')"></span>
             </div>
             <div class="settings-mock-row">
-              <span>Workspace</span>
-              <span class="settings-mock-tag">Coming soon</span>
+              <span x-text="t('settings.workspace')"></span>
+              <span class="settings-mock-tag" x-text="t('settings.comingSoon')"></span>
             </div>
           </div>
         </div>
@@ -357,13 +368,13 @@
       <div class="copy-picker-backdrop" x-show="copyPickerOpen" @click="closeCopyPicker()"></div>
       <div class="copy-picker" x-show="copyPickerOpen">
         <div class="history-panel-header">
-          <h3 x-text="copyPickerMode === 'view' ? 'Copy ' + activeView + ' from…' : 'Copy Backlog entry from…'"></h3>
+          <h3 x-text="copyPickerMode === 'view' ? t('copyPicker.copyViewFrom', { view: t('canvas.' + activeView) }) : t('copyPicker.copyEntryFrom')"></h3>
           <button type="button" class="history-close" @click="closeCopyPicker()">×</button>
         </div>
         <div class="copy-picker-body">
-          <label class="copy-picker-label">Source Issue</label>
+          <label class="copy-picker-label" x-text="t('copyPicker.sourceIssue')"></label>
           <select class="backlog-field" x-model="copySourceId">
-            <option value="">Select an Issue…</option>
+            <option value="" x-text="t('copyPicker.selectIssue')"></option>
             <template x-for="issue in copySourceOptions" :key="issue.id">
               <option :value="issue.id" x-text="issue.name"></option>
             </template>
@@ -371,9 +382,9 @@
 
           <template x-if="copyPickerMode === 'entry' && copySourceId">
             <div>
-              <label class="copy-picker-label">Entry</label>
+              <label class="copy-picker-label" x-text="t('copyPicker.entry')"></label>
               <select class="backlog-field" x-model="copySourceEntryId">
-                <option value="">Select an entry…</option>
+                <option value="" x-text="t('copyPicker.selectEntry')"></option>
                 <template x-for="entry in copySourceEntries" :key="entry.id">
                   <option :value="entry.id" x-text="entry.name"></option>
                 </template>
@@ -381,38 +392,33 @@
             </div>
           </template>
 
-          <p class="copy-picker-note" x-show="copyPickerMode === 'view'">
-            This overwrites the current content. The previous version stays available in History.
-          </p>
-          <p class="copy-picker-note" x-show="copyPickerMode === 'entry'">
-            Adds a new entry — nothing existing is overwritten.
-          </p>
+          <p class="copy-picker-note" x-show="copyPickerMode === 'view'" x-text="t('copyPicker.overwriteNote')"></p>
+          <p class="copy-picker-note" x-show="copyPickerMode === 'entry'" x-text="t('copyPicker.appendNote')"></p>
 
           <button
             type="button"
             class="history-restore"
             :disabled="!copySourceId || (copyPickerMode === 'entry' && !copySourceEntryId)"
             @click="performCopy()"
-          >
-            Copy
-          </button>
+            x-text="t('copyPicker.copy')"
+          ></button>
         </div>
       </div>
 
       <div class="copy-picker-backdrop" x-show="exportPickerOpen" @click="closeExportPicker()"></div>
       <div class="copy-picker" x-show="exportPickerOpen">
         <div class="history-panel-header">
-          <h3 x-text="'Export ' + activeView"></h3>
+          <h3 x-text="t('exportPicker.title', { view: t('canvas.' + activeView) })"></h3>
           <button type="button" class="history-close" @click="closeExportPicker()">×</button>
         </div>
         <div class="copy-picker-body">
-          <label class="copy-picker-label">Format</label>
+          <label class="copy-picker-label" x-text="t('exportPicker.format')"></label>
           <select class="backlog-field" x-model="exportFormat">
             <option value="native" x-text="activeView !== 'all' ? exportNativeFormats[activeView].label : ''"></option>
             <option value="svg">SVG</option>
           </select>
 
-          <button type="button" class="history-restore" @click="performExport()">Download</button>
+          <button type="button" class="history-restore" @click="performExport()" x-text="t('exportPicker.download')"></button>
         </div>
       </div>
     </div>

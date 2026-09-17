@@ -1,0 +1,90 @@
+{
+  "shell": {
+    "loading": "Loading…"
+  },
+  "topBar": {
+    "menu": "Menu",
+    "issueNamePlaceholder": "Issue name",
+    "copy": "Copy",
+    "history": "History",
+    "export": "Export"
+  },
+  "status": {
+    "open": "open",
+    "mapped": "mapped",
+    "decided": "decided"
+  },
+  "canvas": {
+    "all": "All",
+    "process": "Process",
+    "system": "System",
+    "systemFull": "System/Integration",
+    "object": "Object",
+    "interaction": "Interaction"
+  },
+  "canvasHints": {
+    "process": "This process-canvas shall visualize the process - which may be altered",
+    "system": "This integration-canvas shall show attached systems and their connections - which may be affected by an upcoming change",
+    "object": "This Object-canvas shall describe data & entities with their relations - which may differ",
+    "interaction": "This Interaction-canvas shall be used to define touchpoints - and how they change"
+  },
+  "burgerMenu": {
+    "changeIssue": "Change Issue",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode",
+    "settings": "Settings",
+    "language": "Language"
+  },
+  "backlog": {
+    "title": "Backlog",
+    "copyEntryFrom": "Copy entry from…",
+    "newEntryPlaceholder": "New entry name…",
+    "add": "Add",
+    "descriptionPlaceholder": "Description…",
+    "copiedFromAnotherIssue": "Copied from another Issue",
+    "noEntriesYet": "No entries yet.",
+    "editing": "Editing",
+    "presenting": "Presenting",
+    "modeToggleTitle": "Switch between Editing and Presenting mode"
+  },
+  "allGrid": {
+    "rendering": "Rendering…",
+    "nothingDrawnYet": "Nothing drawn yet"
+  },
+  "history": {
+    "title": "History",
+    "copiedFromEarlierVersion": "Copied from an earlier version of another Issue",
+    "restore": "Restore",
+    "noHistoryYet": "No history yet."
+  },
+  "issuePicker": {
+    "title": "Choose an Issue",
+    "searchPlaceholder": "Search issues…",
+    "newIssue": "+ New Issue"
+  },
+  "settings": {
+    "title": "Settings",
+    "placeholder": "Settings aren't built yet — this is a placeholder.",
+    "notifications": "Notifications",
+    "workspace": "Workspace",
+    "comingSoon": "Coming soon"
+  },
+  "copyPicker": {
+    "copyViewFrom": "Copy {{view}} from…",
+    "copyEntryFrom": "Copy Backlog entry from…",
+    "sourceIssue": "Source Issue",
+    "selectIssue": "Select an Issue…",
+    "entry": "Entry",
+    "selectEntry": "Select an entry…",
+    "overwriteNote": "This overwrites the current content. The previous version stays available in History.",
+    "appendNote": "Adds a new entry — nothing existing is overwritten.",
+    "copy": "Copy",
+    "provenanceLabel": "Copied from \"{{name}}\" on {{date}}",
+    "deletedIssue": "a deleted Issue"
+  },
+  "exportPicker": {
+    "title": "Export {{view}}",
+    "format": "Format",
+    "download": "Download"
+  }
+}

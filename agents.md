@@ -4,7 +4,7 @@
 
 Canvallax is a webapp for remote teams that need business and technical stakeholders to understand the same system the same way. An Issue holds a small set of shared, deliberately incomplete visual **canvases** — Process, System/Integration, Object, Interaction — plus a Backlog list, bundled together as one unit. See `README.md` for the full product framing.
 
-**Current status: working end to end.** The Vite pipeline, the Issue-centric shell (burger-menu Issue picker, single left Backlog panel with a Presenting/Editing mode toggle, All + 4-view switcher), all four canvas engines, real git-backed persistence (client-side, `isomorphic-git`/IndexedDB), per-view history browsing and restore, cross-issue copy (views by overwrite, Backlog entries by append), All-view thumbnails (reused for Presenting mode's featured-tile reflow), the light/dark theme toggle, and computed tooltips are all built and wired up. Three example Issues, each with substantial example diagrams, seed automatically on a true first run (`src/persistence/seed-issues.js`) alongside anything created since.
+**Current status: working end to end.** The Vite pipeline, the Issue-centric shell (burger-menu Issue picker, single left Backlog panel with a Presenting/Editing mode toggle, All + 4-view switcher), all four canvas engines, real git-backed persistence (client-side, `isomorphic-git`/IndexedDB), per-view history browsing and restore, cross-issue copy (views by overwrite, Backlog entries by append), All-view thumbnails (reused for Presenting mode's featured-tile reflow), the light/dark theme toggle, computed tooltips, and a multi-language shell UI (English/German, ADR-0026) are all built and wired up. Three example Issues, each with substantial example diagrams, seed automatically on a true first run (`src/persistence/seed-issues.js`) alongside anything created since.
 
 ## Development
 
@@ -123,7 +123,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0023](docs/adr/0023-fixed-four-canvases-no-user-configurable-set.md) | Exactly four canvases, not user-configurable — each already supports holding multiple related items; an in-app reminder says so |
 | [0024](docs/adr/0024-system-canvas-drawing-surface-stays-light.md) | System/Integration's draw.io drawing surface stays permanently light, like Process — default black connector strokes were unreadable against a dark canvas |
 | [0025](docs/adr/0025-system-thumbnail-svg-export-forces-light-color-scheme.md) | System/Integration's thumbnail/export SVG forces `color-scheme: light` — draw.io's exported SVG otherwise resolves default colors against the *viewer's* OS dark-mode preference, not Canvallax's theme |
-| [0026](docs/adr/0026-multi-language-shell-ui-i18next.md) | Multi-language shell UI (deferred): i18next, static-imported `locales/<lang>/translation.json`, Alpine store wrapping `t()`, English default + German, `<select>` in the burger menu |
+| [0026](docs/adr/0026-multi-language-shell-ui-i18next.md) | Multi-language shell UI: i18next, static-imported `locales/<lang>/translation.json`, Alpine store wrapping `t()`, English default + German, `<select>` in the burger menu |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is **not yet finalized** (`docs/adr/README.md`) — code and docs currently use the README naming. This is exactly why views and Backlog entries carry their own UUIDs (ADR-0007/0010): identity must survive a naming decision that hasn't happened yet.
 
@@ -143,6 +143,8 @@ Conventions carried forward, consistent with every sibling project in this works
 | Path | Role | ADR |
 |------|------|-----|
 | `src/shell/shell-state.js` | Alpine data factory: Issue selection/picker, view switching, canvas mode, Backlog panel state, resize, theme, history, copy | 0002, 0017, 0018, 0019 |
+| `src/shell/i18n.js` | i18next init + `Alpine.store('i18n')`, wrapping `t()`/`changeLanguage()` | 0026 |
+| `src/locales/<lang>/translation.json` | Shell-chrome translation strings, one file per language (`en`, `de`) | 0026 |
 | `src/canvases/process/` | Process Canvas: bpmn-js + `@bpmn-io/properties-panel` | 0004 |
 | `src/canvases/system/drawio-canvas.js` | System/Integration Canvas: draw.io embed integration | 0005, 0024, 0025 |
 | `src/canvases/interaction/excalidraw-canvas.js` | Interaction Canvas: Excalidraw, mounted as an isolated React island | 0021 |
@@ -154,7 +156,7 @@ Conventions carried forward, consistent with every sibling project in this works
 | `src/persistence/seed-issues.js` | Example Issues seeded on a true first run | 0007 |
 | `src/css/theme.css` | CSS custom properties, light/dark palette | 0013 |
 | `src/css/shell.css` | All shell chrome and canvas-wrapper styling | — |
-| `index.html` | Markup + Alpine directives for the whole shell | 0002, 0017, 0018, 0019, 0020 |
+| `index.html` | Markup + Alpine directives for the whole shell | 0002, 0017, 0018, 0019, 0020, 0026 |
 
 `index.html`'s markup, not a component framework, is the shell's template layer (ADR-0002) — there's no further per-panel module split (e.g. a dedicated "sidebar" or "backlog panel" file) beyond `shell-state.js`'s single data factory; that's a deliberate size call, not an oversight, and worth revisiting only if the shell's own complexity grows past what one file comfortably holds.
 
@@ -163,7 +165,6 @@ Conventions carried forward, consistent with every sibling project in this works
 Items with an ADR are designed but not built (ADR-0014). Everything else below needs direction clarified before implementing rather than guessing at exact behavior.
 
 - **Server-backed git layer** (ADR-0010/0014) — client-side git was the deliberate starting point; a real Express/Node server is the expected next step once multi-device access or real-time collaboration are actually needed.
-- **Multi-language shell UI** (ADR-0026) — designed but not built: `i18next` + static-imported `src/locales/<lang>/translation.json`, an `Alpine.store('i18n')` wrapping `t()`, English default + German, a `<select>` switcher in the burger menu. Shell chrome only (`index.html`, `shell-state.js`'s hint strings) — never Issue/Backlog content or the canvas engines' own embedded UI.
 - **Settings overlay is a mock.** The burger menu's "Settings" opens a placeholder overlay with inert mock rows — no real settings surface behind it yet (ADR-0017). Scope of what actually belongs in it is still undefined.
 - **Canvas naming finalization.** README/`docs/adr/README.md` flag Process/System/Object/Interaction/Backlog naming as provisional. Per-view UUIDs mean this can be resolved later without a data migration — but the rename itself (UI copy, `views.<name>` key vs. `id`, any docs referencing current names) is still unbuilt work when it happens.
 - **Process Canvas's BPMN subset.** ADR-0004 calls for a constrained BPMN profile rather than bpmn-js's full default palette — not yet built; the canvas currently exposes bpmn-js's whole vocabulary.

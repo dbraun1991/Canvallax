@@ -133,22 +133,28 @@ export function shellState() {
     copyProvenanceLabel(copiedFrom) {
       if (!copiedFrom) return '';
       const source = this.issues.find((issue) => issue.id === copiedFrom.issueId);
-      const sourceName = source ? source.name : 'a deleted Issue';
-      return `Copied from "${sourceName}" on ${new Date(copiedFrom.at).toLocaleString()}`;
+      const sourceName = source ? source.name : this.t('copyPicker.deletedIssue');
+      return this.t('copyPicker.provenanceLabel', {
+        name: sourceName,
+        date: new Date(copiedFrom.at).toLocaleString(),
+      });
     },
 
     // ADR-0023: a reminder of *why this view exists for this Issue at all* —
     // its specific purpose, and that what it shows is the current proposal,
     // open to change, not a usage tip. Editing-mode only (index.html); shown
-    // above each of the four single-canvas views.
+    // above each of the four single-canvas views. Text lives in
+    // src/locales/<lang>/translation.json (ADR-0026), not inline here.
     canvasHint(view) {
-      const hints = {
-        process: 'This process-canvas shall visualize the process - which may be altered',
-        system: 'This integration-canvas shall show attached systems and their connections - which may be affected by an upcoming change',
-        object: 'This Object-canvas shall describe data & entities with their relations - which may differ',
-        interaction: 'This Interaction-canvas shall be used to define touchpoints - and how they change',
-      };
-      return hints[view] || '';
+      return this.t(`canvasHints.${view}`);
+    },
+
+    // Shorthand for $store.i18n.t (ADR-0026) — kept as a shell method rather
+    // than requiring every template binding to spell out $store.i18n.t(...),
+    // matching how every other piece of dynamic shell text is already a
+    // method call (e.g. canvasHint above) rather than an inline expression.
+    t(key, options) {
+      return this.$store.i18n.t(key, options);
     },
 
     selectIssue(id) {

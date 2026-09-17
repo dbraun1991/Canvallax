@@ -1,0 +1,90 @@
+{
+  "shell": {
+    "loading": "Lädt…"
+  },
+  "topBar": {
+    "menu": "Menü",
+    "issueNamePlaceholder": "Issue-Name",
+    "copy": "Kopieren",
+    "history": "Verlauf",
+    "export": "Export"
+  },
+  "status": {
+    "open": "offen",
+    "mapped": "abgebildet",
+    "decided": "entschieden"
+  },
+  "canvas": {
+    "all": "Alle",
+    "process": "Prozess",
+    "system": "System",
+    "systemFull": "System/Integration",
+    "object": "Objekt",
+    "interaction": "Interaktion"
+  },
+  "canvasHints": {
+    "process": "Dieses Prozess-Canvas soll den Prozess visualisieren - der sich noch ändern kann",
+    "system": "Dieses Integrations-Canvas soll angebundene Systeme und ihre Verbindungen zeigen - die durch eine anstehende Änderung betroffen sein können",
+    "object": "Dieses Objekt-Canvas soll Daten & Entitäten mit ihren Beziehungen beschreiben - die noch abweichen können",
+    "interaction": "Dieses Interaktions-Canvas dient dazu, Touchpoints zu definieren - und wie sie sich verändern"
+  },
+  "burgerMenu": {
+    "changeIssue": "Issue wechseln",
+    "lightMode": "Heller Modus",
+    "darkMode": "Dunkler Modus",
+    "settings": "Einstellungen",
+    "language": "Sprache"
+  },
+  "backlog": {
+    "title": "Backlog",
+    "copyEntryFrom": "Eintrag kopieren von…",
+    "newEntryPlaceholder": "Neuer Eintragsname…",
+    "add": "Hinzufügen",
+    "descriptionPlaceholder": "Beschreibung…",
+    "copiedFromAnotherIssue": "Von einem anderen Issue kopiert",
+    "noEntriesYet": "Noch keine Einträge.",
+    "editing": "Bearbeiten",
+    "presenting": "Präsentieren",
+    "modeToggleTitle": "Zwischen Bearbeiten- und Präsentieren-Modus wechseln"
+  },
+  "allGrid": {
+    "rendering": "Wird gerendert…",
+    "nothingDrawnYet": "Noch nichts gezeichnet"
+  },
+  "history": {
+    "title": "Verlauf",
+    "copiedFromEarlierVersion": "Von einer früheren Version eines anderen Issues kopiert",
+    "restore": "Wiederherstellen",
+    "noHistoryYet": "Noch kein Verlauf."
+  },
+  "issuePicker": {
+    "title": "Issue auswählen",
+    "searchPlaceholder": "Issues durchsuchen…",
+    "newIssue": "+ Neues Issue"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "placeholder": "Einstellungen sind noch nicht verfügbar — das ist ein Platzhalter.",
+    "notifications": "Benachrichtigungen",
+    "workspace": "Arbeitsbereich",
+    "comingSoon": "Demnächst verfügbar"
+  },
+  "copyPicker": {
+    "copyViewFrom": "{{view}} kopieren von…",
+    "copyEntryFrom": "Backlog-Eintrag kopieren von…",
+    "sourceIssue": "Quell-Issue",
+    "selectIssue": "Issue auswählen…",
+    "entry": "Eintrag",
+    "selectEntry": "Eintrag auswählen…",
+    "overwriteNote": "Dies überschreibt den aktuellen Inhalt. Die vorherige Version bleibt im Verlauf verfügbar.",
+    "appendNote": "Fügt einen neuen Eintrag hinzu — nichts Bestehendes wird überschrieben.",
+    "copy": "Kopieren",
+    "provenanceLabel": "Kopiert von \"{{name}}\" am {{date}}",
+    "deletedIssue": "einem gelöschten Issue"
+  },
+  "exportPicker": {
+    "title": "{{view}} exportieren",
+    "format": "Format",
+    "download": "Herunterladen"
+  }
+}

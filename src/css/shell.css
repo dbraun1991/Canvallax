@@ -126,6 +126,27 @@
   background: var(--surface-hover);
 }
 
+/* Not a clickable row itself (the <select> inside is) — ADR-0026's language
+   switcher, styled to match the other burger-menu-items' text/spacing
+   without picking up their hover affordance. */
+.burger-menu-language {
+  cursor: default;
+}
+
+.burger-menu-language:hover {
+  background: none;
+}
+
+.burger-menu-language select {
+  margin-left: auto;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 13px;
+  padding: 2px 6px;
+}
+
 .theme-icon {
   width: 16px;
   height: 16px;
