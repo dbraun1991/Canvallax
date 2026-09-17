@@ -100,34 +100,52 @@
         <!-- Burger menu: a small anchored dropdown, not a dimmed modal (ADR-0017) -->
         <div class="burger-menu-backdrop" x-show="burgerMenuOpen" @click="closeBurgerMenu()" x-cloak></div>
         <div class="burger-menu" x-show="burgerMenuOpen" x-cloak>
-          <button type="button" class="burger-menu-item" @click="openIssuePicker()" x-text="t('burgerMenu.changeIssue')"></button>
+          <button type="button" class="burger-menu-item" @click="openIssuePicker()">
+            <svg class="menu-icon" viewBox="0 0 24 24">
+              <path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z" />
+            </svg>
+            <span x-text="t('burgerMenu.changeIssue')"></span>
+          </button>
           <button type="button" class="burger-menu-item" @click="toggleTheme(); closeBurgerMenu()">
             <!-- Icon pair borrowed from another project in this workspace's own
                  theme toggle: shows the icon matching the CURRENT theme (moon
                  while dark, sun while light), not the destination. -->
-            <svg class="theme-icon" viewBox="0 0 24 24" x-show="theme === 'dark'">
+            <svg class="menu-icon" viewBox="0 0 24 24" x-show="theme === 'dark'">
               <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" />
             </svg>
-            <svg class="theme-icon" viewBox="0 0 24 24" x-show="theme !== 'dark'" x-cloak>
+            <svg class="menu-icon" viewBox="0 0 24 24" x-show="theme !== 'dark'" x-cloak>
               <path
                 d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"
               />
             </svg>
             <span x-text="theme === 'dark' ? t('burgerMenu.lightMode') : t('burgerMenu.darkMode')"></span>
           </button>
-          <button type="button" class="burger-menu-item" @click="openSettings()" x-text="t('burgerMenu.settings')"></button>
-          <!-- ADR-0026: language switcher, a <select> from day one (not per-
-               language buttons) — a sibling project in this workspace had to
-               migrate off buttons once it grew past two languages. Language
-               names (English/Deutsch) are each language's own endonym, never
-               translated, same convention every language switcher uses. -->
-          <div class="burger-menu-item burger-menu-language">
-            <span x-text="t('burgerMenu.language')"></span>
-            <select :value="$store.i18n.language" @change="$store.i18n.changeLanguage($event.target.value); closeBurgerMenu()">
-              <option value="en">English</option>
-              <option value="de">Deutsch</option>
-            </select>
+          <!-- ADR-0026: language item opens a flyout to the right (not a
+               <select> nested in the menu) listing each language with its
+               own flag — flags borrowed from a sibling project's convention
+               (plain Unicode emoji, no image/SVG assets). Language names
+               are each language's own endonym, never run through t(). -->
+          <div class="burger-menu-language-wrap">
+            <button type="button" class="burger-menu-item" @click="toggleLanguageMenu()">
+              <span class="menu-flag" x-text="$store.i18n.languages[$store.i18n.language].flag"></span>
+              <span x-text="t('burgerMenu.language')"></span>
+              <span class="burger-menu-caret" aria-hidden="true">&rsaquo;</span>
+            </button>
+            <div class="language-flyout" x-show="languageMenuOpen" x-cloak>
+              <template x-for="code in $store.i18n.supported" :key="code">
+                <button
+                  type="button"
+                  class="language-flyout-item"
+                  :class="{ active: code === $store.i18n.language }"
+                  @click="selectLanguage(code)"
+                >
+                  <span class="menu-flag" x-text="$store.i18n.languages[code].flag"></span>
+                  <span x-text="$store.i18n.languages[code].name"></span>
+                </button>
+              </template>
+            </div>
           </div>
+          <button type="button" class="burger-menu-item" @click="openSettings()" x-text="t('burgerMenu.settings')"></button>
         </div>
 
         <div class="shell-columns">

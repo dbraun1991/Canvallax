@@ -64,6 +64,7 @@ export function shellState() {
     issuePickerQuery: '',
     issuePickerOpen: false, // manual open via the burger menu; showIssuePicker (below) ORs this with !activeIssue
     burgerMenuOpen: false,
+    languageMenuOpen: false, // ADR-0026: language flyout nested inside the burger menu, opens to the right
     settingsOpen: false, // ADR-0017: mock overlay, no real settings surface yet
     canvasMode: 'editing', // 'editing' | 'presenting' (ADR-0018) — a standing session preference, not reset per-Issue
     featuredCanvas: null, // null | 'process' | 'system' | 'object' | 'interaction' — Presenting mode's enlarged tile (ADR-0019)
@@ -189,10 +190,21 @@ export function shellState() {
 
     toggleBurgerMenu() {
       this.burgerMenuOpen = !this.burgerMenuOpen;
+      this.languageMenuOpen = false;
     },
 
     closeBurgerMenu() {
       this.burgerMenuOpen = false;
+      this.languageMenuOpen = false;
+    },
+
+    toggleLanguageMenu() {
+      this.languageMenuOpen = !this.languageMenuOpen;
+    },
+
+    selectLanguage(lang) {
+      this.$store.i18n.changeLanguage(lang);
+      this.closeBurgerMenu();
     },
 
     openSettings() {

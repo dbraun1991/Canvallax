@@ -1,0 +1,90 @@
+{
+  "shell": {
+    "loading": "Chargement…"
+  },
+  "topBar": {
+    "menu": "Menu",
+    "issueNamePlaceholder": "Nom de l'issue",
+    "copy": "Copier",
+    "history": "Historique",
+    "export": "Exporter"
+  },
+  "status": {
+    "open": "ouvert",
+    "mapped": "cartographié",
+    "decided": "décidé"
+  },
+  "canvas": {
+    "all": "Tout",
+    "process": "Processus",
+    "system": "Système",
+    "systemFull": "Système/Intégration",
+    "object": "Objet",
+    "interaction": "Interaction"
+  },
+  "canvasHints": {
+    "process": "Ce canevas de processus doit visualiser le processus - qui peut encore être modifié",
+    "system": "Ce canevas d'intégration doit montrer les systèmes connectés et leurs liaisons - qui peuvent être affectés par un changement à venir",
+    "object": "Ce canevas d'objets doit décrire les données & entités et leurs relations - qui peuvent encore différer",
+    "interaction": "Ce canevas d'interaction sert à définir les points de contact - et comment ils évoluent"
+  },
+  "burgerMenu": {
+    "changeIssue": "Changer d'issue",
+    "lightMode": "Mode clair",
+    "darkMode": "Mode sombre",
+    "settings": "Paramètres",
+    "language": "Langue"
+  },
+  "backlog": {
+    "title": "Backlog",
+    "copyEntryFrom": "Copier une entrée depuis…",
+    "newEntryPlaceholder": "Nom de la nouvelle entrée…",
+    "add": "Ajouter",
+    "descriptionPlaceholder": "Description…",
+    "copiedFromAnotherIssue": "Copié depuis une autre issue",
+    "noEntriesYet": "Pas encore d'entrées.",
+    "editing": "Édition",
+    "presenting": "Présentation",
+    "modeToggleTitle": "Basculer entre les modes Édition et Présentation"
+  },
+  "allGrid": {
+    "rendering": "Rendu en cours…",
+    "nothingDrawnYet": "Rien n'a encore été dessiné"
+  },
+  "history": {
+    "title": "Historique",
+    "copiedFromEarlierVersion": "Copié depuis une version antérieure d'une autre issue",
+    "restore": "Restaurer",
+    "noHistoryYet": "Pas encore d'historique."
+  },
+  "issuePicker": {
+    "title": "Choisir une issue",
+    "searchPlaceholder": "Rechercher des issues…",
+    "newIssue": "+ Nouvelle issue"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "placeholder": "Les paramètres ne sont pas encore disponibles — ceci est un espace réservé.",
+    "notifications": "Notifications",
+    "workspace": "Espace de travail",
+    "comingSoon": "Bientôt disponible"
+  },
+  "copyPicker": {
+    "copyViewFrom": "Copier {{view}} depuis…",
+    "copyEntryFrom": "Copier une entrée du backlog depuis…",
+    "sourceIssue": "Issue source",
+    "selectIssue": "Sélectionner une issue…",
+    "entry": "Entrée",
+    "selectEntry": "Sélectionner une entrée…",
+    "overwriteNote": "Cela écrase le contenu actuel. La version précédente reste disponible dans l'historique.",
+    "appendNote": "Ajoute une nouvelle entrée — rien d'existant n'est écrasé.",
+    "copy": "Copier",
+    "provenanceLabel": "Copié depuis \"{{name}}\" le {{date}}",
+    "deletedIssue": "une issue supprimée"
+  },
+  "exportPicker": {
+    "title": "Exporter {{view}}",
+    "format": "Format",
+    "download": "Télécharger"
+  }
+}

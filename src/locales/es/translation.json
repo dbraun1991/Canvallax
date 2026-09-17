@@ -1,0 +1,90 @@
+{
+  "shell": {
+    "loading": "Cargando…"
+  },
+  "topBar": {
+    "menu": "Menú",
+    "issueNamePlaceholder": "Nombre de la incidencia",
+    "copy": "Copiar",
+    "history": "Historial",
+    "export": "Exportar"
+  },
+  "status": {
+    "open": "abierto",
+    "mapped": "mapeado",
+    "decided": "decidido"
+  },
+  "canvas": {
+    "all": "Todo",
+    "process": "Proceso",
+    "system": "Sistema",
+    "systemFull": "Sistema/Integración",
+    "object": "Objeto",
+    "interaction": "Interacción"
+  },
+  "canvasHints": {
+    "process": "Este lienzo de proceso debe visualizar el proceso - que aún puede modificarse",
+    "system": "Este lienzo de integración debe mostrar los sistemas conectados y sus conexiones - que pueden verse afectados por un cambio próximo",
+    "object": "Este lienzo de objetos debe describir los datos y entidades con sus relaciones - que aún pueden diferir",
+    "interaction": "Este lienzo de interacción sirve para definir los puntos de contacto - y cómo cambian"
+  },
+  "burgerMenu": {
+    "changeIssue": "Cambiar incidencia",
+    "lightMode": "Modo claro",
+    "darkMode": "Modo oscuro",
+    "settings": "Ajustes",
+    "language": "Idioma"
+  },
+  "backlog": {
+    "title": "Backlog",
+    "copyEntryFrom": "Copiar entrada desde…",
+    "newEntryPlaceholder": "Nombre de la nueva entrada…",
+    "add": "Añadir",
+    "descriptionPlaceholder": "Descripción…",
+    "copiedFromAnotherIssue": "Copiado de otra incidencia",
+    "noEntriesYet": "Aún no hay entradas.",
+    "editing": "Edición",
+    "presenting": "Presentación",
+    "modeToggleTitle": "Cambiar entre los modos Edición y Presentación"
+  },
+  "allGrid": {
+    "rendering": "Renderizando…",
+    "nothingDrawnYet": "Aún no se ha dibujado nada"
+  },
+  "history": {
+    "title": "Historial",
+    "copiedFromEarlierVersion": "Copiado de una versión anterior de otra incidencia",
+    "restore": "Restaurar",
+    "noHistoryYet": "Aún no hay historial."
+  },
+  "issuePicker": {
+    "title": "Elegir una incidencia",
+    "searchPlaceholder": "Buscar incidencias…",
+    "newIssue": "+ Nueva incidencia"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "placeholder": "Los ajustes aún no están disponibles — esto es un marcador de posición.",
+    "notifications": "Notificaciones",
+    "workspace": "Espacio de trabajo",
+    "comingSoon": "Próximamente"
+  },
+  "copyPicker": {
+    "copyViewFrom": "Copiar {{view}} desde…",
+    "copyEntryFrom": "Copiar entrada del backlog desde…",
+    "sourceIssue": "Incidencia de origen",
+    "selectIssue": "Seleccionar una incidencia…",
+    "entry": "Entrada",
+    "selectEntry": "Seleccionar una entrada…",
+    "overwriteNote": "Esto sobrescribe el contenido actual. La versión anterior sigue disponible en el historial.",
+    "appendNote": "Añade una nueva entrada — no se sobrescribe nada existente.",
+    "copy": "Copiar",
+    "provenanceLabel": "Copiado de \"{{name}}\" el {{date}}",
+    "deletedIssue": "una incidencia eliminada"
+  },
+  "exportPicker": {
+    "title": "Exportar {{view}}",
+    "format": "Formato",
+    "download": "Descargar"
+  }
+}

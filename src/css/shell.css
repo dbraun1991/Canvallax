@@ -103,10 +103,21 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
   z-index: 36;
   display: flex;
   flex-direction: column;
+}
+
+/* No overflow: hidden on .burger-menu itself (ADR-0026) — the language
+   flyout is positioned outside its bounding box (left: 100%) and would get
+   clipped. Corner rounding is applied to the first/last row directly
+   instead. */
+.burger-menu-item:first-child {
+  border-radius: 8px 8px 0 0;
+}
+
+.burger-menu > .burger-menu-item:last-child {
+  border-radius: 0 0 8px 8px;
 }
 
 .burger-menu-item {
@@ -126,32 +137,67 @@
   background: var(--surface-hover);
 }
 
-/* Not a clickable row itself (the <select> inside is) — ADR-0026's language
-   switcher, styled to match the other burger-menu-items' text/spacing
-   without picking up their hover affordance. */
-.burger-menu-language {
-  cursor: default;
-}
-
-.burger-menu-language:hover {
-  background: none;
-}
-
-.burger-menu-language select {
-  margin-left: auto;
-  background: var(--surface);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  font-size: 13px;
-  padding: 2px 6px;
-}
-
-.theme-icon {
+.menu-icon {
   width: 16px;
   height: 16px;
   fill: currentColor;
   flex: 0 0 auto;
+}
+
+.menu-flag {
+  font-size: 15px;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+
+/* ADR-0026: language row and its flyout. Positioned relative so the flyout
+   (a second small menu, same visual language as .burger-menu itself) can
+   anchor to its right edge instead of stacking below like a native <select>
+   would. */
+.burger-menu-language-wrap {
+  position: relative;
+}
+
+.burger-menu-caret {
+  margin-left: auto;
+  color: var(--text-muted);
+}
+
+.language-flyout {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  margin-left: 4px;
+  min-width: 160px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  z-index: 37;
+  display: flex;
+  flex-direction: column;
+}
+
+.language-flyout-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: var(--text);
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.language-flyout-item:hover {
+  background: var(--surface-hover);
+}
+
+.language-flyout-item.active {
+  font-weight: 600;
 }
 
 /* Row of the two remaining panels (Backlog, main) below .top-bar.

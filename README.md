@@ -5,7 +5,7 @@
 Canvallax is a webapp for remote teams that need business and technical stakeholders to understand the same system the same way.
 It gives a team a small set of shared, deliberately incomplete visual canvases, so that planning and prioritization decisions are made from a common ground.
 
-The shell UI supports English and German, switchable from the burger menu — see [ADR-0026](docs/adr/0026-multi-language-shell-ui-i18next.md).
+The shell UI supports English, German, French, and Spanish, switchable from the burger menu — see [ADR-0026](docs/adr/0026-multi-language-shell-ui-i18next.md)/[ADR-0027](docs/adr/0027-language-switcher-flyout-with-flags-four-languages.md).
 
 **Live preview:** [dbraun1991.github.io/Canvallax](https://dbraun1991.github.io/Canvallax/)
 

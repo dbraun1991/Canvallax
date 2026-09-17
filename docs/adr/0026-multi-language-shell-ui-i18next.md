@@ -1,6 +1,6 @@
 # ADR-0026: Multi-language shell UI — i18next
 
-- Status: Accepted — implemented
+- Status: Accepted — implemented; switcher-UI mechanism and initial language set superseded, partially, by [ADR-0027](0027-language-switcher-flyout-with-flags-four-languages.md)
 - Date: 2026-09-17
 - Relates to: [ADR-0001](0001-frontend-build-tooling-vite.md), [ADR-0002](0002-shell-ui-reactivity-alpinejs.md), [ADR-0013](0013-theming-light-and-dark-mode.md), [ADR-0017](0017-shell-navigation-restructure.md), [ADR-0020](0020-default-theme-is-light.md)
 

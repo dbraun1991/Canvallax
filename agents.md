@@ -4,7 +4,7 @@
 
 Canvallax is a webapp for remote teams that need business and technical stakeholders to understand the same system the same way. An Issue holds a small set of shared, deliberately incomplete visual **canvases** — Process, System/Integration, Object, Interaction — plus a Backlog list, bundled together as one unit. See `README.md` for the full product framing.
 
-**Current status: working end to end.** The Vite pipeline, the Issue-centric shell (burger-menu Issue picker, single left Backlog panel with a Presenting/Editing mode toggle, All + 4-view switcher), all four canvas engines, real git-backed persistence (client-side, `isomorphic-git`/IndexedDB), per-view history browsing and restore, cross-issue copy (views by overwrite, Backlog entries by append), All-view thumbnails (reused for Presenting mode's featured-tile reflow), the light/dark theme toggle, computed tooltips, and a multi-language shell UI (English/German, ADR-0026) are all built and wired up. Three example Issues, each with substantial example diagrams, seed automatically on a true first run (`src/persistence/seed-issues.js`) alongside anything created since.
+**Current status: working end to end.** The Vite pipeline, the Issue-centric shell (burger-menu Issue picker, single left Backlog panel with a Presenting/Editing mode toggle, All + 4-view switcher), all four canvas engines, real git-backed persistence (client-side, `isomorphic-git`/IndexedDB), per-view history browsing and restore, cross-issue copy (views by overwrite, Backlog entries by append), All-view thumbnails (reused for Presenting mode's featured-tile reflow), the light/dark theme toggle, computed tooltips, and a multi-language shell UI (English/German/French/Spanish, ADR-0026/0027) are all built and wired up. Three example Issues, each with substantial example diagrams, seed automatically on a true first run (`src/persistence/seed-issues.js`) alongside anything created since.
 
 ## Development
 
@@ -92,7 +92,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 |------|------|
 | `README.md` | Product framing — naming, the canvases, what each is/isn't for |
 | `docs/adr/README.md` | ADR index — numbered, append-only decision log |
-| `docs/adr/0001-*.md` – `0026-*.md` | Individual decisions — see the index for titles |
+| `docs/adr/0001-*.md` – `0027-*.md` | Individual decisions — see the index for titles |
 
 ## Architecture Decisions
 
@@ -123,7 +123,8 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0023](docs/adr/0023-fixed-four-canvases-no-user-configurable-set.md) | Exactly four canvases, not user-configurable — each already supports holding multiple related items; an in-app reminder says so |
 | [0024](docs/adr/0024-system-canvas-drawing-surface-stays-light.md) | System/Integration's draw.io drawing surface stays permanently light, like Process — default black connector strokes were unreadable against a dark canvas |
 | [0025](docs/adr/0025-system-thumbnail-svg-export-forces-light-color-scheme.md) | System/Integration's thumbnail/export SVG forces `color-scheme: light` — draw.io's exported SVG otherwise resolves default colors against the *viewer's* OS dark-mode preference, not Canvallax's theme |
-| [0026](docs/adr/0026-multi-language-shell-ui-i18next.md) | Multi-language shell UI: i18next, static-imported `locales/<lang>/translation.json`, Alpine store wrapping `t()`, English default + German, `<select>` in the burger menu |
+| [0026](docs/adr/0026-multi-language-shell-ui-i18next.md) | Multi-language shell UI: i18next, static-imported `locales/<lang>/translation.json`, Alpine store wrapping `t()`, English default — **switcher UI/initial language set superseded, partially, by 0027** |
+| [0027](docs/adr/0027-language-switcher-flyout-with-flags-four-languages.md) | Language switcher is a right-opening flyout with flag emoji per language (not a `<select>`); four languages: English, German, French, Spanish |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is **not yet finalized** (`docs/adr/README.md`) — code and docs currently use the README naming. This is exactly why views and Backlog entries carry their own UUIDs (ADR-0007/0010): identity must survive a naming decision that hasn't happened yet.
 
@@ -143,8 +144,8 @@ Conventions carried forward, consistent with every sibling project in this works
 | Path | Role | ADR |
 |------|------|-----|
 | `src/shell/shell-state.js` | Alpine data factory: Issue selection/picker, view switching, canvas mode, Backlog panel state, resize, theme, history, copy | 0002, 0017, 0018, 0019 |
-| `src/shell/i18n.js` | i18next init + `Alpine.store('i18n')`, wrapping `t()`/`changeLanguage()` | 0026 |
-| `src/locales/<lang>/translation.json` | Shell-chrome translation strings, one file per language (`en`, `de`) | 0026 |
+| `src/shell/i18n.js` | i18next init + `Alpine.store('i18n')`, wrapping `t()`/`changeLanguage()`, per-language flag/endonym metadata | 0026, 0027 |
+| `src/locales/<lang>/translation.json` | Shell-chrome translation strings, one file per language (`en`, `de`, `fr`, `es`) | 0026 |
 | `src/canvases/process/` | Process Canvas: bpmn-js + `@bpmn-io/properties-panel` | 0004 |
 | `src/canvases/system/drawio-canvas.js` | System/Integration Canvas: draw.io embed integration | 0005, 0024, 0025 |
 | `src/canvases/interaction/excalidraw-canvas.js` | Interaction Canvas: Excalidraw, mounted as an isolated React island | 0021 |
@@ -156,7 +157,7 @@ Conventions carried forward, consistent with every sibling project in this works
 | `src/persistence/seed-issues.js` | Example Issues seeded on a true first run | 0007 |
 | `src/css/theme.css` | CSS custom properties, light/dark palette | 0013 |
 | `src/css/shell.css` | All shell chrome and canvas-wrapper styling | — |
-| `index.html` | Markup + Alpine directives for the whole shell | 0002, 0017, 0018, 0019, 0020, 0026 |
+| `index.html` | Markup + Alpine directives for the whole shell | 0002, 0017, 0018, 0019, 0020, 0026, 0027 |
 
 `index.html`'s markup, not a component framework, is the shell's template layer (ADR-0002) — there's no further per-panel module split (e.g. a dedicated "sidebar" or "backlog panel" file) beyond `shell-state.js`'s single data factory; that's a deliberate size call, not an oversight, and worth revisiting only if the shell's own complexity grows past what one file comfortably holds.
 
