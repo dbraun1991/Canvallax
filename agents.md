@@ -92,7 +92,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 |------|------|
 | `README.md` | Product framing — naming, the canvases, what each is/isn't for |
 | `docs/adr/README.md` | ADR index — numbered, append-only decision log |
-| `docs/adr/0001-*.md` – `0029-*.md` | Individual decisions — see the index for titles |
+| `docs/adr/0001-*.md` – `0030-*.md` | Individual decisions — see the index for titles |
 
 ## Architecture Decisions
 
@@ -127,6 +127,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0027](docs/adr/0027-language-switcher-flyout-with-flags-four-languages.md) | Language switcher is a right-opening flyout with flag emoji per language (not a `<select>`); four languages: English, German, French, Spanish — **click-to-open trigger superseded by 0028** |
 | [0028](docs/adr/0028-language-flyout-opens-on-hover.md) | Language flyout opens on hover, not click; `.burger-menu-item` gets explicit `width: 100%` so a row nested in a wrapper div fills the menu's real width |
 | [0029](docs/adr/0029-language-flyout-zero-gap-hover-bridge.md) | Language flyout has zero gap to its row — a leftover 4px margin was an unhoverable dead zone that closed the menu on a slow cursor move |
+| [0030](docs/adr/0030-presenting-mode-grid-reflow-keeps-instant-snap.md) | Presenting mode's grid reflow keeps its instant snap, permanently — animating it risks visibly breaking on an unstable remote-presentation connection |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is **not yet finalized** (`docs/adr/README.md`) — code and docs currently use the README naming. This is exactly why views and Backlog entries carry their own UUIDs (ADR-0007/0010): identity must survive a naming decision that hasn't happened yet.
 
@@ -174,7 +175,7 @@ Items with an ADR are designed but not built (ADR-0014). Everything else below n
 - **File-manager-style Issue picker.** The Issue-picker overlay's list (ADR-0017) is still a flat, unfiltered list beyond its search field — worth revisiting (tabs, folder tree, per another project's own sidebar) once there are enough Issues that a flat list stops scaling.
 - **Mobile Backlog collapse.** The single remaining side panel (Backlog) has no touch-friendly collapse mechanism below the 768px breakpoint — drag-collapse is disabled there (`.resize-handle{display:none}`) and nothing replaces it, unlike the old sidebar's `<details>` fallback. Not yet decided whether it needs one.
 - **Featured tile is a static enlarge, not a live viewer.** Presenting mode's featured tile (ADR-0019) reuses the same rendered thumbnail, not a pannable/zoomable live render — fine for "look closer," a real diagram viewer is a bigger feature if that turns out to matter.
-- **No transition on the grid reflow.** Switching a tile in/out of Presenting mode's featured layout (ADR-0019) is an instant snap — `grid-template-areas` changes aren't meaningfully animatable across browsers when the area count itself changes. Revisit only if it reads as jarring in practice.
+- **No transition on the grid reflow — settled, not revisited.** Switching a tile in/out of Presenting mode's featured layout (ADR-0019) is an instant snap. Confirmed permanent (ADR-0030, 2026-09-17): beyond `grid-template-areas` changes not being meaningfully animatable across browsers, an animated transition would introduce a window where a presenter/viewer's screen-share connection hiccupping could make the animation itself look broken — a real risk for a feature specifically used in live, often-remote walkthroughs.
 - **Concurrent-edit / merge story** for one Issue's single JSON document — relevant once more than one person can edit the same Issue; out of scope while client-side/single-user.
 - **Cross-canvas element-level linking**, reconsidered. ADR-0009 explicitly decided against building this now. If element-to-element navigation (e.g. one BPMN task ↔ one Object-canvas entity) turns out to matter in practice, it's new scope requiring its own ADR — not a partially-built feature waiting to be finished.
 - **Real-time multiplayer editing** across all three tool-backed canvases — explicitly lower priority than format compatibility for the initial feasibility prototype; per-canvas feasibility notes live in ADR-0004/0005/0006.
