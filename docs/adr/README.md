@@ -31,5 +31,6 @@ This tree was rebuilt from scratch on 2026-09-03, consolidating what had been tw
 | [0023](0023-fixed-four-canvases-no-user-configurable-set.md) | Exactly four canvases, not a user-configurable count/style — with an in-app reminder why | Accepted |
 | [0024](0024-system-canvas-drawing-surface-stays-light.md) | System/Integration's draw.io drawing surface stays permanently light, like Process | Accepted |
 | [0025](0025-system-thumbnail-svg-export-forces-light-color-scheme.md) | System/Integration's thumbnail/export SVG forces `color-scheme: light` | Accepted |
+| [0026](0026-multi-language-shell-ui-i18next.md) | Multi-language shell UI: i18next, static-imported locale JSON, English + German first | Accepted — deferred |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is not yet finalized — these ADRs use the current README naming and should be updated if it changes. This is why every view and Backlog entry carries its own UUID independent of that naming (ADR-0007) — identity has to survive a naming decision that hasn't happened yet.
