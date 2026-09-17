@@ -198,8 +198,17 @@ export function shellState() {
       this.languageMenuOpen = false;
     },
 
-    toggleLanguageMenu() {
-      this.languageMenuOpen = !this.languageMenuOpen;
+    // ADR-0027: opens/closes on hover, not click — bound to mouseenter/
+    // mouseleave on the row+flyout's wrapping element (index.html) so
+    // leaving either the row or the flyout itself (not just the row) closes
+    // it, letting the pointer travel from one to the other without the
+    // flyout disappearing mid-move.
+    openLanguageMenu() {
+      this.languageMenuOpen = true;
+    },
+
+    closeLanguageMenu() {
+      this.languageMenuOpen = false;
     },
 
     selectLanguage(lang) {

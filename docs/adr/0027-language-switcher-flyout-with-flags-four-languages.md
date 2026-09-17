@@ -1,6 +1,6 @@
 # ADR-0027: Language switcher is a right-opening flyout with flags; four languages, not two
 
-- Status: Accepted
+- Status: Accepted — click-to-open trigger superseded by [ADR-0028](0028-language-flyout-opens-on-hover.md)
 - Date: 2026-09-17
 - Relates to: [ADR-0026](0026-multi-language-shell-ui-i18next.md) — supersedes, partially, its switcher-UI mechanism and its initial two-language set
 

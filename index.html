@@ -120,13 +120,13 @@
             </svg>
             <span x-text="theme === 'dark' ? t('burgerMenu.lightMode') : t('burgerMenu.darkMode')"></span>
           </button>
-          <!-- ADR-0026: language item opens a flyout to the right (not a
-               <select> nested in the menu) listing each language with its
+          <!-- ADR-0027: language item opens a flyout to the right on hover
+               (not a <select>, not click) listing each language with its
                own flag — flags borrowed from a sibling project's convention
                (plain Unicode emoji, no image/SVG assets). Language names
                are each language's own endonym, never run through t(). -->
-          <div class="burger-menu-language-wrap">
-            <button type="button" class="burger-menu-item" @click="toggleLanguageMenu()">
+          <div class="burger-menu-language-wrap" @mouseenter="openLanguageMenu()" @mouseleave="closeLanguageMenu()">
+            <button type="button" class="burger-menu-item">
               <span class="menu-flag" x-text="$store.i18n.languages[$store.i18n.language].flag"></span>
               <span x-text="t('burgerMenu.language')"></span>
               <span class="burger-menu-caret" aria-hidden="true">&rsaquo;</span>

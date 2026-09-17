@@ -124,6 +124,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  width: 100%; /* buttons don't inherit flex's stretch sizing when nested inside a wrapper div (ADR-0027's language row) — force it explicitly so .burger-menu-caret's margin-left: auto has a full-width row to push against */
+  box-sizing: border-box;
   background: none;
   border: none;
   color: var(--text);
