@@ -718,21 +718,25 @@
    reordered), this is just the visual cue that its content is shown large
    in .all-featured-display instead. Still fully interactive (clicking it
    un-features, same as clicking .all-featured-display does). The green
-   border (not .all-featured-display alone: needs .all-cell.dimmed's two
-   classes to out-specificity .all-cell's own `border` shorthand above,
-   which otherwise wins on source order) marks it, specifically in this
-   4-tile list, as the currently active view — reusing the "Decided"
-   status pill's color (theme.css) rather than a new one-off value. The
-   maximized display itself isn't highlighted; it's already the obviously
-   large one. */
-.all-cell.dimmed {
-  opacity: 0.35;
-  filter: grayscale(60%);
+   border marks it, specifically in this 4-tile list, as the currently
+   active view — reusing the "Decided" status pill's color (theme.css)
+   rather than a new one-off value. The maximized display itself isn't
+   highlighted; it's already the obviously large one.
+
+   opacity/grayscale go on the inner content (h3/thumbnail/placeholder)
+   below, not this element itself — putting them here would dim the
+   border along with everything else, washing the green out to a muted
+   gray-green instead of the clearly "remarkable" marker it's meant to be. */
+.all-cell.dimmed,
+.all-cell.dimmed:hover {
   border-color: var(--state-decided);
 }
 
-.all-cell.dimmed:hover {
-  border-color: var(--state-decided);
+.all-cell.dimmed h3,
+.all-cell.dimmed .all-cell-thumbnail,
+.all-cell.dimmed .placeholder {
+  opacity: 0.35;
+  filter: grayscale(60%);
 }
 
 .all-cell h3 {
