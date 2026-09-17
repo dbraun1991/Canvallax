@@ -713,13 +713,25 @@
   border-color: var(--accent);
 }
 
+/* .all-cell.all-featured-display, not .all-featured-display alone: needs
+   to out-specificity .all-cell's own `border` shorthand above (same
+   selector weight would otherwise lose to source order) to actually show.
+   Reuses the "Decided" status pill's green (theme.css) rather than a new
+   one-off color — a slight accent marking this as the currently active
+   view, not a state/validity signal like the pill itself. */
+.all-cell.all-featured-display,
+.all-cell.all-featured-display:hover {
+  border-color: var(--state-decided);
+}
+
 /* ADR-0033: the small tile matching whichever view is currently featured
    dims in place — it stays in its fixed position (never removed or
    reordered), this is just the visual cue that its content is shown large
    in .all-featured-display instead. Still fully interactive (clicking it
    un-features, same as clicking .all-featured-display does). */
 .all-cell.dimmed {
-  opacity: 0.45;
+  opacity: 0.35;
+  filter: grayscale(60%);
 }
 
 .all-cell h3 {
