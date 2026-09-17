@@ -34,5 +34,6 @@ This tree was rebuilt from scratch on 2026-09-03, consolidating what had been tw
 | [0026](0026-multi-language-shell-ui-i18next.md) | Multi-language shell UI: i18next, static-imported locale JSON | Accepted — switcher UI/initial language set superseded, partially, by 0027 |
 | [0027](0027-language-switcher-flyout-with-flags-four-languages.md) | Language switcher: right-opening flyout with flags, not a `<select>`; four languages (en/de/fr/es) | Accepted — click-to-open trigger superseded by 0028 |
 | [0028](0028-language-flyout-opens-on-hover.md) | Language flyout opens on hover, not click | Accepted |
+| [0029](0029-language-flyout-zero-gap-hover-bridge.md) | Language flyout has zero gap to its row — closes a hover dead zone that closed the menu on a slow cursor move | Accepted |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is not yet finalized — these ADRs use the current README naming and should be updated if it changes. This is why every view and Backlog entry carries its own UUID independent of that naming (ADR-0007) — identity has to survive a naming decision that hasn't happened yet.

@@ -4,7 +4,7 @@
 
 Canvallax is a webapp for remote teams that need business and technical stakeholders to understand the same system the same way. An Issue holds a small set of shared, deliberately incomplete visual **canvases** — Process, System/Integration, Object, Interaction — plus a Backlog list, bundled together as one unit. See `README.md` for the full product framing.
 
-**Current status: working end to end.** The Vite pipeline, the Issue-centric shell (burger-menu Issue picker, single left Backlog panel with a Presenting/Editing mode toggle, All + 4-view switcher), all four canvas engines, real git-backed persistence (client-side, `isomorphic-git`/IndexedDB), per-view history browsing and restore, cross-issue copy (views by overwrite, Backlog entries by append), All-view thumbnails (reused for Presenting mode's featured-tile reflow), the light/dark theme toggle, computed tooltips, and a multi-language shell UI (English/German/French/Spanish, ADR-0026/0027/0028) are all built and wired up. Three example Issues, each with substantial example diagrams, seed automatically on a true first run (`src/persistence/seed-issues.js`) alongside anything created since.
+**Current status: working end to end.** The Vite pipeline, the Issue-centric shell (burger-menu Issue picker, single left Backlog panel with a Presenting/Editing mode toggle, All + 4-view switcher), all four canvas engines, real git-backed persistence (client-side, `isomorphic-git`/IndexedDB), per-view history browsing and restore, cross-issue copy (views by overwrite, Backlog entries by append), All-view thumbnails (reused for Presenting mode's featured-tile reflow), the light/dark theme toggle, computed tooltips, and a multi-language shell UI (English/German/French/Spanish, ADR-0026–0029) are all built and wired up. Three example Issues, each with substantial example diagrams, seed automatically on a true first run (`src/persistence/seed-issues.js`) alongside anything created since.
 
 ## Development
 
@@ -92,7 +92,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 |------|------|
 | `README.md` | Product framing — naming, the canvases, what each is/isn't for |
 | `docs/adr/README.md` | ADR index — numbered, append-only decision log |
-| `docs/adr/0001-*.md` – `0028-*.md` | Individual decisions — see the index for titles |
+| `docs/adr/0001-*.md` – `0029-*.md` | Individual decisions — see the index for titles |
 
 ## Architecture Decisions
 
@@ -126,6 +126,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0026](docs/adr/0026-multi-language-shell-ui-i18next.md) | Multi-language shell UI: i18next, static-imported `locales/<lang>/translation.json`, Alpine store wrapping `t()`, English default — **switcher UI/initial language set superseded, partially, by 0027** |
 | [0027](docs/adr/0027-language-switcher-flyout-with-flags-four-languages.md) | Language switcher is a right-opening flyout with flag emoji per language (not a `<select>`); four languages: English, German, French, Spanish — **click-to-open trigger superseded by 0028** |
 | [0028](docs/adr/0028-language-flyout-opens-on-hover.md) | Language flyout opens on hover, not click; `.burger-menu-item` gets explicit `width: 100%` so a row nested in a wrapper div fills the menu's real width |
+| [0029](docs/adr/0029-language-flyout-zero-gap-hover-bridge.md) | Language flyout has zero gap to its row — a leftover 4px margin was an unhoverable dead zone that closed the menu on a slow cursor move |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is **not yet finalized** (`docs/adr/README.md`) — code and docs currently use the README naming. This is exactly why views and Backlog entries carry their own UUIDs (ADR-0007/0010): identity must survive a naming decision that hasn't happened yet.
 
@@ -158,7 +159,7 @@ Conventions carried forward, consistent with every sibling project in this works
 | `src/persistence/seed-issues.js` | Example Issues seeded on a true first run | 0007 |
 | `src/css/theme.css` | CSS custom properties, light/dark palette | 0013 |
 | `src/css/shell.css` | All shell chrome and canvas-wrapper styling | — |
-| `index.html` | Markup + Alpine directives for the whole shell | 0002, 0017, 0018, 0019, 0020, 0026, 0027, 0028 |
+| `index.html` | Markup + Alpine directives for the whole shell | 0002, 0017, 0018, 0019, 0020, 0026, 0027, 0028, 0029 |
 
 `index.html`'s markup, not a component framework, is the shell's template layer (ADR-0002) — there's no further per-panel module split (e.g. a dedicated "sidebar" or "backlog panel" file) beyond `shell-state.js`'s single data factory; that's a deliberate size call, not an oversight, and worth revisiting only if the shell's own complexity grows past what one file comfortably holds.
 

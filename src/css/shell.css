@@ -168,8 +168,13 @@
 .language-flyout {
   position: absolute;
   top: 0;
+  /* No gap to .burger-menu-language-wrap's right edge (ADR-0028's hover
+     trigger relies on this): any margin here is a dead pixel zone the
+     pointer crosses over neither element, so mouseleave on the wrapper
+     fires before the pointer reaches the flyout — visible as the flyout
+     closing on a slow move across the gap. Touching boxes have no such
+     zone. */
   left: 100%;
-  margin-left: 4px;
   min-width: 160px;
   background: var(--surface);
   border: 1px solid var(--border);
