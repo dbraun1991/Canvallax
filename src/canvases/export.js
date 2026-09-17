@@ -16,23 +16,15 @@ export const NATIVE_FORMATS = {
   object: { ext: 'mmd', mime: 'text/plain', label: 'Mermaid text (.mmd)' },
 };
 
-// draw.io's export postMessage resolves a data: URI (see the matching
-// comment on renderDrawioThumbnail), not raw markup like the other three
-// engines — fetch() decodes a data: URI straight into a Blob, no manual
-// base64 handling needed.
 async function svgBlobFor(view, content, theme) {
-  if (view === 'system') {
-    const dataUri = await renderDrawioThumbnail(content, theme);
-    const response = await fetch(dataUri);
-    return response.blob();
-  }
-
   const svgMarkup =
     view === 'process'
       ? await renderProcessThumbnail(content)
-      : view === 'interaction'
-        ? await renderExcalidrawThumbnail(content, theme)
-        : await renderObjectThumbnail(content, theme);
+      : view === 'system'
+        ? await renderDrawioThumbnail(content, theme)
+        : view === 'interaction'
+          ? await renderExcalidrawThumbnail(content, theme)
+          : await renderObjectThumbnail(content, theme);
 
   return new Blob([svgMarkup], { type: 'image/svg+xml' });
 }

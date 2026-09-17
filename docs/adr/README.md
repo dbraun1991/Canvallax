@@ -17,7 +17,7 @@ This tree was rebuilt from scratch on 2026-09-03, consolidating what had been tw
 | [0009](0009-no-cross-canvas-linking.md) | No cross-canvas element-link registry | Accepted |
 | [0010](0010-persistence-and-versioning.md) | Persistence: one JSON document per Issue, client-side git-backed versioning | Accepted |
 | [0011](0011-cross-issue-copy.md) | Cross-issue copy: views overwrite, Backlog entries append, never a whole Issue | Accepted |
-| [0012](0012-all-view-thumbnails.md) | All-view renders real per-canvas thumbnails | Accepted |
+| [0012](0012-all-view-thumbnails.md) | All-view renders real per-canvas thumbnails | Accepted — draw.io's result shape superseded, partially, by 0025 |
 | [0013](0013-theming-light-and-dark-mode.md) | Theming: shell light/dark toggle; canvases follow it except Process | Accepted — first-visit default superseded by 0020; Interaction's theming mechanism superseded by 0021; System's superseded by 0024 |
 | [0014](0014-server-backed-persistence-deferred.md) | Server-backed persistence: Express (deferred, not yet implemented) | Accepted — deferred |
 | [0015](0015-computed-tooltips-deferred.md) | Computed tooltips | Accepted |
@@ -30,5 +30,6 @@ This tree was rebuilt from scratch on 2026-09-03, consolidating what had been tw
 | [0022](0022-static-hosting-github-pages.md) | Static hosting: GitHub Pages, deployed via GitHub Actions | Accepted |
 | [0023](0023-fixed-four-canvases-no-user-configurable-set.md) | Exactly four canvases, not a user-configurable count/style — with an in-app reminder why | Accepted |
 | [0024](0024-system-canvas-drawing-surface-stays-light.md) | System/Integration's draw.io drawing surface stays permanently light, like Process | Accepted |
+| [0025](0025-system-thumbnail-svg-export-forces-light-color-scheme.md) | System/Integration's thumbnail/export SVG forces `color-scheme: light` | Accepted |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is not yet finalized — these ADRs use the current README naming and should be updated if it changes. This is why every view and Backlog entry carries its own UUID independent of that naming (ADR-0007) — identity has to survive a naming decision that hasn't happened yet.

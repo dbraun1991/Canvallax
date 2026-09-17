@@ -92,7 +92,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 |------|------|
 | `README.md` | Product framing — naming, the canvases, what each is/isn't for |
 | `docs/adr/README.md` | ADR index — numbered, append-only decision log |
-| `docs/adr/0001-*.md` – `0023-*.md` | Individual decisions — see the index for titles |
+| `docs/adr/0001-*.md` – `0025-*.md` | Individual decisions — see the index for titles |
 
 ## Architecture Decisions
 
@@ -109,7 +109,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0009](docs/adr/0009-no-cross-canvas-linking.md) | No cross-canvas element-link registry — Issue-level bundling is the association |
 | [0010](docs/adr/0010-persistence-and-versioning.md) | One JSON document per Issue; every view + Backlog entry carries a UUID; git commit history is the version log (client-side for now) |
 | [0011](docs/adr/0011-cross-issue-copy.md) | Copy a view (overwrite) or Backlog entry (append) from another Issue: always HEAD, `copiedFrom` provenance, never a whole Issue |
-| [0012](docs/adr/0012-all-view-thumbnails.md) | All-view tiles render real SVG thumbnails per engine, content-hash cached |
+| [0012](docs/adr/0012-all-view-thumbnails.md) | All-view tiles render real SVG thumbnails per engine, content-hash cached — **draw.io's result-shape inconsistency superseded, partially, by 0025** |
 | [0013](docs/adr/0013-theming-light-and-dark-mode.md) | Shell light/dark toggle; Interaction/Object follow it, Process and System stay light — **Interaction's mechanism superseded by 0021, System's theming superseded by 0024** |
 | [0014](docs/adr/0014-server-backed-persistence-deferred.md) | Server-backed persistence, once built, is Express (Node) — deferred |
 | [0015](docs/adr/0015-computed-tooltips-deferred.md) | Tooltips computed live from state, never stored |
@@ -122,6 +122,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0022](docs/adr/0022-static-hosting-github-pages.md) | Static hosting: GitHub Pages, deployed via GitHub Actions on every push to `main` |
 | [0023](docs/adr/0023-fixed-four-canvases-no-user-configurable-set.md) | Exactly four canvases, not user-configurable — each already supports holding multiple related items; an in-app reminder says so |
 | [0024](docs/adr/0024-system-canvas-drawing-surface-stays-light.md) | System/Integration's draw.io drawing surface stays permanently light, like Process — default black connector strokes were unreadable against a dark canvas |
+| [0025](docs/adr/0025-system-thumbnail-svg-export-forces-light-color-scheme.md) | System/Integration's thumbnail/export SVG forces `color-scheme: light` — draw.io's exported SVG otherwise resolves default colors against the *viewer's* OS dark-mode preference, not Canvallax's theme |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is **not yet finalized** (`docs/adr/README.md`) — code and docs currently use the README naming. This is exactly why views and Backlog entries carry their own UUIDs (ADR-0007/0010): identity must survive a naming decision that hasn't happened yet.
 
@@ -142,11 +143,11 @@ Conventions carried forward, consistent with every sibling project in this works
 |------|------|-----|
 | `src/shell/shell-state.js` | Alpine data factory: Issue selection/picker, view switching, canvas mode, Backlog panel state, resize, theme, history, copy | 0002, 0017, 0018, 0019 |
 | `src/canvases/process/` | Process Canvas: bpmn-js + `@bpmn-io/properties-panel` | 0004 |
-| `src/canvases/system/drawio-canvas.js` | System/Integration Canvas: draw.io embed integration | 0005 |
+| `src/canvases/system/drawio-canvas.js` | System/Integration Canvas: draw.io embed integration | 0005, 0024, 0025 |
 | `src/canvases/interaction/excalidraw-canvas.js` | Interaction Canvas: Excalidraw, mounted as an isolated React island | 0021 |
 | `src/canvases/object/` | Object Canvas: Mermaid text+preview | 0006 |
 | `src/canvases/thumbnails.js` | All-view thumbnail orchestration across all four engines | 0012 |
-| `src/canvases/export.js` | Per-view export (native source or SVG), Phase 1 of Canvas/diagram export | — |
+| `src/canvases/export.js` | Per-view export (native source or SVG), Phase 1 of Canvas/diagram export — reuses each engine's thumbnail function, now uniform across all four (0025) | 0012, 0025 |
 | `src/persistence/git-store.js` | Client-side git layer (`isomorphic-git`/`lightning-fs`/IndexedDB): commits, history, blob reads | 0010 |
 | `src/persistence/issue-store.js` | Issue CRUD, Backlog entries, copy, debounced autosave | 0007, 0010, 0011 |
 | `src/persistence/seed-issues.js` | Example Issues seeded on a true first run | 0007 |

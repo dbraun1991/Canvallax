@@ -216,7 +216,7 @@
                     @click="canvasMode === 'editing' ? setView('system') : toggleZoom('system')"
                   >
                     <h3>System/Integration</h3>
-                    <img class="all-cell-thumbnail" x-show="thumbnails.system" :src="thumbnails.system" alt="" />
+                    <div class="all-cell-thumbnail" x-show="thumbnails.system" x-html="thumbnails.system"></div>
                     <p class="placeholder" x-show="!thumbnails.system">Rendering…</p>
                   </div>
                   <div

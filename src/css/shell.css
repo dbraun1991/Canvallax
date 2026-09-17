@@ -637,18 +637,18 @@
 
 /* Process's thumbnail SVG (bpmn-js's saveSVG) paints no background of its
    own, same reasoning as .process-canvas-container above — pin it light
-   so its hardcoded-black connectors stay visible on the tile in dark mode. */
-.all-cell[data-view='process'] .all-cell-thumbnail {
+   so its hardcoded-black connectors stay visible on the tile in dark mode.
+   System/Integration's draw.io export is the same shape of problem once its
+   own `color-scheme: light dark` is neutralized to `light` (drawio-canvas.js)
+   — its now-reliably-black connectors need the same light backdrop. */
+.all-cell[data-view='process'] .all-cell-thumbnail,
+.all-cell[data-view='system'] .all-cell-thumbnail {
   background: #ffffff;
 }
 
 .all-cell-thumbnail svg {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-}
-
-img.all-cell-thumbnail {
   object-fit: contain;
 }
 

@@ -3,6 +3,7 @@
 - Status: Accepted
 - Date: 2026-09-03
 - Relates to: [ADR-0003](0003-canvas-architecture.md), [ADR-0008](0008-issue-centric-shell.md)
+- Superseded, partially: by [ADR-0025](0025-system-thumbnail-svg-export-forces-light-color-scheme.md) — draw.io's thumbnail result is no longer "a different shape from the other two engines' raw SVG markup" (see Consequences below); `renderDrawioThumbnail` now returns raw markup too.
 
 ## Context
 
