@@ -36,5 +36,7 @@ This tree was rebuilt from scratch on 2026-09-03, consolidating what had been tw
 | [0028](0028-language-flyout-opens-on-hover.md) | Language flyout opens on hover, not click | Accepted |
 | [0029](0029-language-flyout-zero-gap-hover-bridge.md) | Language flyout has zero gap to its row — closes a hover dead zone that closed the menu on a slow cursor move | Accepted |
 | [0030](0030-presenting-mode-grid-reflow-keeps-instant-snap.md) | Presenting mode's grid reflow keeps its instant snap, permanently — an animated transition risks visibly breaking on an unstable remote-presentation connection | Accepted |
+| [0031](0031-canvas-naming-stays-provisional.md) | Canvas naming stays provisional — not finalized now, revisit only on demand | Accepted — deferred |
+| [0032](0032-process-and-interaction-canvases-keep-full-tool-vocabulary.md) | Process and Interaction Canvases keep their tools' full default vocabulary (no curated BPMN/Excalidraw subset) | Accepted |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is not yet finalized — these ADRs use the current README naming and should be updated if it changes. This is why every view and Backlog entry carries its own UUID independent of that naming (ADR-0007) — identity has to survive a naming decision that hasn't happened yet.
