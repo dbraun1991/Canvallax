@@ -434,9 +434,13 @@
           <select class="backlog-field" x-model="exportFormat">
             <option value="native" x-text="activeView !== 'all' ? exportNativeFormats[activeView].label : ''"></option>
             <option value="svg">SVG</option>
+            <option value="png">PNG</option>
           </select>
 
-          <button type="button" class="history-restore" @click="performExport()" x-text="t('exportPicker.download')"></button>
+          <div class="export-picker-actions">
+            <button type="button" class="copy-toggle" @click="performExportCopy()" x-text="t('copyPicker.copy')"></button>
+            <button type="button" class="history-restore" @click="performExport()" x-text="t('exportPicker.download')"></button>
+          </div>
         </div>
       </div>
     </div>

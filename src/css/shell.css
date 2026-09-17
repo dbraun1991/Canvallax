@@ -545,6 +545,21 @@
   cursor: not-allowed;
 }
 
+/* Export picker only: Copy-to-clipboard on the left, Download on the right
+   — the only copy-picker-body use with two actions side by side instead of
+   one trailing button. */
+.export-picker-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.export-picker-actions .history-restore,
+.export-picker-actions .copy-toggle {
+  margin-top: 0;
+}
+
 /* ─── Issue picker / Settings overlays (ADR-0017) ─── */
 /* Same backdrop+panel skeleton as .copy-picker above, reused rather than
    redesigned — a shared .close button style, a taller/wider panel since
