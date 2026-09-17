@@ -250,14 +250,16 @@ export function shellState() {
       this.featuredCanvas = this.featuredCanvas === view ? null : view;
     },
 
-    // Drives .all-grid's grid-template-* via :style (index.html) — each
-    // .all-cell's own grid-area is static (CSS, keyed by its data-view
-    // attribute), only the container's template changes. Default: a plain
-    // 2x2. Featured: a wide column for featuredCanvas spanning all three
-    // rows, a narrow column stacking the other three, one per row, in their
-    // fixed relative order.
+    // Drives .all-grid's grid-template-* via :style (index.html). Default:
+    // a plain 2x2, each .all-cell in its own static grid-area (CSS, keyed
+    // by data-view). Featured (ADR-0033): a wide "featured" grid-area
+    // (a separate element, index.html's .all-featured-display — not one of
+    // the four tiles resized) plus a narrow column with all four tiles
+    // still in it, always in this same Process/System/Object/Interaction
+    // order — none of the four ever move, get excluded, or reappear
+    // elsewhere depending on which one is featured; the featured one just
+    // dims in place (index.html's :class="{ dimmed: ... }").
     get allGridStyle() {
-      const ALL_VIEWS = ['process', 'system', 'object', 'interaction'];
       // minmax(0, Nfr), not plain Nfr: an `fr` track's implicit minimum is
       // `auto` (its content's min-content size), so a diagram's own
       // intrinsic SVG dimensions can force a track wider than the
@@ -270,13 +272,27 @@ export function shellState() {
           gridTemplateAreas: '"process system" "object interaction"',
         };
       }
-      const rest = ALL_VIEWS.filter((view) => view !== this.featuredCanvas);
-      const areas = rest.map((view) => `"${this.featuredCanvas} ${view}"`).join(' ');
+      // 3fr : 1fr keeps the narrow column's width fraction (1/4 of the
+      // total width) matching its four equal rows' height fraction (1/4 of
+      // the total height each) — the same width:height fraction pairing
+      // the old 3-row layout had (1/3 : 1/3), so each mini tile keeps
+      // roughly the same shape rather than going squatter now that a
+      // fourth row is always present.
       return {
-        gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)',
-        gridTemplateRows: 'minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)',
-        gridTemplateAreas: areas,
+        gridTemplateColumns: 'minmax(0, 3fr) minmax(0, 1fr)',
+        gridTemplateRows: 'repeat(4, minmax(0, 1fr))',
+        gridTemplateAreas: '"featured process" "featured system" "featured object" "featured interaction"',
       };
+    },
+
+    // Label for the featured display (index.html's .all-featured-display) —
+    // System is the one view whose short nav label ('System') differs from
+    // its full All-view heading ('System/Integration'); the four small
+    // tiles hardcode this per-cell already, this mirrors it for the one
+    // dynamic instance.
+    get featuredCanvasLabel() {
+      if (!this.featuredCanvas) return '';
+      return this.featuredCanvas === 'system' ? this.t('canvas.systemFull') : this.t(`canvas.${this.featuredCanvas}`);
     },
 
     // Bound to the Issue name/status controls (view-switcher tab bar,

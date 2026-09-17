@@ -690,6 +690,14 @@
   grid-area: interaction;
 }
 
+/* ADR-0033: the featured view's own grid-area, separate from the four
+   tiles' data-view-keyed ones above — a distinct element, not one of the
+   four tiles resized, so they can stay in fixed positions while this one
+   shows whichever view is currently featured. */
+.all-featured-display {
+  grid-area: featured;
+}
+
 .all-cell {
   display: flex;
   flex-direction: column;
@@ -705,10 +713,13 @@
   border-color: var(--accent);
 }
 
-/* Presenting mode's enlarged tile (ADR-0019) — an in-place reflow, not an
-   overlay, so this is the only visual cue beyond its own larger grid area. */
-.all-cell.featured {
-  border-color: var(--accent);
+/* ADR-0033: the small tile matching whichever view is currently featured
+   dims in place — it stays in its fixed position (never removed or
+   reordered), this is just the visual cue that its content is shown large
+   in .all-featured-display instead. Still fully interactive (clicking it
+   un-features, same as clicking .all-featured-display does). */
+.all-cell.dimmed {
+  opacity: 0.45;
 }
 
 .all-cell h3 {
@@ -731,7 +742,9 @@
    own `color-scheme: light dark` is neutralized to `light` (drawio-canvas.js)
    — its now-reliably-black connectors need the same light backdrop. */
 .all-cell[data-view='process'] .all-cell-thumbnail,
-.all-cell[data-view='system'] .all-cell-thumbnail {
+.all-cell[data-view='system'] .all-cell-thumbnail,
+.all-featured-display[data-featured-view='process'] .all-cell-thumbnail,
+.all-featured-display[data-featured-view='system'] .all-cell-thumbnail {
   background: #ffffff;
 }
 

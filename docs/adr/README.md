@@ -24,7 +24,7 @@ This tree was rebuilt from scratch on 2026-09-03, consolidating what had been tw
 | [0016](0016-panel-collapse-via-drag-threshold.md) | Panel collapse via drag-past-threshold on the resize handle, not an explicit toggle button | Accepted |
 | [0017](0017-shell-navigation-restructure.md) | Shell navigation restructure: burger-menu Issue picker, single left Backlog panel, top brand bar | Accepted |
 | [0018](0018-presenting-and-editing-canvas-modes.md) | Presenting vs. Editing canvas modes | Accepted — enlarge mechanism superseded by 0019 |
-| [0019](0019-presenting-mode-inline-grid-reflow.md) | Presenting mode's enlarge is an in-place grid reflow, not a lightbox overlay | Accepted |
+| [0019](0019-presenting-mode-inline-grid-reflow.md) | Presenting mode's enlarge is an in-place grid reflow, not a lightbox overlay | Accepted — featured-layout composition superseded, partially, by 0033 |
 | [0020](0020-default-theme-is-light.md) | First-visit default theme is light, not OS-preference-based | Accepted |
 | [0021](0021-interaction-canvas-excalidraw.md) | Interaction Canvas: Excalidraw, not draw.io | Accepted |
 | [0022](0022-static-hosting-github-pages.md) | Static hosting: GitHub Pages, deployed via GitHub Actions | Accepted |
@@ -38,5 +38,6 @@ This tree was rebuilt from scratch on 2026-09-03, consolidating what had been tw
 | [0030](0030-presenting-mode-grid-reflow-keeps-instant-snap.md) | Presenting mode's grid reflow keeps its instant snap, permanently — an animated transition risks visibly breaking on an unstable remote-presentation connection | Accepted |
 | [0031](0031-canvas-naming-stays-provisional.md) | Canvas naming stays provisional — not finalized now, revisit only on demand | Accepted — deferred |
 | [0032](0032-process-and-interaction-canvases-keep-full-tool-vocabulary.md) | Process and Interaction Canvases keep their tools' full default vocabulary (no curated BPMN/Excalidraw subset) | Accepted |
+| [0033](0033-presenting-mode-featured-layout-fixed-order-dimmed.md) | Presenting mode's featured layout: all four tiles always in fixed order, the featured one dimmed in place, not excluded from the stack | Accepted |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is not yet finalized — these ADRs use the current README naming and should be updated if it changes. This is why every view and Backlog entry carries its own UUID independent of that naming (ADR-0007) — identity has to survive a naming decision that hasn't happened yet.

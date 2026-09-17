@@ -1,6 +1,6 @@
 # ADR-0019: Presenting mode's enlarge is an in-place grid reflow, not a lightbox overlay
 
-- Status: Accepted
+- Status: Accepted — featured-layout composition mechanism superseded, partially, by [ADR-0033](0033-presenting-mode-featured-layout-fixed-order-dimmed.md); the in-place-reflow principle and toggleZoom's click semantics are unchanged
 - Date: 2026-09-03
 - Supersedes (the zoom-lightbox mechanism only): [ADR-0018](0018-presenting-and-editing-canvas-modes.md) — the Presenting/Editing mode concept itself, the footer toggle, and Editing mode's tab-styled switcher are otherwise unchanged.
 - Relates to: [ADR-0012](0012-all-view-thumbnails.md), [ADR-0017](0017-shell-navigation-restructure.md)

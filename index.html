@@ -223,16 +223,46 @@
           <main class="view-switcher" x-show="activeIssue">
             <div class="view-content">
               <template x-if="activeView === 'all'">
-                <!-- ADR-0019: :style drives the container's grid-template-* between
-                     a plain 2x2 and a "1 featured + 3 stacked" layout — each cell's
-                     own grid-area is static (CSS, keyed by data-view below), only
+                <!-- ADR-0019/0033: :style drives the container's grid-template-*
+                     between a plain 2x2 and a featured layout — each cell's own
+                     grid-area is static (CSS, keyed by data-view below), only
                      the container's template changes. An in-place reflow, not an
-                     overlay, so the Backlog panel stays interactive throughout. -->
+                     overlay, so the Backlog panel stays interactive throughout.
+                     ADR-0033: the featured view renders in its own separate
+                     .all-featured-display element below, not by resizing one of
+                     the four tiles — they stay in fixed Process/System/Object/
+                     Interaction order always, never reordered or excluded; the
+                     featured one just dims in place (:class="dimmed"). -->
                 <div class="all-grid" :style="allGridStyle" x-effect="renderAllThumbnails()">
+                  <div
+                    class="all-cell all-featured-display"
+                    x-show="featuredCanvas"
+                    x-cloak
+                    :data-featured-view="featuredCanvas"
+                    @click="toggleZoom(featuredCanvas)"
+                  >
+                    <h3 x-text="featuredCanvasLabel"></h3>
+                    <div class="all-cell-thumbnail" x-show="thumbnails[featuredCanvas]" x-html="thumbnails[featuredCanvas]"></div>
+                    <p
+                      class="placeholder"
+                      x-show="featuredCanvas !== 'interaction' && !thumbnails[featuredCanvas]"
+                      x-text="t('allGrid.rendering')"
+                    ></p>
+                    <p
+                      class="placeholder"
+                      x-show="featuredCanvas === 'interaction' && thumbnails.interaction === null"
+                      x-text="t('allGrid.rendering')"
+                    ></p>
+                    <p
+                      class="placeholder"
+                      x-show="featuredCanvas === 'interaction' && thumbnails.interaction === ''"
+                      x-text="t('allGrid.nothingDrawnYet')"
+                    ></p>
+                  </div>
                   <div
                     class="all-cell"
                     data-view="process"
-                    :class="{ featured: featuredCanvas === 'process' }"
+                    :class="{ dimmed: featuredCanvas === 'process' }"
                     @click="canvasMode === 'editing' ? setView('process') : toggleZoom('process')"
                   >
                     <h3 x-text="t('canvas.process')"></h3>
@@ -242,7 +272,7 @@
                   <div
                     class="all-cell"
                     data-view="system"
-                    :class="{ featured: featuredCanvas === 'system' }"
+                    :class="{ dimmed: featuredCanvas === 'system' }"
                     @click="canvasMode === 'editing' ? setView('system') : toggleZoom('system')"
                   >
                     <h3 x-text="t('canvas.systemFull')"></h3>
@@ -252,7 +282,7 @@
                   <div
                     class="all-cell"
                     data-view="object"
-                    :class="{ featured: featuredCanvas === 'object' }"
+                    :class="{ dimmed: featuredCanvas === 'object' }"
                     @click="canvasMode === 'editing' ? setView('object') : toggleZoom('object')"
                   >
                     <h3 x-text="t('canvas.object')"></h3>
@@ -262,7 +292,7 @@
                   <div
                     class="all-cell"
                     data-view="interaction"
-                    :class="{ featured: featuredCanvas === 'interaction' }"
+                    :class="{ dimmed: featuredCanvas === 'interaction' }"
                     @click="canvasMode === 'editing' ? setView('interaction') : toggleZoom('interaction')"
                   >
                     <h3 x-text="t('canvas.interaction')"></h3>

@@ -21,7 +21,7 @@ Requires Node.js (any current LTS).
 
 ## Core Idea
 
-Each canvas is built on the best-fit existing open tool for its notation rather than one shared canvas SDK, prioritizing standard-format compatibility over interaction consistency across canvases (ADR-0003). An Issue bundles all four canvases plus a Backlog together; the shell is issue-scoped, not canvas-scoped. Picking an Issue is an overlay, not a permanent panel — switching Issues is a heavier jump than picking between canvases, so it's summoned via the burger menu rather than parked on screen (ADR-0017). The **Backlog** panel, which covers the whole Issue rather than one canvas, takes the freed left position instead, minimizable but always present once an Issue is active. A **Presenting/Editing** mode toggle in its footer governs whether the **All** grid's tiles enter a canvas for editing or reflow in place — one tile enlarged, the other three stacked beside it — for a walk-through that never blocks the Backlog panel (ADR-0018/0019).
+Each canvas is built on the best-fit existing open tool for its notation rather than one shared canvas SDK, prioritizing standard-format compatibility over interaction consistency across canvases (ADR-0003). An Issue bundles all four canvases plus a Backlog together; the shell is issue-scoped, not canvas-scoped. Picking an Issue is an overlay, not a permanent panel — switching Issues is a heavier jump than picking between canvases, so it's summoned via the burger menu rather than parked on screen (ADR-0017). The **Backlog** panel, which covers the whole Issue rather than one canvas, takes the freed left position instead, minimizable but always present once an Issue is active. A **Presenting/Editing** mode toggle in its footer governs whether the **All** grid's tiles enter a canvas for editing or reflow in place — one tile enlarged in a separate display, all four small tiles staying in fixed order beside it with the featured one dimmed — for a walk-through that never blocks the Backlog panel (ADR-0018/0019/0033).
 
 ## Architecture
 
@@ -33,10 +33,10 @@ Each canvas is built on the best-fit existing open tool for its notation rather 
 | panel     |    Editing mode: click enters that canvas's native editor,  |
 | (always   |    engine + (Process only) bpmn-io properties panel.        |
 | visible   |    Presenting mode: click reflows the grid in place — that  |
-| once an   |    tile enlarges, the other three stack beside it. No live  |
-| Issue is  |    editor mounts, no tabs shown, Backlog stays interactive. |
-| active,   |                                                              |
-| resizable,|                                                              |
+| once an   |    tile enlarges in a separate display, all four small      |
+| Issue is  |    tiles stay in fixed order beside it, the featured one    |
+| active,   |    dimmed in place. No live editor mounts, no tabs shown,   |
+| resizable,|    Backlog stays interactive.                               |
 | footer:   |                                                              |
 | Presenting|                                                              |
 | /Editing  |                                                              |
@@ -92,7 +92,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 |------|------|
 | `README.md` | Product framing — naming, the canvases, what each is/isn't for |
 | `docs/adr/README.md` | ADR index — numbered, append-only decision log |
-| `docs/adr/0001-*.md` – `0032-*.md` | Individual decisions — see the index for titles |
+| `docs/adr/0001-*.md` – `0033-*.md` | Individual decisions — see the index for titles |
 
 ## Architecture Decisions
 
@@ -116,7 +116,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0016](docs/adr/0016-panel-collapse-via-drag-threshold.md) | Both side panels collapse by dragging their resize handle past a threshold; no explicit toggle button |
 | [0017](docs/adr/0017-shell-navigation-restructure.md) | Burger-menu Issue picker (overlay, not a persistent sidebar); Backlog panel moves left; top brand bar |
 | [0018](docs/adr/0018-presenting-and-editing-canvas-modes.md) | Presenting vs. Editing modes; Editing mode: click a tile enters it, tab-styled switcher — **enlarge mechanism superseded by 0019** |
-| [0019](docs/adr/0019-presenting-mode-inline-grid-reflow.md) | Presenting mode's enlarge is an in-place grid reflow (1 featured + 3 stacked), not a lightbox overlay |
+| [0019](docs/adr/0019-presenting-mode-inline-grid-reflow.md) | Presenting mode's enlarge is an in-place grid reflow, not a lightbox overlay — **featured-layout composition superseded, partially, by 0033** |
 | [0020](docs/adr/0020-default-theme-is-light.md) | First-visit default theme is light, not OS-preference-based |
 | [0021](docs/adr/0021-interaction-canvas-excalidraw.md) | Interaction Canvas: Excalidraw (MIT, freeform sketching), not draw.io — React mounted as an isolated island |
 | [0022](docs/adr/0022-static-hosting-github-pages.md) | Static hosting: GitHub Pages, deployed via GitHub Actions on every push to `main` |
@@ -130,6 +130,7 @@ Cross-issue copy (ADR-0011): a whole Issue is never copyable. Views copy by
 | [0030](docs/adr/0030-presenting-mode-grid-reflow-keeps-instant-snap.md) | Presenting mode's grid reflow keeps its instant snap, permanently — animating it risks visibly breaking on an unstable remote-presentation connection |
 | [0031](docs/adr/0031-canvas-naming-stays-provisional.md) | Canvas naming stays provisional — not finalized now, revisit only on demand |
 | [0032](docs/adr/0032-process-and-interaction-canvases-keep-full-tool-vocabulary.md) | Process and Interaction Canvases keep their tools' full default vocabulary — no curated BPMN/Excalidraw subset, revisit only on an observed need |
+| [0033](docs/adr/0033-presenting-mode-featured-layout-fixed-order-dimmed.md) | Presenting mode's featured layout: all four tiles always render in fixed Process/System/Object/Interaction order; the featured one dims in place (a separate `.all-featured-display` element shows it large) instead of being excluded from the stack |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is **not yet finalized** (`docs/adr/README.md`) — code and docs currently use the README naming. This is exactly why views and Backlog entries carry their own UUIDs (ADR-0007/0010): identity must survive a naming decision that hasn't happened yet.
 
@@ -148,7 +149,7 @@ Conventions carried forward, consistent with every sibling project in this works
 
 | Path | Role | ADR |
 |------|------|-----|
-| `src/shell/shell-state.js` | Alpine data factory: Issue selection/picker, view switching, canvas mode, Backlog panel state, resize, theme, history, copy | 0002, 0017, 0018, 0019 |
+| `src/shell/shell-state.js` | Alpine data factory: Issue selection/picker, view switching, canvas mode, Backlog panel state, resize, theme, history, copy | 0002, 0017, 0018, 0019, 0033 |
 | `src/shell/i18n.js` | i18next init + `Alpine.store('i18n')`, wrapping `t()`/`changeLanguage()`, per-language flag/endonym metadata | 0026, 0027 |
 | `src/locales/<lang>/translation.json` | Shell-chrome translation strings, one file per language (`en`, `de`, `fr`, `es`) | 0026 |
 | `src/canvases/process/` | Process Canvas: bpmn-js + `@bpmn-io/properties-panel` | 0004 |
@@ -162,7 +163,7 @@ Conventions carried forward, consistent with every sibling project in this works
 | `src/persistence/seed-issues.js` | Example Issues seeded on a true first run | 0007 |
 | `src/css/theme.css` | CSS custom properties, light/dark palette | 0013 |
 | `src/css/shell.css` | All shell chrome and canvas-wrapper styling | — |
-| `index.html` | Markup + Alpine directives for the whole shell | 0002, 0017, 0018, 0019, 0020, 0026, 0027, 0028, 0029 |
+| `index.html` | Markup + Alpine directives for the whole shell | 0002, 0017, 0018, 0019, 0020, 0026, 0027, 0028, 0029, 0033 |
 
 `index.html`'s markup, not a component framework, is the shell's template layer (ADR-0002) — there's no further per-panel module split (e.g. a dedicated "sidebar" or "backlog panel" file) beyond `shell-state.js`'s single data factory; that's a deliberate size call, not an oversight, and worth revisiting only if the shell's own complexity grows past what one file comfortably holds.
 
@@ -176,7 +177,7 @@ Items with an ADR are designed but not built (ADR-0014). Everything else below n
 - **Process Canvas's BPMN subset — settled, not revisited (ADR-0032, 2026-09-17).** ADR-0004 called for a constrained BPMN profile rather than bpmn-js's full default palette; confirmed to stay full for now — narrowing it from theory alone risks guessing wrong, revisit only once a real diagram actually shows the predicted problem (stakeholder confusion, or drifting into technical-level modeling).
 - **File-manager-style Issue picker.** The Issue-picker overlay's list (ADR-0017) is still a flat, unfiltered list beyond its search field — worth revisiting (tabs, folder tree, per another project's own sidebar) once there are enough Issues that a flat list stops scaling.
 - **Mobile Backlog collapse.** The single remaining side panel (Backlog) has no touch-friendly collapse mechanism below the 768px breakpoint — drag-collapse is disabled there (`.resize-handle{display:none}`) and nothing replaces it, unlike the old sidebar's `<details>` fallback. Not yet decided whether it needs one.
-- **Featured tile is a static enlarge, not a live viewer.** Presenting mode's featured tile (ADR-0019) reuses the same rendered thumbnail, not a pannable/zoomable live render — fine for "look closer," a real diagram viewer is a bigger feature if that turns out to matter.
+- **Featured tile is a static enlarge, not a live viewer.** Presenting mode's featured display (ADR-0019/0033) reuses the same rendered thumbnail, not a pannable/zoomable live render — fine for "look closer," a real diagram viewer is a bigger feature if that turns out to matter.
 - **No transition on the grid reflow — settled, not revisited.** Switching a tile in/out of Presenting mode's featured layout (ADR-0019) is an instant snap. Confirmed permanent (ADR-0030, 2026-09-17): beyond `grid-template-areas` changes not being meaningfully animatable across browsers, an animated transition would introduce a window where a presenter/viewer's screen-share connection hiccupping could make the animation itself look broken — a real risk for a feature specifically used in live, often-remote walkthroughs.
 - **Concurrent-edit / merge story** for one Issue's single JSON document — relevant once more than one person can edit the same Issue; out of scope while client-side/single-user.
 - **Cross-canvas element-level linking**, reconsidered. ADR-0009 explicitly decided against building this now. If element-to-element navigation (e.g. one BPMN task ↔ one Object-canvas entity) turns out to matter in practice, it's new scope requiring its own ADR — not a partially-built feature waiting to be finished.
