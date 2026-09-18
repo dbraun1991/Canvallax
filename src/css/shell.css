@@ -391,7 +391,8 @@
 
 .history-toggle,
 .copy-toggle,
-.export-toggle {
+.export-toggle,
+.howto-toggle {
   background: none;
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -403,7 +404,8 @@
 
 .history-toggle:hover,
 .copy-toggle:hover,
-.export-toggle:hover {
+.export-toggle:hover,
+.howto-toggle:hover {
   color: var(--text);
 }
 
@@ -567,7 +569,8 @@
    fields. */
 
 .issue-picker-backdrop,
-.settings-backdrop {
+.settings-backdrop,
+.howto-backdrop {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
@@ -575,7 +578,8 @@
 }
 
 .issue-picker,
-.settings-overlay {
+.settings-overlay,
+.howto-overlay {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -590,6 +594,12 @@
   border-radius: 8px;
   z-index: 40;
   overflow: hidden;
+}
+
+/* How To overlay (ADR-0035) is wider than Settings/Issue-picker — it holds
+   prose sections, not a single-column list/mock rows. */
+.howto-overlay {
+  width: 520px;
 }
 
 .issue-picker-header {
@@ -657,6 +667,48 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--text-muted);
+}
+
+/* ─── How To overlay (ADR-0035) ─── */
+
+.howto-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.howto-section h3 {
+  margin: 0 0 6px;
+  font-size: 13px;
+}
+
+.howto-section p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.howto-list {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.howto-link {
+  display: inline-block;
+  margin-top: 10px;
+  color: var(--accent);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.howto-link:hover {
+  text-decoration: underline;
 }
 
 /* ─── All grid (ADR-0012), incl. Presenting-mode featured layout (ADR-0019) ─── */

@@ -66,6 +66,8 @@ export function shellState() {
     burgerMenuOpen: false,
     languageMenuOpen: false, // ADR-0026: language flyout nested inside the burger menu, opens to the right
     settingsOpen: false, // ADR-0017: mock overlay, no real settings surface yet
+    howToOpen: false,
+    howToView: null, // null (general How To) | 'process' | 'system' | 'object' | 'interaction' (ADR-0035)
     canvasMode: 'editing', // 'editing' | 'presenting' (ADR-0018) — a standing session preference, not reset per-Issue
     featuredCanvas: null, // null | 'process' | 'system' | 'object' | 'interaction' — Presenting mode's enlarged tile (ADR-0019)
     _processInstance: null,
@@ -223,6 +225,40 @@ export function shellState() {
 
     closeSettings() {
       this.settingsOpen = false;
+    },
+
+    // ADR-0035: one overlay, two entry points — the burger menu's "How To"
+    // opens it with view === null (general concepts); the per-canvas button
+    // in .view-tabs-actions opens it with the current activeView (that
+    // canvas's own editing basics). Which content renders is decided in
+    // index.html by howToView, not by two separate overlays.
+    openHowTo(view = null) {
+      this.howToView = view;
+      this.howToOpen = true;
+      this.burgerMenuOpen = false;
+    },
+
+    closeHowTo() {
+      this.howToOpen = false;
+    },
+
+    // Each canvas's basics are a short list, not one string — i18next's
+    // returnObjects option resolves the array the same as any other key.
+    howToCanvasSteps() {
+      if (!this.howToView) return [];
+      return this.t(`howTo.canvas.${this.howToView}.steps`, { returnObjects: true });
+    },
+
+    // One official, first-party doc link per underlying tool (ADR-0035) —
+    // fixed, not translated: each is the tool's own docs, not Canvallax's.
+    howToCanvasLink() {
+      const links = {
+        process: 'https://bpmn.io/toolkit/bpmn-js/walkthrough/',
+        system: 'https://www.drawio.com/docs/',
+        object: 'https://mermaid.js.org/syntax/entityRelationshipDiagram.html',
+        interaction: 'https://excalidraw.com/',
+      };
+      return links[this.howToView] ?? '';
     },
 
     // ADR-0018. Switching into Presenting always drops back to the grid and

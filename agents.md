@@ -49,8 +49,10 @@ the *whole* bar width regardless of how much content the left (burger +
 wordmark, always visible) or right (Copy/History) tracks hold. The burger
 menu opens a small dropdown: **Change Issue** (the Issue-picker overlay —
 also shown automatically, undismissably, whenever no Issue is active yet),
-the **theme toggle**, and **Settings** (a mock overlay, no real content
-yet). Activating an Issue always resets view -> All, Backlog -> expanded,
+the **theme toggle**, **Settings** (a mock overlay, no real content
+yet), and **How To** (ADR-0035, general concepts; a matching per-canvas
+button lives next to Copy/History/Export instead). Activating an Issue
+always resets view -> All, Backlog -> expanded,
 and closes the Issue-picker; switching views within an already-open Issue
 leaves both exactly as left; `canvasMode` (Presenting/Editing) is a standing
 session preference, not reset per-Issue (ADR-0017/0018/0019). The center/right
@@ -150,9 +152,9 @@ Conventions carried forward, consistent with every sibling project in this works
 
 | Path | Role | ADR |
 |------|------|-----|
-| `src/shell/shell-state.js` | Alpine data factory: Issue selection/picker, view switching, canvas mode, Backlog panel state, resize, theme, history, copy | 0002, 0017, 0018, 0019, 0033 |
+| `src/shell/shell-state.js` | Alpine data factory: Issue selection/picker, view switching, canvas mode, Backlog panel state, resize, theme, history, copy | 0002, 0017, 0018, 0019, 0033, 0035 |
 | `src/shell/i18n.js` | i18next init + `Alpine.store('i18n')`, wrapping `t()`/`changeLanguage()`, per-language flag/endonym metadata | 0026, 0027 |
-| `src/locales/<lang>/translation.json` | Shell-chrome translation strings, one file per language (`en`, `de`, `fr`, `es`) | 0026 |
+| `src/locales/<lang>/translation.json` | Shell-chrome translation strings, one file per language (`en`, `de`, `fr`, `es`) | 0026, 0035 |
 | `src/canvases/process/` | Process Canvas: bpmn-js + `@bpmn-io/properties-panel` | 0004 |
 | `src/canvases/system/drawio-canvas.js` | System/Integration Canvas: draw.io embed integration | 0005, 0024, 0025 |
 | `src/canvases/interaction/excalidraw-canvas.js` | Interaction Canvas: Excalidraw, mounted as an isolated React island | 0021 |
@@ -164,7 +166,7 @@ Conventions carried forward, consistent with every sibling project in this works
 | `src/persistence/seed-issues.js` | Example Issues seeded on a true first run | 0007 |
 | `src/css/theme.css` | CSS custom properties, light/dark palette | 0013 |
 | `src/css/shell.css` | All shell chrome and canvas-wrapper styling | — |
-| `index.html` | Markup + Alpine directives for the whole shell | 0002, 0017, 0018, 0019, 0020, 0026, 0027, 0028, 0029, 0033 |
+| `index.html` | Markup + Alpine directives for the whole shell | 0002, 0017, 0018, 0019, 0020, 0026, 0027, 0028, 0029, 0033, 0035 |
 
 `index.html`'s markup, not a component framework, is the shell's template layer (ADR-0002) — there's no further per-panel module split (e.g. a dedicated "sidebar" or "backlog panel" file) beyond `shell-state.js`'s single data factory; that's a deliberate size call, not an oversight, and worth revisiting only if the shell's own complexity grows past what one file comfortably holds.
 
@@ -174,7 +176,7 @@ Items with an ADR are designed but not built (ADR-0014). Everything else below n
 
 - **Server-backed git layer** (ADR-0010/0014) — client-side git was the deliberate starting point; a real Express/Node server is the expected next step once multi-device access or real-time collaboration are actually needed.
 - **Settings overlay is a mock.** The burger menu's "Settings" opens a placeholder overlay with inert mock rows — no real settings surface behind it yet (ADR-0017). Scope of what actually belongs in it is still undefined.
-- **"How To" help — not yet built.** Two parts: a general "How To" entry in the burger menu explaining Canvallax's own concepts (Issues, Backlog, the four canvases, Presenting/Editing modes), and a per-canvas "How To" available while editing each canvas, specific to that canvas's underlying tool (bpmn-js's own editing basics for Process, draw.io's for System, Excalidraw's for Interaction, Mermaid's text syntax for Object). Format still undefined — a burger-menu overlay similar to Settings vs. an inline per-canvas panel, Canvallax-authored content vs. linking out to each tool's own docs.
+- **"How To" help — built (ADR-0035).** One shared overlay, two entry points: the burger menu's "How To" (general Canvallax concepts) and a per-canvas "How To" button next to Copy/History/Export (that canvas's own core gestures). Content is short Canvallax-authored basics per canvas plus one "learn more" link to that tool's own official docs (bpmn-js, draw.io, Mermaid, Excalidraw) — not a full self-contained tutorial.
 - **Canvas naming finalization — settled, not revisited (ADR-0031, 2026-09-17).** README/`docs/adr/README.md` flag Process/System/Object/Interaction/Backlog naming as provisional; confirmed to stay that way indefinitely, revisited only if a concrete reason to rename actually comes up. Per-view UUIDs mean this can still be resolved later without a data migration whenever that happens — but the rename itself (UI copy, `views.<name>` key vs. `id`, any docs referencing current names) would still be unbuilt work at that point.
 - **Process Canvas's BPMN subset — settled, not revisited (ADR-0032, 2026-09-17).** ADR-0004 called for a constrained BPMN profile rather than bpmn-js's full default palette; confirmed to stay full for now — narrowing it from theory alone risks guessing wrong, revisit only once a real diagram actually shows the predicted problem (stakeholder confusion, or drifting into technical-level modeling).
 - **File-manager-style Issue picker.** The Issue-picker overlay's list (ADR-0017) is still a flat, unfiltered list beyond its search field — worth revisiting (tabs, folder tree, per another project's own sidebar) once there are enough Issues that a flat list stops scaling.

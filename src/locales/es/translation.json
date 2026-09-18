@@ -7,7 +7,8 @@
     "issueNamePlaceholder": "Nombre de la incidencia",
     "copy": "Copiar",
     "history": "Historial",
-    "export": "Exportar"
+    "export": "Exportar",
+    "howTo": "Cómo se usa"
   },
   "status": {
     "open": "abierto",
@@ -33,6 +34,7 @@
     "lightMode": "Modo claro",
     "darkMode": "Modo oscuro",
     "settings": "Ajustes",
+    "howTo": "Cómo se usa",
     "language": "Idioma"
   },
   "backlog": {
@@ -86,5 +88,79 @@
     "title": "Exportar {{view}}",
     "format": "Formato",
     "download": "Descargar"
+  },
+  "howTo": {
+    "learnMore": "Más información →",
+    "general": {
+      "title": "Cómo funciona Canvallax",
+      "whatItIs": {
+        "title": "Qué es Canvallax",
+        "body": "Canvallax ofrece a las partes interesadas de negocio y técnicas un pequeño conjunto de lienzos visuales compartidos, deliberadamente incompletos, para que todos lean el mismo sistema de la misma manera."
+      },
+      "issues": {
+        "title": "Incidencias",
+        "body": "Una incidencia agrupa los cuatro lienzos más un backlog en una sola unidad. Elige o cambia de incidencia desde «Cambiar incidencia» en el menú de hamburguesa."
+      },
+      "canvases": {
+        "title": "Los cuatro lienzos",
+        "process": "Proceso — el proceso en sí, y lo que puede cambiar en él.",
+        "system": "Sistema — los sistemas conectados y sus conexiones, y lo que puede verse afectado.",
+        "object": "Objeto — los datos y entidades con sus relaciones, y lo que puede diferir.",
+        "interaction": "Interacción — los puntos de contacto, y cómo cambian."
+      },
+      "backlog": {
+        "title": "Backlog",
+        "body": "El panel de la izquierda, siempre visible en cuanto hay una incidencia activa — una lista continua de entradas con nombre y descripción, asociada a toda la incidencia en lugar de a un solo lienzo."
+      },
+      "modes": {
+        "title": "Presentación vs. Edición",
+        "body": "Interruptor en el pie del panel Backlog. Edición abre el editor nativo de un lienzo para trabajar en él; Presentación reorganiza la cuadrícula Todo, ampliando una miniatura cada vez para una presentación guiada."
+      },
+      "copy": {
+        "title": "Copiar entre incidencias",
+        "body": "Una vista o entrada del backlog puede copiarse desde otra incidencia — una vista sobrescribe la actual, una entrada se añade. Una incidencia completa nunca se copia de una vez."
+      },
+      "history": {
+        "title": "Historial",
+        "body": "Cada lienzo mantiene su propio historial de versiones. Abre Historial junto a Copiar/Exportar para examinar y restaurar una versión anterior."
+      },
+      "export": {
+        "title": "Exportar",
+        "body": "Copia o descarga el lienzo actual en su formato nativo, como SVG o como PNG, mediante Exportar junto a Copiar/Historial."
+      }
+    },
+    "canvas": {
+      "process": {
+        "steps": [
+          "Arrastra una forma desde la paleta en el borde del lienzo hasta el lienzo.",
+          "Pasa el cursor sobre una forma y arrastra desde su flecha para conectarla con la siguiente.",
+          "Haz doble clic en una forma o conexión para renombrarla.",
+          "Usa el panel de la derecha para editar propiedades específicas de BPMN."
+        ]
+      },
+      "system": {
+        "steps": [
+          "Arrastra una forma desde el panel de la izquierda hasta el lienzo.",
+          "Haz doble clic en el lienzo vacío o en una forma existente para añadir o editar su texto.",
+          "Pasa el cursor sobre el borde de una forma y arrastra para trazar un conector hacia otra forma.",
+          "Arrastra los tiradores de las esquinas de una forma para redimensionarla."
+        ]
+      },
+      "object": {
+        "steps": [
+          "Este lienzo es texto, no arrastrar y soltar — edita la sintaxis de entidad-relación de Mermaid a la izquierda.",
+          "El diagrama de la derecha se actualiza en vivo mientras escribes.",
+          "Declara entidades y conéctalas con líneas de relación para mostrar la cardinalidad."
+        ]
+      },
+      "interaction": {
+        "steps": [
+          "Elige una herramienta de la barra superior (rectángulo, flecha, texto, dibujo a mano alzada y más).",
+          "Haz clic y arrastra en el lienzo para dibujar con la herramienta elegida.",
+          "Haz doble clic para añadir o editar texto.",
+          "Este lienzo es para bocetos de storyboard aproximados, no para diagramas precisos."
+        ]
+      }
+    }
   }
 }

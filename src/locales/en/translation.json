@@ -7,7 +7,8 @@
     "issueNamePlaceholder": "Issue name",
     "copy": "Copy",
     "history": "History",
-    "export": "Export"
+    "export": "Export",
+    "howTo": "How To"
   },
   "status": {
     "open": "open",
@@ -33,6 +34,7 @@
     "lightMode": "Light mode",
     "darkMode": "Dark mode",
     "settings": "Settings",
+    "howTo": "How To",
     "language": "Language"
   },
   "backlog": {
@@ -86,5 +88,79 @@
     "title": "Export {{view}}",
     "format": "Format",
     "download": "Download"
+  },
+  "howTo": {
+    "learnMore": "Learn more →",
+    "general": {
+      "title": "How Canvallax Works",
+      "whatItIs": {
+        "title": "What Canvallax Is",
+        "body": "Canvallax gives business and technical stakeholders a small set of shared, deliberately incomplete visual canvases, so everyone reads the same system the same way."
+      },
+      "issues": {
+        "title": "Issues",
+        "body": "An Issue bundles all four canvases plus a Backlog into one unit. Pick or switch Issues from the burger menu's \"Change Issue\"."
+      },
+      "canvases": {
+        "title": "The Four Canvases",
+        "process": "Process — the process itself, and what may change about it.",
+        "system": "System — attached systems and their connections, and what may be affected.",
+        "object": "Object — data & entities and their relations, and what may differ.",
+        "interaction": "Interaction — touchpoints, and how they change."
+      },
+      "backlog": {
+        "title": "Backlog",
+        "body": "The panel on the left, always visible once an Issue is active — a running list of named entries with descriptions, attached to the whole Issue rather than one canvas."
+      },
+      "modes": {
+        "title": "Presenting vs. Editing",
+        "body": "Toggle in the Backlog panel's footer. Editing opens a canvas's native editor to work in it; Presenting reflows the All grid instead, enlarging one tile at a time for a walkthrough."
+      },
+      "copy": {
+        "title": "Copying Across Issues",
+        "body": "A single view or Backlog entry can be copied in from another Issue — a view overwrites the current one, an entry is appended. A whole Issue is never copied at once."
+      },
+      "history": {
+        "title": "History",
+        "body": "Each canvas keeps its own version history. Open History next to Copy/Export to browse and restore an earlier version."
+      },
+      "export": {
+        "title": "Export",
+        "body": "Copy or download the current canvas in its native format, as SVG, or as PNG, via Export next to Copy/History."
+      }
+    },
+    "canvas": {
+      "process": {
+        "steps": [
+          "Drag a shape from the palette along the canvas edge onto the canvas.",
+          "Hover a shape and drag from its arrow to connect it to the next one.",
+          "Double-click a shape or connection to rename it.",
+          "Use the panel on the right to edit BPMN-specific properties."
+        ]
+      },
+      "system": {
+        "steps": [
+          "Drag a shape from the panel on the left onto the canvas.",
+          "Double-click empty canvas or an existing shape to add or edit its text.",
+          "Hover a shape's edge and drag to draw a connector to another shape.",
+          "Drag a shape's corner handles to resize it."
+        ]
+      },
+      "object": {
+        "steps": [
+          "This canvas is text, not drag-and-drop — edit the Mermaid entity-relationship syntax on the left.",
+          "The diagram on the right updates live as you type.",
+          "Declare entities and connect them with relationship lines to show cardinality."
+        ]
+      },
+      "interaction": {
+        "steps": [
+          "Pick a tool from the toolbar at the top (rectangle, arrow, text, freehand, and more).",
+          "Click and drag on the canvas to draw with the selected tool.",
+          "Double-click to add or edit text.",
+          "This canvas is for rough storyboard-level sketches, not precise diagrams."
+        ]
+      }
+    }
   }
 }

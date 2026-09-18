@@ -93,6 +93,7 @@
               <button type="button" class="copy-toggle" @click="openCopyPicker('view')" x-text="t('topBar.copy')"></button>
               <button type="button" class="history-toggle" @click="toggleHistory()" x-text="t('topBar.history')"></button>
               <button type="button" class="export-toggle" @click="openExportPicker()" x-text="t('topBar.export')"></button>
+              <button type="button" class="howto-toggle" @click="openHowTo(activeView)" x-text="t('topBar.howTo')"></button>
             </div>
           </div>
         </header>
@@ -146,6 +147,7 @@
             </div>
           </div>
           <button type="button" class="burger-menu-item" @click="openSettings()" x-text="t('burgerMenu.settings')"></button>
+          <button type="button" class="burger-menu-item" @click="openHowTo()" x-text="t('burgerMenu.howTo')"></button>
         </div>
 
         <div class="shell-columns">
@@ -408,6 +410,71 @@
               <span x-text="t('settings.workspace')"></span>
               <span class="settings-mock-tag" x-text="t('settings.comingSoon')"></span>
             </div>
+          </div>
+        </div>
+
+        <!-- How To overlay (ADR-0035) — one overlay, two entry points.
+             howToView === null: general concepts, opened from the burger menu.
+             howToView === a canvas name: that canvas's own editing basics,
+             opened from the per-canvas button next to Copy/History/Export. -->
+        <div class="howto-backdrop" x-show="howToOpen" @click="closeHowTo()" x-cloak></div>
+        <div class="howto-overlay" x-show="howToOpen" x-cloak>
+          <div class="issue-picker-header">
+            <h2 x-text="howToView ? t('canvas.' + howToView) : t('howTo.general.title')"></h2>
+            <button type="button" class="close" @click="closeHowTo()">×</button>
+          </div>
+          <div class="howto-body">
+            <template x-if="!howToView">
+              <div>
+                <div class="howto-section">
+                  <h3 x-text="t('howTo.general.whatItIs.title')"></h3>
+                  <p x-text="t('howTo.general.whatItIs.body')"></p>
+                </div>
+                <div class="howto-section">
+                  <h3 x-text="t('howTo.general.issues.title')"></h3>
+                  <p x-text="t('howTo.general.issues.body')"></p>
+                </div>
+                <div class="howto-section">
+                  <h3 x-text="t('howTo.general.canvases.title')"></h3>
+                  <ul class="howto-list">
+                    <li x-text="t('howTo.general.canvases.process')"></li>
+                    <li x-text="t('howTo.general.canvases.system')"></li>
+                    <li x-text="t('howTo.general.canvases.object')"></li>
+                    <li x-text="t('howTo.general.canvases.interaction')"></li>
+                  </ul>
+                </div>
+                <div class="howto-section">
+                  <h3 x-text="t('howTo.general.backlog.title')"></h3>
+                  <p x-text="t('howTo.general.backlog.body')"></p>
+                </div>
+                <div class="howto-section">
+                  <h3 x-text="t('howTo.general.modes.title')"></h3>
+                  <p x-text="t('howTo.general.modes.body')"></p>
+                </div>
+                <div class="howto-section">
+                  <h3 x-text="t('howTo.general.copy.title')"></h3>
+                  <p x-text="t('howTo.general.copy.body')"></p>
+                </div>
+                <div class="howto-section">
+                  <h3 x-text="t('howTo.general.history.title')"></h3>
+                  <p x-text="t('howTo.general.history.body')"></p>
+                </div>
+                <div class="howto-section">
+                  <h3 x-text="t('howTo.general.export.title')"></h3>
+                  <p x-text="t('howTo.general.export.body')"></p>
+                </div>
+              </div>
+            </template>
+            <template x-if="howToView">
+              <div class="howto-section">
+                <ul class="howto-list">
+                  <template x-for="step in howToCanvasSteps()" :key="step">
+                    <li x-text="step"></li>
+                  </template>
+                </ul>
+                <a class="howto-link" :href="howToCanvasLink()" target="_blank" rel="noopener" x-text="t('howTo.learnMore')"></a>
+              </div>
+            </template>
           </div>
         </div>
 

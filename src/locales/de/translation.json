@@ -7,7 +7,8 @@
     "issueNamePlaceholder": "Issue-Name",
     "copy": "Kopieren",
     "history": "Verlauf",
-    "export": "Export"
+    "export": "Export",
+    "howTo": "Anleitung"
   },
   "status": {
     "open": "offen",
@@ -33,6 +34,7 @@
     "lightMode": "Heller Modus",
     "darkMode": "Dunkler Modus",
     "settings": "Einstellungen",
+    "howTo": "Anleitung",
     "language": "Sprache"
   },
   "backlog": {
@@ -86,5 +88,79 @@
     "title": "{{view}} exportieren",
     "format": "Format",
     "download": "Herunterladen"
+  },
+  "howTo": {
+    "learnMore": "Mehr erfahren →",
+    "general": {
+      "title": "So funktioniert Canvallax",
+      "whatItIs": {
+        "title": "Was Canvallax ist",
+        "body": "Canvallax gibt fachlichen und technischen Stakeholdern eine kleine Menge gemeinsamer, bewusst unvollständiger visueller Canvases, damit alle dasselbe System auf dieselbe Weise lesen."
+      },
+      "issues": {
+        "title": "Issues",
+        "body": "Ein Issue bündelt alle vier Canvases plus ein Backlog zu einer Einheit. Issues wählen oder wechseln über „Issue wechseln“ im Burger-Menü."
+      },
+      "canvases": {
+        "title": "Die vier Canvases",
+        "process": "Prozess — der Prozess selbst, und was sich daran ändern kann.",
+        "system": "System — angebundene Systeme und ihre Verbindungen, und was davon betroffen sein kann.",
+        "object": "Objekt — Daten & Entitäten mit ihren Beziehungen, und was davon abweichen kann.",
+        "interaction": "Interaktion — Touchpoints, und wie sie sich verändern."
+      },
+      "backlog": {
+        "title": "Backlog",
+        "body": "Das Panel links, immer sichtbar sobald ein Issue aktiv ist — eine laufende Liste benannter Einträge mit Beschreibung, dem ganzen Issue zugeordnet statt einem einzelnen Canvas."
+      },
+      "modes": {
+        "title": "Präsentieren vs. Bearbeiten",
+        "body": "Umschalter im Fußbereich des Backlog-Panels. Bearbeiten öffnet den nativen Editor eines Canvas; Präsentieren ordnet stattdessen das All-Raster neu an und vergrößert jeweils eine Kachel für einen Rundgang."
+      },
+      "copy": {
+        "title": "Issue-übergreifend kopieren",
+        "body": "Ein einzelner View oder Backlog-Eintrag kann aus einem anderen Issue kopiert werden — ein View überschreibt den aktuellen, ein Eintrag wird angehängt. Ein ganzes Issue wird nie auf einmal kopiert."
+      },
+      "history": {
+        "title": "Verlauf",
+        "body": "Jedes Canvas führt seinen eigenen Versionsverlauf. Verlauf neben Kopieren/Export öffnet die Liste zum Durchsuchen und Wiederherstellen einer früheren Version."
+      },
+      "export": {
+        "title": "Export",
+        "body": "Das aktuelle Canvas im nativen Format, als SVG oder als PNG kopieren oder herunterladen, über Export neben Kopieren/Verlauf."
+      }
+    },
+    "canvas": {
+      "process": {
+        "steps": [
+          "Eine Form aus der Palette am Canvas-Rand auf das Canvas ziehen.",
+          "Eine Form berühren und vom Pfeil aus zur nächsten Form ziehen, um sie zu verbinden.",
+          "Eine Form oder Verbindung doppelklicken, um sie umzubenennen.",
+          "Das Panel rechts verwenden, um BPMN-spezifische Eigenschaften zu bearbeiten."
+        ]
+      },
+      "system": {
+        "steps": [
+          "Eine Form aus dem Panel links auf das Canvas ziehen.",
+          "Leeres Canvas oder eine vorhandene Form doppelklicken, um Text hinzuzufügen oder zu bearbeiten.",
+          "Den Rand einer Form berühren und ziehen, um einen Konnektor zu einer anderen Form zu zeichnen.",
+          "Die Eckgriffe einer Form ziehen, um sie in der Größe zu ändern."
+        ]
+      },
+      "object": {
+        "steps": [
+          "Dieses Canvas ist Text, kein Drag-and-drop — die Mermaid-Entity-Relationship-Syntax links bearbeiten.",
+          "Das Diagramm rechts aktualisiert sich live beim Tippen.",
+          "Entitäten deklarieren und mit Beziehungslinien verbinden, um die Kardinalität zu zeigen."
+        ]
+      },
+      "interaction": {
+        "steps": [
+          "Ein Werkzeug aus der Werkzeugleiste oben wählen (Rechteck, Pfeil, Text, Freihand und mehr).",
+          "Klicken und ziehen auf dem Canvas, um mit dem gewählten Werkzeug zu zeichnen.",
+          "Doppelklicken, um Text hinzuzufügen oder zu bearbeiten.",
+          "Dieses Canvas ist für grobe Storyboard-Skizzen gedacht, nicht für präzise Diagramme."
+        ]
+      }
+    }
   }
 }

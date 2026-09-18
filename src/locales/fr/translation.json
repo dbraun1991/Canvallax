@@ -7,7 +7,8 @@
     "issueNamePlaceholder": "Nom de l'issue",
     "copy": "Copier",
     "history": "Historique",
-    "export": "Exporter"
+    "export": "Exporter",
+    "howTo": "Aide"
   },
   "status": {
     "open": "ouvert",
@@ -33,6 +34,7 @@
     "lightMode": "Mode clair",
     "darkMode": "Mode sombre",
     "settings": "Paramètres",
+    "howTo": "Aide",
     "language": "Langue"
   },
   "backlog": {
@@ -86,5 +88,79 @@
     "title": "Exporter {{view}}",
     "format": "Format",
     "download": "Télécharger"
+  },
+  "howTo": {
+    "learnMore": "En savoir plus →",
+    "general": {
+      "title": "Comment fonctionne Canvallax",
+      "whatItIs": {
+        "title": "Qu'est-ce que Canvallax",
+        "body": "Canvallax donne aux parties prenantes métier et techniques un petit ensemble de canevas visuels partagés, délibérément incomplets, afin que chacun lise le même système de la même façon."
+      },
+      "issues": {
+        "title": "Issues",
+        "body": "Une issue regroupe les quatre canevas et un backlog en une seule unité. Choisissez ou changez d'issue via « Changer d'issue » dans le menu burger."
+      },
+      "canvases": {
+        "title": "Les quatre canevas",
+        "process": "Processus — le processus lui-même, et ce qui peut y changer.",
+        "system": "Système — les systèmes connectés et leurs liaisons, et ce qui peut être affecté.",
+        "object": "Objet — les données & entités et leurs relations, et ce qui peut différer.",
+        "interaction": "Interaction — les points de contact, et comment ils évoluent."
+      },
+      "backlog": {
+        "title": "Backlog",
+        "body": "Le panneau de gauche, toujours visible dès qu'une issue est active — une liste continue d'entrées nommées avec description, rattachée à l'issue entière plutôt qu'à un seul canevas."
+      },
+      "modes": {
+        "title": "Présentation vs. Édition",
+        "body": "Bascule dans le pied du panneau Backlog. Édition ouvre l'éditeur natif d'un canevas pour y travailler ; Présentation réorganise plutôt la grille Tout, agrandissant une vignette à la fois pour une présentation guidée."
+      },
+      "copy": {
+        "title": "Copier entre issues",
+        "body": "Une vue ou une entrée de backlog peut être copiée depuis une autre issue — une vue écrase la version actuelle, une entrée est ajoutée. Une issue entière n'est jamais copiée d'un coup."
+      },
+      "history": {
+        "title": "Historique",
+        "body": "Chaque canevas garde son propre historique de versions. Ouvrez Historique à côté de Copier/Exporter pour parcourir et restaurer une version antérieure."
+      },
+      "export": {
+        "title": "Exporter",
+        "body": "Copiez ou téléchargez le canevas actuel dans son format natif, en SVG ou en PNG, via Exporter à côté de Copier/Historique."
+      }
+    },
+    "canvas": {
+      "process": {
+        "steps": [
+          "Faites glisser une forme depuis la palette au bord du canevas jusque sur le canevas.",
+          "Survolez une forme et faites glisser depuis sa flèche pour la relier à la suivante.",
+          "Double-cliquez sur une forme ou une connexion pour la renommer.",
+          "Utilisez le panneau de droite pour modifier les propriétés spécifiques à BPMN."
+        ]
+      },
+      "system": {
+        "steps": [
+          "Faites glisser une forme depuis le panneau de gauche sur le canevas.",
+          "Double-cliquez sur le canevas vide ou une forme existante pour ajouter ou modifier son texte.",
+          "Survolez le bord d'une forme et faites glisser pour tracer un connecteur vers une autre forme.",
+          "Faites glisser les poignées d'angle d'une forme pour la redimensionner."
+        ]
+      },
+      "object": {
+        "steps": [
+          "Ce canevas est textuel, pas du glisser-déposer — modifiez la syntaxe entité-relation Mermaid à gauche.",
+          "Le diagramme à droite se met à jour en direct pendant la saisie.",
+          "Déclarez des entités et reliez-les par des lignes de relation pour montrer la cardinalité."
+        ]
+      },
+      "interaction": {
+        "steps": [
+          "Choisissez un outil dans la barre d'outils en haut (rectangle, flèche, texte, tracé libre, et plus).",
+          "Cliquez-glissez sur le canevas pour dessiner avec l'outil choisi.",
+          "Double-cliquez pour ajouter ou modifier du texte.",
+          "Ce canevas sert à des esquisses de storyboard sommaires, pas à des diagrammes précis."
+        ]
+      }
+    }
   }
 }
