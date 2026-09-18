@@ -152,7 +152,8 @@ Conventions carried forward, consistent with every sibling project in this works
 
 | Path | Role | ADR |
 |------|------|-----|
-| `src/shell/shell-state.js` | Alpine data factory: Issue selection/picker, view switching, canvas mode, Backlog panel state, resize, theme, history, copy | 0002, 0017, 0018, 0019, 0033, 0035 |
+| `src/shell/shell-state.js` | Alpine data factory: Issue selection/picker, view switching, canvas mode, Backlog panel state, resize, theme, history, copy | 0002, 0017, 0018, 0019, 0033, 0035, 0036, 0037 |
+| `src/shell/pan-zoom.js` | Alpine `panZoom` data: CSS-transform pan/zoom for the Presenting-mode featured display | 0036 |
 | `src/shell/i18n.js` | i18next init + `Alpine.store('i18n')`, wrapping `t()`/`changeLanguage()`, per-language flag/endonym metadata | 0026, 0027 |
 | `src/locales/<lang>/translation.json` | Shell-chrome translation strings, one file per language (`en`, `de`, `fr`, `es`) | 0026, 0035 |
 | `src/canvases/process/` | Process Canvas: bpmn-js + `@bpmn-io/properties-panel` | 0004 |
@@ -160,13 +161,13 @@ Conventions carried forward, consistent with every sibling project in this works
 | `src/canvases/interaction/excalidraw-canvas.js` | Interaction Canvas: Excalidraw, mounted as an isolated React island | 0021 |
 | `src/canvases/object/` | Object Canvas: Mermaid text+preview | 0006 |
 | `src/canvases/thumbnails.js` | All-view thumbnail orchestration across all four engines | 0012 |
-| `src/canvases/export.js` | Per-view export (native source, SVG, or PNG) to clipboard or download, Phases 1–2 of Canvas/diagram export — reuses each engine's thumbnail function, now uniform across all four (0025); PNG rasterizes that same SVG markup via an offscreen `<canvas>`, no new dependency | 0012, 0025 |
+| `src/canvases/export.js` | Per-view export (native source, SVG, PNG, or PDF) to clipboard (PDF: download only) or download, plus Issue-level SVG+PNG ZIP, Phases 1–3 of Canvas/diagram export — reuses each engine's thumbnail function, now uniform across all four (0025); PNG rasterizes that same SVG markup via an offscreen `<canvas>`, no new dependency | 0012, 0025, 0037 |
 | `src/persistence/git-store.js` | Client-side git layer (`isomorphic-git`/`lightning-fs`/IndexedDB): commits, history, blob reads | 0010 |
 | `src/persistence/issue-store.js` | Issue CRUD, Backlog entries, copy, debounced autosave | 0007, 0010, 0011 |
 | `src/persistence/seed-issues.js` | Example Issues seeded on a true first run | 0007 |
 | `src/css/theme.css` | CSS custom properties, light/dark palette | 0013 |
 | `src/css/shell.css` | All shell chrome and canvas-wrapper styling | — |
-| `index.html` | Markup + Alpine directives for the whole shell | 0002, 0017, 0018, 0019, 0020, 0026, 0027, 0028, 0029, 0033, 0035 |
+| `index.html` | Markup + Alpine directives for the whole shell | 0002, 0017, 0018, 0019, 0020, 0026, 0027, 0028, 0029, 0033, 0035, 0036, 0037 |
 
 `index.html`'s markup, not a component framework, is the shell's template layer (ADR-0002) — there's no further per-panel module split (e.g. a dedicated "sidebar" or "backlog panel" file) beyond `shell-state.js`'s single data factory; that's a deliberate size call, not an oversight, and worth revisiting only if the shell's own complexity grows past what one file comfortably holds.
 
@@ -181,7 +182,7 @@ Items with an ADR are designed but not built (ADR-0014). Everything else below n
 - **Process Canvas's BPMN subset — settled, not revisited (ADR-0032, 2026-09-17).** ADR-0004 called for a constrained BPMN profile rather than bpmn-js's full default palette; confirmed to stay full for now — narrowing it from theory alone risks guessing wrong, revisit only once a real diagram actually shows the predicted problem (stakeholder confusion, or drifting into technical-level modeling).
 - **File-manager-style Issue picker.** The Issue-picker overlay's list (ADR-0017) is still a flat, unfiltered list beyond its search field — worth revisiting (tabs, folder tree, per another project's own sidebar) once there are enough Issues that a flat list stops scaling.
 - **Mobile Backlog collapse — settled, out of scope (ADR-0034, 2026-09-17).** The single remaining side panel (Backlog) has no touch-friendly collapse mechanism below the 768px breakpoint — drag-collapse is disabled there (`.resize-handle{display:none}`) and nothing replaces it, unlike the old sidebar's `<details>` fallback. Confirmed permanent, not a gap to fill: Canvallax targets desktop/widescreen only, since the canvas engines' own editing UIs aren't usable well on touch regardless of any responsive work on the shell's side.
-- **Featured tile is a static enlarge, not a live viewer.** Presenting mode's featured display (ADR-0019/0033) reuses the same rendered thumbnail, not a pannable/zoomable live render — fine for "look closer," a real diagram viewer is a bigger feature if that turns out to matter.
+- **Featured tile is a pan/zoom viewer — built (ADR-0036).** Presenting mode's featured display pans/zooms the existing thumbnail SVG (wheel/drag/+−/Fit, `src/shell/pan-zoom.js`); still no live engine mount (ADR-0019), so no per-tool tooltips or selection beyond what the SVG carries.
 - **No transition on the grid reflow — settled, not revisited.** Switching a tile in/out of Presenting mode's featured layout (ADR-0019) is an instant snap. Confirmed permanent (ADR-0030, 2026-09-17): beyond `grid-template-areas` changes not being meaningfully animatable across browsers, an animated transition would introduce a window where a presenter/viewer's screen-share connection hiccupping could make the animation itself look broken — a real risk for a feature specifically used in live, often-remote walkthroughs.
 - **Concurrent-edit / merge story** for one Issue's single JSON document — relevant once more than one person can edit the same Issue; out of scope while client-side/single-user.
 - **Cross-canvas element-level linking**, reconsidered. ADR-0009 explicitly decided against building this now. If element-to-element navigation (e.g. one BPMN task ↔ one Object-canvas entity) turns out to matter in practice, it's new scope requiring its own ADR — not a partially-built feature waiting to be finished.
@@ -189,7 +190,7 @@ Items with an ADR are designed but not built (ADR-0014). Everything else below n
 - **Excalidraw's element vocabulary isn't curated — settled, not revisited (ADR-0032, 2026-09-17).** Same category as Process's BPMN subset above, and closed the same way: Excalidraw's full toolset (shapes, freehand, text, images, frames, laser pointer) stays available as-is; narrowing it toward "storyboard sketch" (ADR-0021) is revisited only on an observed need, not preemptively.
 - **Is the Backlog footer the right place for the Presenting/Editing toggle?** Considered and left as-is for now (2026-09-04) — no move planned unless a specific alternative comes up.
 - **Theme toggle: burger menu, or a visible top-left button?** Considered and left in the burger menu for now (2026-09-04), specifically to avoid flip-flopping between the two locations without a real reason to revisit.
-- **Canvas/diagram export — beyond Phase 2.** `src/canvases/export.js` covers Phases 1–2: one view at a time, native source (`.bpmn`/`.drawio`/`.excalidraw`/`.mmd`), SVG, or PNG (rasterized from that same SVG markup via an offscreen `<canvas>`, 2x scale, white background painted in first so a diagram's default-black elements can't go invisible in a dark-themed viewer — same reasoning as ADR-0025) — either copied to the clipboard (`navigator.clipboard.write` for PNG's image blob, `writeText` for native/SVG's text) or downloaded, via an Export button next to Copy/History (`index.html`'s `view-tabs-actions`, `src/shell/shell-state.js`'s `openExportPicker`/`performExportCopy`/`performExport`). Still unbuilt: Issue-level bulk export as a ZIP (needs a new dependency, e.g. `jszip`), PDF (needs a new dependency, e.g. `jspdf`), and a per-tile export affordance in the All grid.
+- **Canvas/diagram export — Phase 3 built (ADR-0037).** Adds a per-tile export button in the All grid (and featured display), PDF (raster PNG on one page via `jspdf`, download only), and an Issue-level ZIP (burger menu; SVG + PNG per canvas, no native sources or Backlog; `jszip`). PNG now rasterizes from a `data:` URL because Chrome tainted the canvas for `<foreignObject>` SVGs loaded from a `blob:` URL. Still unbuilt: vector PDF, a native-source/Backlog option in the ZIP.
 
 ## What It Does NOT Do (yet)
 

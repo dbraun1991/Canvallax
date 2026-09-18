@@ -35,7 +35,8 @@
     "darkMode": "Mode sombre",
     "settings": "Paramètres",
     "howTo": "Aide",
-    "language": "Langue"
+    "language": "Langue",
+    "exportIssue": "Exporter l'Issue (ZIP)"
   },
   "backlog": {
     "title": "Backlog",
@@ -126,7 +127,7 @@
       },
       "export": {
         "title": "Exporter",
-        "body": "Copiez ou téléchargez le canevas actuel dans son format natif, en SVG ou en PNG, via Exporter à côté de Copier/Historique."
+        "body": "Copiez ou téléchargez un canevas dans son format natif, en SVG, PNG ou PDF, via Exporter à côté de Copier/Historique — ou via le petit bouton d'export de chaque tuile de la vue Tout. Menu → Exporter l'Issue regroupe tous les canevas en SVG et PNG dans un ZIP."
       }
     },
     "canvas": {
@@ -162,5 +163,12 @@
         ]
       }
     }
+  },
+  "panZoom": {
+    "zoomIn": "Zoom avant",
+    "zoomOut": "Zoom arrière",
+    "fit": "Ajuster (ou double-clic)",
+    "fitLabel": "Ajuster",
+    "close": "Fermer"
   }
 }

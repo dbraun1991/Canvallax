@@ -35,7 +35,8 @@
     "darkMode": "Modo oscuro",
     "settings": "Ajustes",
     "howTo": "Cómo se usa",
-    "language": "Idioma"
+    "language": "Idioma",
+    "exportIssue": "Exportar Issue (ZIP)"
   },
   "backlog": {
     "title": "Backlog",
@@ -126,7 +127,7 @@
       },
       "export": {
         "title": "Exportar",
-        "body": "Copia o descarga el lienzo actual en su formato nativo, como SVG o como PNG, mediante Exportar junto a Copiar/Historial."
+        "body": "Copia o descarga un lienzo en su formato nativo, como SVG, PNG o PDF, mediante Exportar junto a Copiar/Historial — o con el pequeño botón de exportar de cada mosaico de la vista Todo. Menú → Exportar Issue reúne todos los lienzos como SVG y PNG en un ZIP."
       }
     },
     "canvas": {
@@ -162,5 +163,12 @@
         ]
       }
     }
+  },
+  "panZoom": {
+    "zoomIn": "Acercar",
+    "zoomOut": "Alejar",
+    "fit": "Ajustar (o doble clic)",
+    "fitLabel": "Ajustar",
+    "close": "Cerrar"
   }
 }

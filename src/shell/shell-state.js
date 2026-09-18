@@ -14,7 +14,7 @@ import { mountDrawioCanvas } from '../canvases/system/drawio-canvas.js';
 import { mountObjectCanvas } from '../canvases/object/object-canvas.js';
 import { mountExcalidrawCanvas } from '../canvases/interaction/excalidraw-canvas.js';
 import { renderAllThumbnails as renderThumbnails } from '../canvases/thumbnails.js';
-import { exportView, copyViewToClipboard, NATIVE_FORMATS } from '../canvases/export.js';
+import { exportView, exportIssueZip, copyViewToClipboard, NATIVE_FORMATS } from '../canvases/export.js';
 
 // Process needs two child containers (canvas + properties panel); the
 // other engines mount straight into the single wrapper element. Adapting
@@ -83,6 +83,7 @@ export function shellState() {
     copySourceEntryId: '',
     newEntryName: '',
     exportPickerOpen: false,
+    exportTarget: null, // which canvas the open picker exports — the tab's own, or an All-grid tile's (Phase 3)
     exportFormat: 'native', // 'native' | 'svg'
     exportNativeFormats: NATIVE_FORMATS, // exposed for the picker's native-format label
     // Mirrors the data-theme attribute the inline head script already set
@@ -529,11 +530,13 @@ export function shellState() {
       this.copyPickerOpen = false;
     },
 
-    // Canvas/diagram export, Phases 1-2 (agents.md Future Work): one view at
-    // a time, native source, SVG, or PNG; copy to clipboard or download.
-    // Only meaningful for a single-canvas view, like Copy/History —
-    // index.html hides the Export button on All too.
-    openExportPicker() {
+    // Canvas/diagram export (agents.md Future Work): one view at a time —
+    // native source, SVG, PNG or PDF; copy (all but PDF) or download. The
+    // target is the active canvas tab's, or, from an All-grid tile's own
+    // export button (Phase 3), that tile's canvas.
+    openExportPicker(view = this.activeView) {
+      if (view === 'all') return;
+      this.exportTarget = view;
       this.exportFormat = 'native';
       this.exportPickerOpen = true;
     },
@@ -543,15 +546,22 @@ export function shellState() {
     },
 
     async performExportCopy() {
-      if (!this.activeIssue || this.activeView === 'all') return;
-      await copyViewToClipboard(this.activeIssue, this.activeView, this.exportFormat, this.theme);
+      if (!this.activeIssue || !this.exportTarget || this.exportFormat === 'pdf') return;
+      await copyViewToClipboard(this.activeIssue, this.exportTarget, this.exportFormat, this.theme);
       this.exportPickerOpen = false;
     },
 
     async performExport() {
-      if (!this.activeIssue || this.activeView === 'all') return;
-      await exportView(this.activeIssue, this.activeView, this.exportFormat, this.theme);
+      if (!this.activeIssue || !this.exportTarget) return;
+      await exportView(this.activeIssue, this.exportTarget, this.exportFormat, this.theme);
       this.exportPickerOpen = false;
+    },
+
+    // Issue-level bulk export (Phase 3): every canvas as SVG + PNG in one ZIP.
+    async performIssueExport() {
+      this.closeBurgerMenu();
+      if (!this.activeIssue) return;
+      await exportIssueZip(this.activeIssue, this.theme);
     },
   };
 }

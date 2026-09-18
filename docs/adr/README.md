@@ -41,5 +41,7 @@ This tree was rebuilt from scratch on 2026-09-03, consolidating what had been tw
 | [0033](0033-presenting-mode-featured-layout-fixed-order-dimmed.md) | Presenting mode's featured layout: all four tiles always in fixed order, the featured one dimmed in place, not excluded from the stack | Accepted |
 | [0034](0034-mobile-out-of-scope-desktop-widescreen-only.md) | Mobile is out of scope — desktop/widescreen (16:9+) only; the canvas engines' own touch-editing usability, not Canvallax's shell, is the real blocker | Accepted |
 | [0035](0035-how-to-help-overlay.md) | "How To" help: a shared overlay (general + per-canvas), Canvallax-authored basics with a link out to each tool's own docs | Accepted |
+| [0036](0036-presenting-featured-display-pan-zoom.md) | Presenting mode's featured display is a pan/zoom viewer over the existing SVG (hand-rolled CSS transform, no live engine) | Accepted |
+| [0037](0037-export-phase-3-tile-pdf-zip.md) | Export Phase 3: per-tile export button, raster PDF (`jspdf`), Issue-level SVG+PNG ZIP (`jszip`); PNG rasterizes from a `data:` URL to avoid canvas tainting | Accepted |
 
 Naming for the canvases (Process/System/Object/Interaction/Backlog) is not yet finalized — these ADRs use the current README naming and should be updated if it changes. This is why every view and Backlog entry carries its own UUID independent of that naming (ADR-0007) — identity has to survive a naming decision that hasn't happened yet.

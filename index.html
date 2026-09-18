@@ -146,6 +146,7 @@
               </template>
             </div>
           </div>
+          <button type="button" class="burger-menu-item" x-show="activeIssue" @click="performIssueExport()" x-text="t('burgerMenu.exportIssue')"></button>
           <button type="button" class="burger-menu-item" @click="openSettings()" x-text="t('burgerMenu.settings')"></button>
           <button type="button" class="burger-menu-item" @click="openHowTo()" x-text="t('burgerMenu.howTo')"></button>
         </div>
@@ -241,10 +242,36 @@
                     x-show="featuredCanvas"
                     x-cloak
                     :data-featured-view="featuredCanvas"
-                    @click="toggleZoom(featuredCanvas)"
+                    x-data="panZoom()"
+                    x-effect="featuredCanvas; thumbnails[featuredCanvas]; reset()"
                   >
-                    <h3 x-text="featuredCanvasLabel"></h3>
-                    <div class="all-cell-thumbnail" x-show="thumbnails[featuredCanvas]" x-html="thumbnails[featuredCanvas]"></div>
+                    <!-- ADR-0036: the featured display is a pan/zoom viewer. Plain
+                         clicks no longer un-feature (they'd fire mid-drag/double-click);
+                         the × button, or the dimmed small tile, does. -->
+                    <div class="all-featured-header">
+                      <h3 x-text="featuredCanvasLabel"></h3>
+                      <div class="pan-zoom-controls">
+                        <button type="button" @click="zoomButton(1, $refs.pz)" :title="t('panZoom.zoomIn')">+</button>
+                        <button type="button" @click="zoomButton(-1, $refs.pz)" :title="t('panZoom.zoomOut')">−</button>
+                        <button type="button" @click="reset()" :title="t('panZoom.fit')" x-text="t('panZoom.fitLabel')"></button>
+                        <button type="button" @click="openExportPicker(featuredCanvas)" :title="t('topBar.export')">⤓</button>
+                        <button type="button" @click="toggleZoom(featuredCanvas)" :title="t('panZoom.close')">×</button>
+                      </div>
+                    </div>
+                    <div
+                      class="all-cell-thumbnail pan-zoom"
+                      x-ref="pz"
+                      x-show="thumbnails[featuredCanvas]"
+                      :class="{ dragging, zoomed: scale > 1 }"
+                      @wheel.prevent="onWheel($event, $el)"
+                      @pointerdown="onPointerDown($event, $el)"
+                      @pointermove="onPointerMove($event)"
+                      @pointerup="onPointerUp($event, $el)"
+                      @pointercancel="onPointerUp($event, $el)"
+                      @dblclick="reset()"
+                    >
+                      <div class="pan-zoom-layer" :style="layerStyle" x-html="thumbnails[featuredCanvas]"></div>
+                    </div>
                     <p
                       class="placeholder"
                       x-show="featuredCanvas !== 'interaction' && !thumbnails[featuredCanvas]"
@@ -267,7 +294,10 @@
                     :class="{ dimmed: featuredCanvas === 'process' }"
                     @click="canvasMode === 'editing' ? setView('process') : toggleZoom('process')"
                   >
-                    <h3 x-text="t('canvas.process')"></h3>
+                    <div class="all-cell-header">
+                      <h3 x-text="t('canvas.process')"></h3>
+                      <button type="button" class="tile-export" @click.stop="openExportPicker('process')" :title="t('topBar.export')" :aria-label="t('topBar.export')">⤓</button>
+                    </div>
                     <div class="all-cell-thumbnail" x-show="thumbnails.process" x-html="thumbnails.process"></div>
                     <p class="placeholder" x-show="!thumbnails.process" x-text="t('allGrid.rendering')"></p>
                   </div>
@@ -277,7 +307,10 @@
                     :class="{ dimmed: featuredCanvas === 'system' }"
                     @click="canvasMode === 'editing' ? setView('system') : toggleZoom('system')"
                   >
-                    <h3 x-text="t('canvas.systemFull')"></h3>
+                    <div class="all-cell-header">
+                      <h3 x-text="t('canvas.systemFull')"></h3>
+                      <button type="button" class="tile-export" @click.stop="openExportPicker('system')" :title="t('topBar.export')" :aria-label="t('topBar.export')">⤓</button>
+                    </div>
                     <div class="all-cell-thumbnail" x-show="thumbnails.system" x-html="thumbnails.system"></div>
                     <p class="placeholder" x-show="!thumbnails.system" x-text="t('allGrid.rendering')"></p>
                   </div>
@@ -287,7 +320,10 @@
                     :class="{ dimmed: featuredCanvas === 'object' }"
                     @click="canvasMode === 'editing' ? setView('object') : toggleZoom('object')"
                   >
-                    <h3 x-text="t('canvas.object')"></h3>
+                    <div class="all-cell-header">
+                      <h3 x-text="t('canvas.object')"></h3>
+                      <button type="button" class="tile-export" @click.stop="openExportPicker('object')" :title="t('topBar.export')" :aria-label="t('topBar.export')">⤓</button>
+                    </div>
                     <div class="all-cell-thumbnail" x-show="thumbnails.object" x-html="thumbnails.object"></div>
                     <p class="placeholder" x-show="!thumbnails.object" x-text="t('allGrid.rendering')"></p>
                   </div>
@@ -297,7 +333,10 @@
                     :class="{ dimmed: featuredCanvas === 'interaction' }"
                     @click="canvasMode === 'editing' ? setView('interaction') : toggleZoom('interaction')"
                   >
-                    <h3 x-text="t('canvas.interaction')"></h3>
+                    <div class="all-cell-header">
+                      <h3 x-text="t('canvas.interaction')"></h3>
+                      <button type="button" class="tile-export" @click.stop="openExportPicker('interaction')" :title="t('topBar.export')" :aria-label="t('topBar.export')">⤓</button>
+                    </div>
                     <div class="all-cell-thumbnail" x-show="thumbnails.interaction" x-html="thumbnails.interaction"></div>
                     <!-- Excalidraw's legitimate empty state (nothing drawn yet) renders as
                          '' — a real, final result, not a mid-render placeholder — so it
@@ -523,19 +562,20 @@
       <div class="copy-picker-backdrop" x-show="exportPickerOpen" @click="closeExportPicker()"></div>
       <div class="copy-picker" x-show="exportPickerOpen">
         <div class="history-panel-header">
-          <h3 x-text="t('exportPicker.title', { view: t('canvas.' + activeView) })"></h3>
+          <h3 x-text="t('exportPicker.title', { view: exportTarget ? t('canvas.' + exportTarget) : '' })"></h3>
           <button type="button" class="history-close" @click="closeExportPicker()">×</button>
         </div>
         <div class="copy-picker-body">
           <label class="copy-picker-label" x-text="t('exportPicker.format')"></label>
           <select class="backlog-field" x-model="exportFormat">
-            <option value="native" x-text="activeView !== 'all' ? exportNativeFormats[activeView].label : ''"></option>
+            <option value="native" x-text="exportTarget ? exportNativeFormats[exportTarget].label : ''"></option>
             <option value="svg">SVG</option>
             <option value="png">PNG</option>
+            <option value="pdf">PDF</option>
           </select>
 
           <div class="export-picker-actions">
-            <button type="button" class="copy-toggle" @click="performExportCopy()" x-text="t('copyPicker.copy')"></button>
+            <button type="button" class="copy-toggle" x-show="exportFormat !== 'pdf'" @click="performExportCopy()" x-text="t('copyPicker.copy')"></button>
             <button type="button" class="history-restore" @click="performExport()" x-text="t('exportPicker.download')"></button>
           </div>
         </div>

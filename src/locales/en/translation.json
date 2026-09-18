@@ -35,7 +35,8 @@
     "darkMode": "Dark mode",
     "settings": "Settings",
     "howTo": "How To",
-    "language": "Language"
+    "language": "Language",
+    "exportIssue": "Export Issue (ZIP)"
   },
   "backlog": {
     "title": "Backlog",
@@ -126,7 +127,7 @@
       },
       "export": {
         "title": "Export",
-        "body": "Copy or download the current canvas in its native format, as SVG, or as PNG, via Export next to Copy/History."
+        "body": "Copy or download a canvas in its native format, as SVG, PNG, or PDF, via Export next to Copy/History — or via the small export button on any All-view tile. Menu → Export Issue bundles every canvas as SVG and PNG in one ZIP."
       }
     },
     "canvas": {
@@ -162,5 +163,12 @@
         ]
       }
     }
+  },
+  "panZoom": {
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "fit": "Fit to view (or double-click)",
+    "fitLabel": "Fit",
+    "close": "Close"
   }
 }

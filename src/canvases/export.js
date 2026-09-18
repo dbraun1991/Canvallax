@@ -69,21 +69,42 @@ async function svgMarkupToPngBlob(svgMarkup) {
   // no markup to rasterize — export a blank white PNG rather than erroring,
   // matching how SVG/native export already don't block on it either.
   if (svgMarkup) {
-    const svgUrl = URL.createObjectURL(new Blob([svgMarkup], { type: 'image/svg+xml' }));
-    try {
-      const image = await new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = () => reject(new Error('Failed to rasterize SVG for PNG export'));
-        img.src = svgUrl;
-      });
-      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-    } finally {
-      URL.revokeObjectURL(svgUrl);
-    }
+    // A data: URL, not a blob: URL — Chrome taints the canvas when an SVG
+    // containing <foreignObject> (System's draw.io and Object's Mermaid
+    // labels) is loaded from a blob: URL, which makes toBlob() throw.
+    const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgMarkup)}`;
+    const image = await new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error('Failed to rasterize SVG for PNG export'));
+      img.src = svgUrl;
+    });
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
   }
 
   return await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+}
+
+function blobToDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(blob);
+  });
+}
+
+// PDF (Phase 3): the PNG raster embedded on a single page sized to the
+// diagram's own intrinsic size — deliberately not vector (svg2pdf.js chokes
+// on the foreignObject/web-font content draw.io and Excalidraw SVGs carry).
+// jsPDF is a dynamic import so it stays out of the main bundle.
+async function svgMarkupToPdfBlob(svgMarkup) {
+  const { width, height } = svgIntrinsicSize(svgMarkup);
+  const png = await svgMarkupToPngBlob(svgMarkup);
+  const { jsPDF } = await import('jspdf');
+  const pdf = new jsPDF({ unit: 'pt', format: [width, height], orientation: width >= height ? 'landscape' : 'portrait' });
+  pdf.addImage(await blobToDataUrl(png), 'PNG', 0, 0, width, height);
+  return pdf.output('blob');
 }
 
 function triggerDownload(blob, filename) {
@@ -112,15 +133,39 @@ async function blobForExport(view, viewObj, format, theme) {
     const svgMarkup = await svgMarkupFor(view, viewObj.content, theme);
     return { blob: await svgMarkupToPngBlob(svgMarkup), ext: 'png' };
   }
+  if (format === 'pdf') {
+    const svgMarkup = await svgMarkupFor(view, viewObj.content, theme);
+    return { blob: await svgMarkupToPdfBlob(svgMarkup), ext: 'pdf' };
+  }
   const svgMarkup = await svgMarkupFor(view, viewObj.content, theme);
   return { blob: new Blob([svgMarkup], { type: 'image/svg+xml' }), ext: 'svg' };
 }
 
+function safeIssueName(issue) {
+  return issue.name.trim().replace(/[^a-z0-9-_]+/gi, '-') || 'issue';
+}
+
 export async function exportView(issue, view, format, theme) {
   const viewObj = issue.views[view];
-  const safeIssueName = issue.name.trim().replace(/[^a-z0-9-_]+/gi, '-') || 'issue';
   const { blob, ext } = await blobForExport(view, viewObj, format, theme);
-  triggerDownload(blob, `${safeIssueName}-${view}.${ext}`);
+  triggerDownload(blob, `${safeIssueName(issue)}-${view}.${ext}`);
+}
+
+// Issue-level bulk export (Phase 3): one ZIP holding each canvas as SVG and
+// PNG under a folder named for the Issue — no native sources, no Backlog.
+// Interaction's empty-scene case (no markup) is skipped rather than shipping
+// a blank file. jszip is a dynamic import, same reasoning as jsPDF above.
+export async function exportIssueZip(issue, theme) {
+  const { default: JSZip } = await import('jszip');
+  const folder = safeIssueName(issue);
+  const zip = new JSZip();
+  for (const view of Object.keys(NATIVE_FORMATS)) {
+    const svgMarkup = await svgMarkupFor(view, issue.views[view].content, theme);
+    if (!svgMarkup) continue;
+    zip.file(`${folder}/${view}.svg`, svgMarkup);
+    zip.file(`${folder}/${view}.png`, await svgMarkupToPngBlob(svgMarkup));
+  }
+  triggerDownload(await zip.generateAsync({ type: 'blob' }), `${folder}.zip`);
 }
 
 // PNG copies as an actual image (paste into Slack/docs/etc.); native and SVG

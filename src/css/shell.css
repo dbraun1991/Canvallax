@@ -797,6 +797,39 @@
   flex: 0 0 auto;
 }
 
+/* Phase 3: per-tile export button, revealed on tile hover (or keyboard focus). */
+.all-cell-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0 0 auto;
+}
+
+.all-cell-header h3 {
+  margin-bottom: 8px;
+}
+
+.tile-export {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: inherit;
+  width: 26px;
+  height: 26px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.all-cell:hover .tile-export,
+.tile-export:focus-visible {
+  opacity: 1;
+}
+
+.tile-export:hover {
+  border-color: var(--accent);
+}
+
 .all-cell-thumbnail {
   flex: 1 1 auto;
   min-height: 0;
@@ -815,6 +848,65 @@
 .all-featured-display[data-featured-view='process'] .all-cell-thumbnail,
 .all-featured-display[data-featured-view='system'] .all-cell-thumbnail {
   background: #ffffff;
+}
+
+/* ADR-0036: featured display's pan/zoom viewer. The layer carries the
+   transform (set inline from pan-zoom.js); the container clips it. */
+.all-featured-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.all-featured-header h3 {
+  margin: 0;
+}
+
+.pan-zoom-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.pan-zoom-controls button {
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: inherit;
+  cursor: pointer;
+}
+
+.pan-zoom-controls button:hover {
+  border-color: var(--accent);
+}
+
+.all-featured-display {
+  cursor: default;
+}
+
+.pan-zoom {
+  touch-action: none;
+  user-select: none;
+  cursor: zoom-in;
+}
+
+.pan-zoom.zoomed {
+  cursor: grab;
+}
+
+.pan-zoom.dragging {
+  cursor: grabbing;
+}
+
+.pan-zoom-layer {
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 0;
+  will-change: transform;
 }
 
 .all-cell-thumbnail svg {

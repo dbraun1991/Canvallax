@@ -35,7 +35,8 @@
     "darkMode": "Dunkler Modus",
     "settings": "Einstellungen",
     "howTo": "Anleitung",
-    "language": "Sprache"
+    "language": "Sprache",
+    "exportIssue": "Issue exportieren (ZIP)"
   },
   "backlog": {
     "title": "Backlog",
@@ -126,7 +127,7 @@
       },
       "export": {
         "title": "Export",
-        "body": "Das aktuelle Canvas im nativen Format, als SVG oder als PNG kopieren oder herunterladen, über Export neben Kopieren/Verlauf."
+        "body": "Ein Canvas im nativen Format, als SVG, PNG oder PDF kopieren oder herunterladen, über Export neben Kopieren/Verlauf – oder über den kleinen Export-Button an jeder Kachel der Alle-Ansicht. Menü → Issue exportieren bündelt alle Canvases als SVG und PNG in einer ZIP-Datei."
       }
     },
     "canvas": {
@@ -162,5 +163,12 @@
         ]
       }
     }
+  },
+  "panZoom": {
+    "zoomIn": "Vergrößern",
+    "zoomOut": "Verkleinern",
+    "fit": "Einpassen (oder Doppelklick)",
+    "fitLabel": "Einpassen",
+    "close": "Schließen"
   }
 }
